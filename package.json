@@ -1,17 +1,31 @@
 {
-  "name"        : "taxman",
-  "version"     : "0.0.1",
-  "description" : "simple book keeping application for nodejs.",
-  "main"        : "app.js",
+  "name": "taxman",
+  "version": "0.0.1",
+  "description": "simple book keeping application for nodejs",
+  "main": "app.js",
+  "bin": {
+    "taxman": "index.js"
+  },
   "dependencies": {
+    "express": "~3.4.7",
+    "sqlite3": "~2.1.19",
+    "magnum": "~0.1.7"
   },
   "devDependencies": {},
   "scripts": {
-    
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sinclairzx81/taxman.git"
   },
   "keywords": [
-    "finance"
+    "finance",
+    "tax"
   ],
   "author": "sinclair",
-  "license": "MIT License"
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sinclairzx81/taxman/issues"
+  }
 }
