@@ -1,0 +1,17 @@
+{
+  "name"        : "taxman",
+  "version"     : "0.0.1",
+  "description" : "simple book keeping application for nodejs.",
+  "main"        : "app.js",
+  "dependencies": {
+  },
+  "devDependencies": {},
+  "scripts": {
+    
+  },
+  "keywords": [
+    "finance"
+  ],
+  "author": "sinclair",
+  "license": "MIT License"
+}
