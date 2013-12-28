@@ -39,27 +39,27 @@ module repository {
 
         public schema (callback?: (error: any) => void) : void {
 
-            var sql = 'create table if not exists invoice  ( id          varchar(128),' +
+            var sql = 'create table if not exists invoice  ( id          TEXT,' +
 
-                                                          '  company     varchar(128),' + 
+                                                          '  company     TEXT,' + 
 
-                                                          '  created     datetime,'     +  
+                                                          '  created     NUMERIC,'     +  
             
-                                                          '  startdate   datetime,'     + 
+                                                          '  startdate   NUMERIC,'     + 
             
-                                                          '  enddate     datetime,'     + 
+                                                          '  enddate     NUMERIC,'     + 
             
-                                                          '  hours       real,'         +
+                                                          '  hours       REAL,'         +
             
-                                                          '  rate        real,'         +
+                                                          '  rate        REAL,'         +
             
-                                                          '  gstrate     real,'         +
+                                                          '  gstrate     REAL,'         +
             
-                                                          '  sent        int,'          +
+                                                          '  sent        INTEGER,'          +
             
-                                                          '  paid        int,'          +
+                                                          '  paid        INTEGER,'          +
             
-                                                          '  comment     text,'         +
+                                                          '  comment     TEXT,'         +
             
                                                           '  primary key(id));'
 

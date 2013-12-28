@@ -48,7 +48,10 @@ setTimeout(function() {
         })
     })
 
-
-
 }, 1500)
+
+//repository.companies.get('PX2 Limited', function(err, result){
+
+//    console.log(result)
+//})
 

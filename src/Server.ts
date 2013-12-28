@@ -114,8 +114,10 @@ class Server {
             this.provider.get_companies((companies) => {
                 
                 this.provider.get_invoice(request.params.id, (invoice) => {
-            
-                    var context = { request: request, invoice: invoice, companies: companies }
+                    
+                    console.log(invoice)
+                    
+                    var context = { request: request, invoice: invoice, companies: companies, errors: null }
 
                     response.render('./views/invoices/update.html', context)            
                 })                
@@ -124,11 +126,51 @@ class Server {
 
         this.app.post('/invoices/:id', authorize, express.urlencoded(), (request, response) => {
 
-            console.log(request.body)
+            var invoice: repository.IInvoice = {
+            
+                id          : request.body.id,
 
-            var context = { request: request }
+                company     : request.body.company,
 
-            response.redirect('/invoices')
+                created     : new Date(request.body.created),
+
+                startdate   : new Date(request.body.startdate),
+
+                enddate     : new Date(request.body.enddate),
+
+                hours       : request.body.hours,
+
+                rate        : request.body.rate,
+
+                gstrate     : request.body.gstrate,
+
+                sent        : request.body.sent ? true : false,
+
+                paid        : request.body.paid ? true : false,
+
+                comment     : request.body.comment,
+            }
+
+            
+
+            this.provider.update_invoice(invoice, (success, errors) => {
+
+                if(!success) {
+                    
+                    console.log(errors)
+
+                    this.provider.get_companies((companies) => {
+
+                        var context = { request: request, invoice: invoice, companies: companies, errors: errors }
+
+                        response.render('./views/invoices/update.html', context)
+                    })
+
+                    return
+                }
+
+                response.redirect('/invoices')
+            })
         })
 
         //---------------------------------------------

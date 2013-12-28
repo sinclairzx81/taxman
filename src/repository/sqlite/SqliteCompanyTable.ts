@@ -39,19 +39,19 @@ module repository {
 
         public schema (callback?: (error: any) => void) : void {
 
-            var sql = 'create table if not exists company ( name        varchar(128),' + 
+            var sql = 'create table if not exists company ( name        TEXT,' + 
             
-                                                          ' slug        varchar(128),' + 
+                                                          ' slug        TEXT,' + 
             
-                                                          ' email       varchar(32),'  +  
+                                                          ' email       TEXT,'  +  
             
-                                                          ' phone       varchar(32),'  + 
+                                                          ' phone       TEXT,'  + 
             
-                                                          ' website     varchar(128),' +                                           
+                                                          ' website     TEXT,' +                                           
             
-                                                          ' address     text,'         +  
+                                                          ' address     TEXT,'         +  
             
-                                                          ' comment     text,'         +
+                                                          ' comment     TEXT,'         +
             
                                                           ' primary key(name) );'
             

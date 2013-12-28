@@ -85,9 +85,11 @@
                 
                 <td>company</td>
                 
-                <td>start</td>
+                <td>created</td>
+
+                <td>start date</td>
                 
-                <td>end</td>
+                <td>end end</td>
                 
                 <td>amount</td>
                 
@@ -108,7 +110,9 @@
                     <td><a href="/invoices/@(invoice.id)">@(invoice.id)</a></td>
                 
                     <td>@(invoice.company)</td>
-                
+                    
+                    <td>@(formatDate(invoice.created))</td>
+
                     <td>@(formatDate(invoice.startdate))</td>
                 
                     <td>@(formatDate(invoice.enddate))</td>

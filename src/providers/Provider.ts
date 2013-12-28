@@ -28,13 +28,18 @@ THE SOFTWARE.
 /// <reference path="../loggers/ILogger.ts" />
 /// <reference path="../repository/IRepository.ts" />
 /// <reference path="../util/Async.ts" />
+/// <reference path="Validator.ts" />
 
 module providers {
 
     export class Provider {
         
+        private validator: providers.Validator;
+
         constructor(public repository: repository.IRepository, public logger: loggers.ILogger) {
-        
+
+            this.validator = new providers.Validator()
+            
             this.logger.log('provider: company schema')
 
             this.repository.companies.schema(() => {
@@ -47,6 +52,10 @@ module providers {
                 })
             })
         }
+
+        //----------------------------------------------------
+        // invoices:
+        //----------------------------------------------------
 
         public get_invoices (callback: ( invoices: repository.IInvoice[]) => void ) : void {
         
@@ -64,6 +73,43 @@ module providers {
             })
         }
 
+        public update_invoice(invoice: repository.IInvoice, callback: (success:boolean, errors: string[]) => void ) : void {
+
+            this.repository.companies.get(invoice.company, (error, company) => {
+            
+                if(error) {
+                
+                    callback(false, [error.toString()])
+
+                    return
+                }
+
+                if(!company) {
+                
+                    callback(false, ['company not found'])
+
+                    return
+                }
+
+                this.repository.invoices.update(invoice, (error) => {
+                
+                    if(error) {
+                    
+                        callback(false, [error.toString()])
+
+                        return
+                    }
+
+                    callback(true, null)
+                })
+            })
+
+        }
+
+        //----------------------------------------------------
+        // companies:
+        //----------------------------------------------------
+        
         public get_companies(callback: ( companies: repository.ICompany[] )=>void ) : void {
 
             this.repository.companies.list(0, 1000, null, (error, companies) => {
@@ -81,6 +127,15 @@ module providers {
             this.logger.log('provider: importing data')
 
             var data = JSON.parse(json)
+
+            for(var i = 0; i < data.invoices.length; i++) {
+            
+                data.invoices[i].created   = new Date(data.invoices[i].created)
+
+                data.invoices[i].startdate = new Date(data.invoices[i].startdate)
+
+                data.invoices[i].enddate   = new Date(data.invoices[i].enddate)
+            }
 
             util.async.series((data:any, callback:any) => { this.repository.companies.add(data, callback) }, data.companies, (results) => {
 
