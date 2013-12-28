@@ -22,6 +22,27 @@
 
     </div>
     
+
+    @if(context.errors) {
+
+        <div class="alert alert-warning">
+
+            <ul>
+
+                @for(var i = 0; i < context.errors.length; i++) {
+
+                    @{ var error = context.errors[i] }
+
+                    <li>@(error)</li>
+
+                }
+
+            </ul>
+
+
+        </div>
+    }
+
     <div class="row">
 
         <form role="form" method="post" action="/invoices/@(invoice.id)">

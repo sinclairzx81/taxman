@@ -75,33 +75,44 @@ module providers {
 
         public update_invoice(invoice: repository.IInvoice, callback: (success:boolean, errors: string[]) => void ) : void {
 
-            this.repository.companies.get(invoice.company, (error, company) => {
+            this.validator.validate_invoice(invoice, (errors) => {
             
-                if(error) {
+                if(errors.length > 0) {
                 
-                    callback(false, [error.toString()])
+                    callback(false, errors)
 
                     return
                 }
-
-                if(!company) {
                 
-                    callback(false, ['company not found'])
-
-                    return
-                }
-
-                this.repository.invoices.update(invoice, (error) => {
-                
+                this.repository.companies.get(invoice.company, (error, company) => {
+            
                     if(error) {
-                    
+                
                         callback(false, [error.toString()])
 
                         return
                     }
 
-                    callback(true, null)
+                    if(!company) {
+                
+                        callback(false, ['company not found'])
+
+                        return
+                    }
+
+                    this.repository.invoices.update(invoice, (error) => {
+                
+                        if(error) {
+                    
+                            callback(false, [error.toString()])
+
+                            return
+                        }
+
+                        callback(true, null)
+                    })
                 })
+
             })
 
         }

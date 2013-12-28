@@ -28,27 +28,27 @@ var server     = new taxman.Server(app, provider, logger)
 // bootstrap
 //----------------------------------------
 
-setTimeout(function() {
+//setTimeout(function() {
 
-    var fs = require('fs')
+//    var fs = require('fs')
 
-    fs.readFile('c:/input/invoices.json', 'utf8', function(err, data){
+//    fs.readFile('c:/input/invoices.json', 'utf8', function(err, data){
 
-        provider.import_data(data, function(results) {
+//        provider.import_data(data, function(results) {
 
-            console.log(results)
+//            console.log(results)
 
-            provider.export_data(function(data) {
+//            provider.export_data(function(data) {
     
-                fs.writeFile('c:/input/invoices2.json', data, function () {
+//                fs.writeFile('c:/input/invoices.json', data, function () {
 
-                    console.log('done')
-                })
-            })            
-        })
-    })
+//                    console.log('done')
+//                })
+//            })            
+//        })
+//    })
 
-}, 1500)
+//}, 1500)
 
 //repository.companies.get('PX2 Limited', function(err, result){
 

@@ -75,9 +75,9 @@ class Server {
             response.render('./views/index.html', context)
         })
 
-        //---------------------------------------------
+        //---------------------------------------------------------------
         // dashboard
-        //---------------------------------------------
+        //---------------------------------------------------------------
 
         this.app.get('/dashboard', authorize, (request, response) => {
                
@@ -86,9 +86,9 @@ class Server {
             response.render('./views/dashboard/index.html', context)
         })
 
-        //---------------------------------------------
+        //---------------------------------------------------------------
         // invoices
-        //---------------------------------------------
+        //---------------------------------------------------------------
         this.app.get('/invoices', authorize, (request, response) => {
 
             this.provider.get_invoices((invoices) => {
@@ -126,6 +126,8 @@ class Server {
 
         this.app.post('/invoices/:id', authorize, express.urlencoded(), (request, response) => {
 
+            console.log(request.body)
+
             var invoice: repository.IInvoice = {
             
                 id          : request.body.id,
@@ -138,11 +140,11 @@ class Server {
 
                 enddate     : new Date(request.body.enddate),
 
-                hours       : request.body.hours,
+                hours       : parseFloat(request.body.hours),
 
-                rate        : request.body.rate,
+                rate        : parseFloat(request.body.rate),
 
-                gstrate     : request.body.gstrate,
+                gstrate     : parseFloat(request.body.gstrate),
 
                 sent        : request.body.sent ? true : false,
 
@@ -150,8 +152,6 @@ class Server {
 
                 comment     : request.body.comment,
             }
-
-            
 
             this.provider.update_invoice(invoice, (success, errors) => {
 
@@ -173,9 +173,9 @@ class Server {
             })
         })
 
-        //---------------------------------------------
+        //---------------------------------------------------------------
         // companies
-        //---------------------------------------------
+        //---------------------------------------------------------------
 
         this.app.get('/companies', authorize, (request, response) => {
             
