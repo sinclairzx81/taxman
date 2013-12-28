@@ -129,11 +129,11 @@ module repository {
             })    
         }
         
-        public list   (skip: number, take: number, order?: string, callback?:(error:any, items: repository.ICompany[]) => void) : void {
+        public list   (skip: number, take: number, order?: {column:string; direction:string;}, callback?:(error:any, items: repository.ICompany[]) => void) : void {
             
-            order = order || 'name'
+            order = order || { column: 'name', direction: 'asc' }
 
-            var sql = 'select * from company order by ' + this.makesafe(order) + ' limit ?, ?'
+            var sql = 'select * from company order by ' + this.makesafe(order.column) + ' ' + this.makesafe(order.direction) +  ' limit ?, ?'
 
             this.db.all(sql, skip, take, (error, rows) => {
                 
@@ -156,8 +156,10 @@ module repository {
             })               
         }
         
-        public find (query: string, skip: number, take: number, order?: string, callback?:(error:any, items: repository.ICompany[]) => void) : void {
+        public find (query: string, skip: number, take: number, order?: {column:string; direction:string;}, callback?:(error:any, items: repository.ICompany[]) => void) : void {
         
+            order = order || { column: 'name', direction: 'asc' }
+
             throw Error('not implemented')
         }
 
@@ -170,25 +172,15 @@ module repository {
 
             /* why no escape :( ? */
 
-            if(val.indexOf(' ')      != -1 ||
+            if(val.indexOf(' ')   != -1 ||
                 
-               val.indexOf('\n')     != -1 ||
+               val.indexOf('\n')  != -1 ||
 
-               val.indexOf('\t')     != -1 ||
+               val.indexOf('\t')  != -1 ||
 
-               val.indexOf('alter')  != -1 ||
+               val.indexOf('\'')  != -1 ||
 
-               val.indexOf('create') != -1 ||
-
-               val.indexOf('drop')   != -1 ||
-
-               val.indexOf('select') != -1 ||
-
-               val.indexOf('insert') != -1 ||
-
-               val.indexOf('update') != -1 ||
-
-               val.indexOf('delete') != -1) {
+               val.indexOf('\"')  != -1) {
 
                 return ''
             }

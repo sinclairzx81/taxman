@@ -34,17 +34,16 @@ setTimeout(function() {
 
     fs.readFile('c:/input/invoices.json', 'utf8', function(err, data){
 
-        provider.import_data(data, function(err, results) {
-
-            console.log(err)
+        provider.import_data(data, function(results) {
 
             console.log(results)
         })
     })
 
-}, 500)
-
-//provider.export_data(function(data) {
+    provider.export_data(function(data) {
     
-//    console.log(data)    
-//})
+        //console.log(data)    
+    })
+
+}, 1500)
+

@@ -50,7 +50,7 @@ module providers {
 
         public get_invoices (callback: ( invoices: repository.IInvoice[]) => void ) : void {
         
-            this.repository.invoices.list(0, 1000, 'id', (err:any, invoices:  repository.IInvoice[]) => {
+            this.repository.invoices.list(0, 1000, {column: 'created', direction: 'desc'}, (err:any, invoices:  repository.IInvoice[]) => {
             
                 callback(invoices)
             })
@@ -97,12 +97,12 @@ module providers {
 
             this.repository.companies.count((err, company_count) => {
                 
-                this.repository.companies.list(0, company_count, 'name', (error, companies) => {
+                this.repository.companies.list(0, company_count, {column: 'name', direction: 'desc'}, (error, companies) => {
                 
                     this.repository.invoices.count((err, invoice_count) => {
                     
-                        this.repository.invoices.list(0, invoice_count, 'id', (error, invoices) => {
-                
+                        this.repository.invoices.list(0, invoice_count, {column: 'created', direction: 'desc'}, (error, invoices) => {
+
                             var data = {
 
                                 companies : companies,

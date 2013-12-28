@@ -15,8 +15,8 @@
         
         get    (id:string, callback?:(error:any, record: T) => void) : void
         
-        list   (skip: number, take: number, order?: string, callback?:(error:any, items: T[]) => void) : void
+        list   (skip: number, take: number, order?: {column:string; direction:string;}, callback?:(error:any, items: T[]) => void) : void
         
-        find   (query: string, skip: number, take: number, order?: string, callback?:(error:any, items: T[]) => void) : void 
+        find   (query: string, skip: number, take: number, order?: {column:string; direction:string;}, callback?:(error:any, items: T[]) => void) : void 
     }
 }
