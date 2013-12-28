@@ -24,20 +24,16 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-/// <reference path="IRepository.ts" />
-
 module repository {
 
-    export class JsonFileRepository implements repository.IRepository {
-    
-        public invoices  (skip:number, take: number, callback:(invoices  : repository.Invoice[]) => void) : void {
-        
-            
-        }
-
-        public companies (skip:number, take: number, callback:(companies : repository.Company[]) => void) : void {
-        
-        
-        }        
+    /** common interface for a company */
+    export interface ICompany {
+        name        : string
+        slug        : string
+        email       : string
+        phone       : string
+        website     : string
+        address     : string
+        comment     : string
     }
 }

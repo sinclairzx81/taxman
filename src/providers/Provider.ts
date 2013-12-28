@@ -1,4 +1,5 @@
-﻿/*--------------------------------------------------------------------------
+﻿
+/*--------------------------------------------------------------------------
 
 The MIT License (MIT)
 
@@ -24,11 +25,64 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-/// <reference path="IProvider.ts" />
+/// <reference path="../references.ts" />
+/// <reference path="../loggers/ILogger.ts" />
+/// <reference path="../repository/IRepository.ts" />
+/// <reference path="../util/Async.ts" />
 
 module providers {
 
-    export class Provider implements providers.IProvider {
+    export class Provider {
         
+        constructor(public repository: repository.IRepository, public logger: loggers.ILogger) {
+        
+            this.logger.log('provider: company schema')
+
+            this.repository.companies.schema(() => {
+                
+                this.logger.log('provider: invoice schema')
+
+                this.repository.invoices.schema(() => {
+                    
+                })
+            })
+        }
+
+        public get_invoices(callback: ( invoices: repository.IInvoice[] )=>void ) : void {
+        
+            this.repository.invoices.list(0, 1000, 'id', (err:any, invoices:  repository.IInvoice[]) => {
+            
+                callback(invoices)
+            })
+        }
+
+        public get_invoice(id:string, callback: ( invoice: repository.IInvoice )=>void ) : void {
+        
+            this.repository.invoices.get(id, (err:any, invoice:  repository.IInvoice) => {
+            
+                callback(invoice)
+            })
+        }
+
+        public get_companies(callback: ( companies: repository.ICompany[] )=>void ) : void {
+
+            this.repository.companies.list(0, 1000, null, (error, companies) => {
+            
+                callback(companies)
+            })
+        }
+
+        public importData(json:string, callback:(results:any) => void ) : void { 
+        
+            var data = JSON.parse(json)
+
+            util.async.parallel((data:any, callback:any) => { this.repository.companies.add(data, callback) }, data.companies, (results) => {
+
+                util.async.parallel((data:any, callback:any) => { this.repository.invoices.add(data, callback) }, data.invoices, (results) => {
+
+                    callback(results)
+                })
+            })
+        }
     }
 }

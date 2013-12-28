@@ -24,24 +24,20 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-/// <reference path="IRepository.ts" />
-
 module repository {
 
-    export class SqliteRepository implements repository.IRepository {
-    
-        constructor() {
-        
-        }
-
-        public invoices  (skip:number, take: number, callback:(invoices: repository.Invoice[]) => void) : void {
-        
-            
-        }
-
-        public companies (skip:number, take: number, callback:(companies: repository.Company[]) => void) : void {
-        
-        
-        }
+    /** common interface for a invoice */
+    export interface IInvoice {
+        id          : string
+        company     : string
+        created     : Date
+        startdate   : Date
+        enddate     : Date
+        hours       : number
+        rate        : number
+        gstrate     : number
+        paid        : boolean
+        sent        : boolean
+        comment     : string
     }
 }

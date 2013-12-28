@@ -26,6 +26,12 @@ THE SOFTWARE.
 
 /// <reference path="references.ts" />
 
+
+//-------------------------------------------------------
+// util
+//-------------------------------------------------------
+/// <reference path="util/Numbers.ts" />
+
 //-------------------------------------------------------
 // loggers
 //-------------------------------------------------------
@@ -37,7 +43,7 @@ THE SOFTWARE.
 // repositories
 //-------------------------------------------------------
 
-/// <reference path="repository/SqliteRepository.ts" />
+/// <reference path="repository/sqlite/SqliteRepository.ts" />
 
 //-------------------------------------------------------
 // providers
@@ -50,6 +56,8 @@ THE SOFTWARE.
 //-------------------------------------------------------
 
 /// <reference path="Server.ts" />
+
+module.exports.util       = util
 
 module.exports.loggers    = loggers
 

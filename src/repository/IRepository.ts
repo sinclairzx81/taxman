@@ -24,14 +24,17 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-/// <reference path="IModels.ts" />
+/// <reference path="ITable.ts" />
+/// <reference path="ICompany.ts" />
+/// <reference path="IInvoice.ts" />
 
 module repository {
 
+    /** common base interface for all repository types */
     export interface IRepository {
 
-        invoices  (skip:number, take: number, callback:(invoices: repository.Invoice[]) => void)  : void
+        companies : ITable<repository.ICompany>;
 
-        companies (skip:number, take: number, callback:(companies: repository.Company[]) => void) : void
+        invoices  : ITable<repository.IInvoice>;        
     }
 }

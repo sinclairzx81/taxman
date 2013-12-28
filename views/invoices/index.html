@@ -1,0 +1,97 @@
+﻿@import '../layout.html'
+
+@section title {
+
+    <title>invoices</title>
+}
+
+@section scripts {
+
+    
+}
+
+@section container {
+
+    @{
+        var formatDate = function(date) {
+            
+            var dates   = ['0th', '1st', '2nd', '3rd', '4th', '5th', '6th', '7th', '8th', '9th', '10th', '11th', '12th', '13th', '14th', '15th', '16th',
+                          '17th', '18th', '19th', '20th', '21st', '22nd', '23rd', '24th', '25th', '26th', '27th', '28th', '29th', '30th', '31st', '32nd']
+
+            var months  = ["January", "Feburary", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+                        
+            var weekday = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+            
+            return (weekday[date.getDay()] + ' ' + dates[date.getDate()] + " " + months[date.getMonth()] + " " + date.getFullYear())
+        }
+
+        var amount = function(invoice) {
+
+            return invoice.rate * invoice.hours
+        }
+        
+        var amountgst = function(invoice) {
+            
+            var figure = amount(invoice) * (invoice.gstrate + 1)
+            
+            return figure.toFixed(2)
+        }
+    }
+
+    <div class="starter-template">
+
+        <h1>invoices</h1>
+
+        <p class="lead">invoices go here.</p>
+
+    </div>
+
+    <table class="table">
+
+        <thead>
+            
+            <tr>
+                
+                <td>number</td>
+                
+                <td>company</td>
+                
+                <td>start</td>
+                
+                <td>end</td>
+                
+                <td>amount</td>
+                
+                <td>amount + gst</td>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+        
+        @for(var i = 0; i < context.invoices.length; i++) {  
+            
+            @{ var invoice = context.invoices[i] }
+
+            <tr class="paid">
+
+                <td><a href="/invoices/@(invoice.id)" target="_blank">@(invoice.id)</a></td>
+                
+                <td>@(invoice.company)</td>
+                
+                <td>@(formatDate(invoice.startdate))</td>
+                
+                <td>@(formatDate(invoice.enddate))</td>
+                
+                <td>$@( amount(invoice) )</td>
+                
+                <td>$@( amountgst(invoice) )</td>
+
+            </tr>
+        }
+        
+        </tbody>
+
+    </table>
+}

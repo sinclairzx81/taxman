@@ -1,0 +1,121 @@
+﻿@import '../layout.html'
+
+@section container {
+
+    @{ var invoice = context.invoice }
+
+    <div class="starter-template">
+
+        <h1>update invoice</h1>
+
+    </div>
+    
+    <div class="row">
+
+        <div class="col-md-6">
+
+            <form role="form">
+
+                <div class="form-group">
+
+                    <label for="company">company</label>
+
+                    <select id="company" class='form-control'>
+
+                        @for(var i = 0; i < context.companies.length; i++) {
+
+                            @{ 
+
+                               var company  = context.companies[i] 
+                               
+                               var selected = invoice.company == company.name
+                            }
+                            
+                            @if(selected) {
+                            
+                               <option selected>@(company.name)</option>
+                            }
+
+                            @if(!selected) {
+                                
+                                <option>@(company.name)</option>
+                            }
+                        }
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="id">number</label>
+
+                    <input type="text" id="id" class='form-control' value="@(invoice.id)"></input>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="startdate">start date</label>
+
+                    <input type="text" id="startdate" class='form-control' value="@(invoice.startdate)"></input>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="enddate">end date</label>
+
+                    <input type="text" id="enddate" class='form-control' value="@(invoice.enddate)"></input>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="comment">comment</label>
+
+                    <textarea id="comment" class="form-control">@(invoice.comment)</textarea>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="form-group">
+
+                <label for="hours">hours</label>
+
+                <input type="text" id="hours" class='form-control' value="@(invoice.hours)"></input>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="rate">rate</label>
+
+                <input type="text" id="rate" class='form-control' value="@(invoice.rate)"></input>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="gst">gst</label>
+
+                <input type="text" id="gst" class='form-control' value="@(invoice.gstrate)"></input>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <button type="submit" class="btn btn-default">update</button>
+
+        </div>
+
+    </div>
+
+}

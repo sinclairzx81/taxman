@@ -25,11 +25,11 @@ THE SOFTWARE.
 ---------------------------------------------------------------------------*/
 
 /// <reference path="references.ts" />
-/// <reference path="repository/IRepository.ts" />
+/// <reference path="loggers/ILogger.ts" />
 
 class Server {
 
-    constructor(public app: ExpressApplication, public repository: repository.IRepository) {
+    constructor(public app: ExpressApplication, public provider: providers.Provider, public logger: loggers.ILogger ) {
         
         this.setup()
 
@@ -39,7 +39,7 @@ class Server {
     private setup() : void {
         
         this.app.use('/static', express.static('./static/'))
-
+        
         this.app.use((request, response, next) => {
 
             response.render = (path, context) => {
@@ -52,7 +52,7 @@ class Server {
 
                 response.send(output)
             }
-
+            
             next()
         })
     }
@@ -69,9 +69,10 @@ class Server {
         //---------------------------------------------
         
         this.app.get('/', (request, response) => {
-
-            response.render('./views/index.html')
-
+            
+            var context = { request: request }
+            
+            response.render('./views/index.html', context)
         })
 
         //---------------------------------------------
@@ -80,12 +81,9 @@ class Server {
 
         this.app.get('/dashboard', authorize, (request, response) => {
                
-            var context = {
+            var context = { request: request }
             
-                request: request
-            }
-
-            response.render('./views/dashboard.html', context)
+            response.render('./views/dashboard/index.html', context)
         })
 
         //---------------------------------------------
@@ -93,34 +91,89 @@ class Server {
         //---------------------------------------------
         this.app.get('/invoices', authorize, (request, response) => {
 
-            var context = {
+            this.provider.get_invoices((invoices) => {
             
-                request: request
-            }
-                            
-            response.render('./views/invoices.html', context)
+                var context = { request: request, invoices: invoices }
+
+                response.render('./views/invoices/index.html', context)                   
+            })
         })
+
+        this.app.get('/invoices/create', authorize, (request, response) => {
+            
+            this.provider.get_companies((companies) => {
+
+                var context = { request: request, companies: companies }
+
+                response.render('./views/invoices/create.html', context)
+            })
+        })
+
+        this.app.get('/invoices/:id', authorize, (request, response) => {
+
+            this.provider.get_companies((companies) => {
+                
+                this.provider.get_invoice(request.params.id, (invoice) => {
+            
+                    var context = { request: request, invoice: invoice, companies: companies }
+
+                    response.render('./views/invoices/update.html', context)            
+                })                
+            })
+        })
+
+        this.app.post('/invoices/update/:id', authorize, (request, response) => {
+
+            var context = { request: request }
+
+            response.render('./views/invoices/update.html', context)
+        })
+
         //---------------------------------------------
         // companies
         //---------------------------------------------
+
         this.app.get('/companies', authorize, (request, response) => {
             
-            var context = {
-            
-                request: request
-            }
-                        
-            response.render('./views/companies.html', context)
+            var context = { request: request }
+
+            response.render('./views/companies/index.html', context)
         })
 
+        this.app.get('/companies/create', authorize, (request, response) => {
+            
+            var context = { request: request }
+                        
+            response.render('./views/companies/create.html', context)
+        })
+
+        this.app.get('/companies/update/:id', authorize, (request, response) => {
+            
+            var context = { request: request }
+
+            response.render('./views/companies/update.html', context)
+        })
+        
+        //---------------------------------------------
+        // settings
+        //---------------------------------------------
+        
+        this.app.get('/settings', authorize, (request, response) => {
+            
+            var context = {  request: request }
+               
+            response.render('./views/settings/index.html', context)
+        })
+
+        //---------------------------------------------
+        // tools
+        //---------------------------------------------
+        
         this.app.get('/tools', authorize, (request, response) => {
             
-            var context = {
-            
-                request: request
-            }
-                            
-            response.render('./views/tools.html', context)
+            var context = { request: request }
+               
+            response.render('./views/tools/index.html', context)
         })
     }
 }

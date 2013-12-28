@@ -27,6 +27,8 @@ THE SOFTWARE.
 /// <reference path="references/node.d.ts" />
 /// <reference path="references/express.d.ts" />
 
-var express = require('express')
+var express     = require('express')
 
-var magnum  = require('magnum')
+var magnum      = require('magnum')
+
+var sqlite3     = require('sqlite3').verbose()

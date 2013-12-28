@@ -24,20 +24,30 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-/// <reference path="IRepository.ts" />
+/// <reference path="../../references.ts" />
+/// <reference path="../../loggers/ILogger.ts" />
+/// <reference path="../IRepository.ts" />
+/// <reference path="../ITable.ts" />
+/// <reference path="SqliteCompanyTable.ts" />
+/// <reference path="SqliteInvoiceTable.ts" />
 
 module repository {
 
-    export class MongoRepository implements repository.IRepository {
-    
-        public invoices  (skip:number, take: number, callback:(invoices  : repository.Invoice[]) => void) : void {
+    export class SqliteRepository implements repository.IRepository {
         
-            
-        }
+        public db        : any
 
-        public companies (skip:number, take: number, callback:(companies : repository.Company[]) => void) : void {
-        
-        
-        }        
+        public companies : ITable<repository.ICompany>;
+
+        public invoices  : ITable<repository.IInvoice>;
+
+        constructor(public filename: string, public logger: loggers.ILogger) {
+
+            this.db        = new sqlite3.Database(this.filename)
+
+            this.companies = new repository.SqliteCompanyTable(this.db, this.logger)
+
+            this.invoices  = new repository.SqliteInvoiceTable(this.db, this.logger)
+        }     
     }
 }

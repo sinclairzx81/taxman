@@ -32,7 +32,7 @@ module loggers {
     
         public log(str: string) : void {
         
-            
+            console.log(str)
         }
     }
 }

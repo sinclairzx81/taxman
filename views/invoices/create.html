@@ -1,0 +1,107 @@
+﻿@import '../layout.html'
+
+@section container {
+
+    <div class="starter-template">
+
+        <h1>create invoice</h1>
+
+    </div>
+    
+    <div class="row">
+
+        <div class="col-md-6">
+
+            <form role="form">
+
+                <div class="form-group">
+
+                    <label for="company">company</label>
+
+                    <select id="company" class='form-control'>
+
+                        @for(var i = 0; i < context.companies.length; i++) {
+
+                        @{ var company = context.companies[i] }
+
+                            <option>@(company.name)</option>
+
+                        }
+
+                    </select>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="number">number</label>
+
+                    <input type="text" id="number" class='form-control' value=""></input>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="start">start</label>
+
+                    <input type="text" id="start" class='form-control' value=""></input>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="end">end</label>
+
+                    <input type="text" id="end" class='form-control' value=""></input>
+
+                </div>
+
+                <div class="form-group">
+
+                    <label for="comment">comment</label>
+
+                    <textarea id="comment" class="form-control"></textarea>
+
+                </div>
+
+            </form>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <div class="form-group">
+
+                <label for="hours">hours</label>
+
+                <input type="text" id="hours" class='form-control' value=""></input>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="rate">rate</label>
+
+                <input type="text" id="rate" class='form-control' value=""></input>
+
+            </div>
+
+            <div class="form-group">
+
+                <label for="gst">gst</label>
+
+                <input type="text" id="gst" class='form-control' value=""></input>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-6">
+
+            <button type="submit" class="btn btn-default">create</button>
+
+        </div>
+
+    </div>
+
+}
