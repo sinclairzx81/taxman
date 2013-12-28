@@ -1,5 +1,4 @@
-﻿
-/*--------------------------------------------------------------------------
+﻿/*--------------------------------------------------------------------------
 
 The MIT License (MIT)
 
@@ -48,7 +47,7 @@ module providers {
             })
         }
 
-        public get_invoices(callback: ( invoices: repository.IInvoice[] )=>void ) : void {
+        public get_invoices(callback: ( invoices: repository.IInvoice[]) => void ) : void {
         
             this.repository.invoices.list(0, 1000, 'id', (err:any, invoices:  repository.IInvoice[]) => {
             
@@ -72,7 +71,7 @@ module providers {
             })
         }
 
-        public importData(json:string, callback:(results:any) => void ) : void { 
+        public import_data(json:string, callback:(results:any) => void ) : void { 
         
             var data = JSON.parse(json)
 
@@ -83,6 +82,11 @@ module providers {
                     callback(results)
                 })
             })
+        }
+
+        public export_data(callback: (json:string) => void) : void {
+        
+            
         }
     }
 }

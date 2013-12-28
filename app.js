@@ -34,7 +34,7 @@ setTimeout(function() {
 
     //fs.readFile('c:/input/invoices.json', 'utf8', function(err, data){
 
-    //    provider.importData(data, function(err, results) {
+    //    provider.import_data(data, function(err, results) {
 
     //        console.log(err)
 
