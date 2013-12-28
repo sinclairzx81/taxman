@@ -122,11 +122,13 @@ class Server {
             })
         })
 
-        this.app.post('/invoices/update/:id', authorize, (request, response) => {
+        this.app.post('/invoices/:id', authorize, express.urlencoded(), (request, response) => {
+
+            console.log(request.body)
 
             var context = { request: request }
 
-            response.render('./views/invoices/update.html', context)
+            response.redirect('/invoices')
         })
 
         //---------------------------------------------

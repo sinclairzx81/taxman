@@ -64,6 +64,8 @@
 
         <p class="lead">invoices go here.</p>
 
+        <a href="/invoices/create" class="btn btn-default">create</a>
+
     </div>
 
     <table class="table">
@@ -90,26 +92,26 @@
 
         <tbody>
         
-        @for(var i = 0; i < context.invoices.length; i++) {  
+            @for(var i = 0; i < context.invoices.length; i++) {  
             
-            @{ var invoice = context.invoices[i] }
+                @{ var invoice = context.invoices[i] }
 
-            <tr class="paid">
+                <tr class="paid">
 
-                <td><a href="/invoices/@(invoice.id)" target="_blank">@(invoice.id)</a></td>
+                    <td><a href="/invoices/@(invoice.id)">@(invoice.id)</a></td>
                 
-                <td>@(invoice.company)</td>
+                    <td>@(invoice.company)</td>
                 
-                <td>@(formatDate(invoice.startdate))</td>
+                    <td>@(formatDate(invoice.startdate))</td>
                 
-                <td>@(formatDate(invoice.enddate))</td>
+                    <td>@(formatDate(invoice.enddate))</td>
                 
-                <td>$@( amount(invoice) )</td>
+                    <td>$@( amount(invoice) )</td>
                 
-                <td>$@( amountgst(invoice) )</td>
+                    <td>$@( amountgst(invoice) )</td>
 
-            </tr>
-        }
+                </tr>
+            }
         
         </tbody>
 

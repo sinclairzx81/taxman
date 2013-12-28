@@ -43,11 +43,12 @@ module providers {
 
                 this.repository.invoices.schema(() => {
                     
+                    this.logger.log('provider: table initialization complete')
                 })
             })
         }
 
-        public get_invoices(callback: ( invoices: repository.IInvoice[]) => void ) : void {
+        public get_invoices (callback: ( invoices: repository.IInvoice[]) => void ) : void {
         
             this.repository.invoices.list(0, 1000, 'id', (err:any, invoices:  repository.IInvoice[]) => {
             
@@ -71,13 +72,19 @@ module providers {
             })
         }
 
+        //--------------------------------------------------------------
+        // data migration
+        //--------------------------------------------------------------
+
         public import_data(json:string, callback:(results:any) => void ) : void { 
-        
+            
+            this.logger.log('provider: importing data')
+
             var data = JSON.parse(json)
 
-            util.async.parallel((data:any, callback:any) => { this.repository.companies.add(data, callback) }, data.companies, (results) => {
+            util.async.series((data:any, callback:any) => { this.repository.companies.add(data, callback) }, data.companies, (results) => {
 
-                util.async.parallel((data:any, callback:any) => { this.repository.invoices.add(data, callback) }, data.invoices, (results) => {
+                util.async.series((data:any, callback:any) => { this.repository.invoices.add(data, callback) }, data.invoices, (results) => {
 
                     callback(results)
                 })
@@ -85,8 +92,29 @@ module providers {
         }
 
         public export_data(callback: (json:string) => void) : void {
-        
             
+            this.logger.log('provider: exporting data')
+
+            this.repository.companies.count((err, company_count) => {
+                
+                this.repository.companies.list(0, company_count, 'name', (error, companies) => {
+                
+                    this.repository.invoices.count((err, invoice_count) => {
+                    
+                        this.repository.invoices.list(0, invoice_count, 'id', (error, invoices) => {
+                
+                            var data = {
+
+                                companies : companies,
+
+                                invoices  : invoices
+                            }
+
+                            callback(JSON.stringify(data, null, 4))
+                        })
+                    })
+                })
+            })
         }
     }
 }

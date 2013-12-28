@@ -30,7 +30,8 @@ THE SOFTWARE.
 //-------------------------------------------------------
 // util
 //-------------------------------------------------------
-/// <reference path="util/Numbers.ts" />
+/// <reference path="util/Numeric.ts" />
+/// <reference path="util/Async.ts" />
 
 //-------------------------------------------------------
 // loggers

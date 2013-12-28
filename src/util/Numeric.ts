@@ -24,55 +24,14 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-module util.async {
+module util.numberic {
 
-    export function parallel (func: Function, inputs: any[], callback: (results:any[])=> void) : void {
+    export function padnumber(n, width, z) {
 
-        var complete = 0;
+        z = z || '0';
 
-        var results  = []
+        n = n + '';
 
-        for(var i = 0; i < inputs.length; i++) {
-            
-            func(inputs[i], (... args: any[]) => {
-                
-                results.push(args)
-
-                complete += 1
-
-                if(complete == inputs.length) {
-                
-                    callback(results)
-                }
-            })
-        }        
-    }
-
-    export function series (func: Function, inputs: any[], callback: (results: any[]) => void) : void {
-        
-        var copy     = inputs.slice(0)
-
-        var results  = []
-
-        var process  = () => {
-            
-           var input = copy.shift()
-           
-           func(input, (... args:any[]) => {
-
-               results.push(args)
-
-               if(copy.length == 0) {
-                    
-                   callback(results)
-
-                   return
-               }
-
-               process()
-           })
-        }
-
-        process()
+        return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
     }
 }

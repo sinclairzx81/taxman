@@ -30,16 +30,21 @@ var server     = new taxman.Server(app, provider, logger)
 
 setTimeout(function() {
 
-    //var fs = require('fs')
+    var fs = require('fs')
 
-    //fs.readFile('c:/input/invoices.json', 'utf8', function(err, data){
+    fs.readFile('c:/input/invoices.json', 'utf8', function(err, data){
 
-    //    provider.import_data(data, function(err, results) {
+        provider.import_data(data, function(err, results) {
 
-    //        console.log(err)
+            console.log(err)
 
-    //        console.log(results)
-    //    })
-    //})
+            console.log(results)
+        })
+    })
 
 }, 500)
+
+//provider.export_data(function(data) {
+    
+//    console.log(data)    
+//})
