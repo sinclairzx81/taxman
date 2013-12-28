@@ -26,6 +26,7 @@ THE SOFTWARE.
 
 module util.async {
 
+    /** runs the supplied function in parallel with the supplied inputs */
     export function parallel (func: Function, inputs: any[], callback: (results:any[])=> void) : void {
 
         var complete = 0;
@@ -48,6 +49,7 @@ module util.async {
         }        
     }
 
+    /** runs the supplied function in series with the supplied inputs */
     export function series (func: Function, inputs: any[], callback: (results: any[]) => void) : void {
         
         var copy     = inputs.slice(0)

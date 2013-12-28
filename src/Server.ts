@@ -126,8 +126,6 @@ class Server {
 
         this.app.post('/invoices/:id', authorize, express.urlencoded(), (request, response) => {
 
-            console.log(request.body)
-
             var invoice: repository.IInvoice = {
             
                 id          : request.body.id,
