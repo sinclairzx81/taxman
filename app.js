@@ -50,8 +50,5 @@ var server     = new taxman.Server(app, provider, logger)
 
 //}, 1500)
 
-//repository.companies.get('PX2 Limited', function(err, result){
 
-//    console.log(result)
-//})
 
