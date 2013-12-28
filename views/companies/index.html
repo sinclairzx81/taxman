@@ -9,4 +9,46 @@
         <p class="lead">companies go here.</p>
 
     </div>
+
+
+    <table class="table">
+        <thead>
+
+            <tr>
+
+                <td>name</td>
+
+                <td>email</td>
+
+                <td>phone</td>
+
+                <td>address</td>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @for(var i = 0; i < context.companies.length; i++) {
+
+            @{ var company = context.companies[i] }
+
+                <tr>
+
+                    <td><a href='/companies/@(company.slug)'>@(company.name    ? company.name    : '')</a></td>
+
+                    <td>@(company.email   ? company.email   : '')</td>
+
+                    <td>@(company.phone   ? company.phone   : '')</td>
+
+                    <td>@(company.address ? company.address : '')</td>
+
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+
 }

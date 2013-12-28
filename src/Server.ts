@@ -137,9 +137,12 @@ class Server {
 
         this.app.get('/companies', authorize, (request, response) => {
             
-            var context = { request: request }
+            this.provider.get_companies((companies) => {
+            
+                var context = { request: request, companies: companies }
 
-            response.render('./views/companies/index.html', context)
+                response.render('./views/companies/index.html', context)            
+            })
         })
 
         this.app.get('/companies/create', authorize, (request, response) => {
@@ -149,7 +152,14 @@ class Server {
             response.render('./views/companies/create.html', context)
         })
 
-        this.app.get('/companies/update/:id', authorize, (request, response) => {
+        this.app.get('/companies/:id', authorize, (request, response) => {
+            
+            var context = { request: request }
+
+            response.render('./views/companies/update.html', context)
+        })
+
+        this.app.post('/companies/:id', authorize, (request, response) => {
             
             var context = { request: request }
 

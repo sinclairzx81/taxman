@@ -37,13 +37,18 @@ setTimeout(function() {
         provider.import_data(data, function(results) {
 
             console.log(results)
+
+            provider.export_data(function(data) {
+    
+                fs.writeFile('c:/input/invoices2.json', data, function () {
+
+                    console.log('done')
+                })
+            })            
         })
     })
 
-    provider.export_data(function(data) {
-    
-        //console.log(data)    
-    })
+
 
 }, 1500)
 
