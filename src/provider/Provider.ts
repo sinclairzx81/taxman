@@ -36,9 +36,9 @@ module provider {
 
         constructor(private repository: repository.IRepository, private logger: loggers.ILogger) {
 
-            this.logger.log('provider: company schema')
+            this.logger.log('provider: client schema')
 
-            this.repository.companies.schema(() => {
+            this.repository.clients.schema(() => {
                 
                 this.logger.log('provider: invoice schema')
 
@@ -128,27 +128,27 @@ module provider {
 
             this.logger.log('provider: validating invoice')
 
-            this.repository.companies.get(request.invoice.company, (error, company) => {
+            this.repository.clients.get(request.invoice.client, (error, client) => {
             
                 if(error) {
                     
-                    this.logger.log('provider: there was an error finding the company')
+                    this.logger.log('provider: there was an error finding the client')
 
                     callback({success: false, errors: [error.toString()]})
 
                     return
                 }
 
-                if(!company) {
+                if(!client) {
                     
-                    this.logger.log('provider: company does not exist')
+                    this.logger.log('provider: client does not exist')
 
-                    callback({success: false, errors: ['company not found']})
+                    callback({success: false, errors: ['client not found']})
 
                     return
                 }
 
-                this.repository.invoices.get(request.invoice.invoiceid, (error, company) => {
+                this.repository.invoices.get(request.invoice.invoiceid, (error, client) => {
 
                     if(error) {
                     
@@ -186,22 +186,22 @@ module provider {
 
             this.logger.log('provider: validating invoice')
 
-            this.repository.companies.get(request.invoice.company, (error, company) => {
+            this.repository.clients.get(request.invoice.client, (error, client) => {
             
                 if(error) {
                     
-                    this.logger.log('provider: there was an error finding the company')
+                    this.logger.log('provider: there was an error finding the client')
 
                     callback({success: false, errors: [error.toString()]})
 
                     return
                 }
 
-                if(!company) {
+                if(!client) {
                     
-                    this.logger.log('provider: company does not exist')
+                    this.logger.log('provider: client does not exist')
 
-                    callback({success: false, errors: ['company not found']})
+                    callback({success: false, errors: ['client not found']})
 
                     return
                 }
@@ -249,9 +249,9 @@ module provider {
         
         public getCompanies(request: provider.GetCompaniesRequest, callback: (response: provider.GetCompaniesResponse) => void) : void {
 
-            this.logger.log('provider: get companies')
+            this.logger.log('provider: get clients')
 
-            this.repository.companies.list(request.skip, request.take, request.order, (error, companies) => {
+            this.repository.clients.list(request.skip, request.take, request.order, (error, clients) => {
             
                 if(error) {
                     
@@ -262,7 +262,7 @@ module provider {
                     return
                 }
 
-                callback({success: true, errors: null, companies: companies})
+                callback({success: true, errors: null, clients: clients})
             })
         }
 
@@ -300,9 +300,9 @@ module provider {
                 data.invoices[i].enddate   = new Date(data.invoices[i].enddate)
             }
 
-            this.logger.log('provider: importing companies')
+            this.logger.log('provider: importing clients')
 
-            util.async.series((data:any, callback:any) => { this.repository.companies.add(data, callback) }, data.companies, (errors) => {
+            util.async.series((data:any, callback:any) => { this.repository.clients.add(data, callback) }, data.clients, (errors) => {
 
                 var success = 0
 
@@ -320,7 +320,7 @@ module provider {
                     failed += 1
                 }
 
-                this.logger.log('provider: company import result success: ' + success.toString() + ' failed: ' + failed.toString())
+                this.logger.log('provider: client import result success: ' + success.toString() + ' failed: ' + failed.toString())
 
                 if(failed > 0) {
                 
@@ -350,7 +350,7 @@ module provider {
                         failed += 1
                     }
 
-                    this.logger.log('provider: company import result success: ' + success.toString() + ' failed: ' + failed.toString())
+                    this.logger.log('provider: client import result success: ' + success.toString() + ' failed: ' + failed.toString())
 
                     if(failed > 0) {
                     
@@ -372,9 +372,9 @@ module provider {
             
             this.logger.log('provider: exporting data')
 
-            this.logger.log('provider: counting companies')
+            this.logger.log('provider: counting clients')
 
-            this.repository.companies.count((error, company_count) => {
+            this.repository.clients.count((error, client_count) => {
                 
                 if(error) {
                 
@@ -385,11 +385,11 @@ module provider {
                     return
                 }
 
-                this.logger.log('provider: counted ' + company_count.toString() + ' companies')
+                this.logger.log('provider: counted ' + client_count.toString() + ' clients')
 
-                this.logger.log('provider: listing companies')
+                this.logger.log('provider: listing clients')
 
-                this.repository.companies.list(0, company_count, {column: 'name', direction: 'desc'}, (error, companies) => {
+                this.repository.clients.list(0, client_count, {column: 'name', direction: 'desc'}, (error, clients) => {
 
                     if(error) {
                 
@@ -430,7 +430,7 @@ module provider {
 
                             var data = {
 
-                                companies : companies,
+                                clients : clients,
 
                                 invoices  : invoices
                             }

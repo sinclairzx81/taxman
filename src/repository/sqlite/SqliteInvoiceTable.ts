@@ -43,7 +43,7 @@ module repository {
 
             var sql = 'create table if not exists invoice  ( invoiceid   TEXT,' +
 
-                                                          '  company     TEXT,' + 
+                                                          '  client      TEXT,' + 
 
                                                           '  created     NUMERIC,'     +  
             
@@ -117,9 +117,9 @@ module repository {
 
             var paid = record.paid ? 1 : 0
 
-            var sql  = 'insert into invoice (invoiceid, company, created, startdate, enddate, hours, rate, gstrate, sent, paid, comment ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            var sql  = 'insert into invoice (invoiceid, client, created, startdate, enddate, hours, rate, gstrate, sent, paid, comment ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
 
-            this.db.run(sql, record.invoiceid, record.company, record.created, record.startdate, record.enddate, record.hours, record.rate, record.gstrate, sent, paid, record.comment, (error) => {
+            this.db.run(sql, record.invoiceid, record.client, record.created, record.startdate, record.enddate, record.hours, record.rate, record.gstrate, sent, paid, record.comment, (error) => {
                 
                 this.logger.log('sqlite: invoice add complete')
 
@@ -138,9 +138,9 @@ module repository {
 
             var paid = record.paid ? 1 : 0
 
-            var sql = 'update invoice set company = ?, created = ?, startdate = ?, enddate = ?, hours = ?, rate = ?, gstrate = ?, sent = ?, paid = ?, comment = ? where invoiceid = ?'
+            var sql = 'update invoice set client = ?, created = ?, startdate = ?, enddate = ?, hours = ?, rate = ?, gstrate = ?, sent = ?, paid = ?, comment = ? where invoiceid = ?'
 
-            this.db.run(sql, record.company, record.created, record.startdate, record.enddate, record.hours, record.rate, record.gstrate, sent, paid, record.comment, record.invoiceid, (error) => {
+            this.db.run(sql, record.client, record.created, record.startdate, record.enddate, record.hours, record.rate, record.gstrate, sent, paid, record.comment, record.invoiceid, (error) => {
                 
                 this.logger.log('sqlite: invoice update complete')
 

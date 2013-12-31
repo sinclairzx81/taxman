@@ -24,7 +24,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-/// <reference path="../repository/ICompany.ts" />
+/// <reference path="../repository/IClient.ts" />
 /// <reference path="../repository/IInvoice.ts" />
 /// <reference path="../util/Validation.ts" />
 
@@ -33,29 +33,27 @@ module schema {
     /** front side validation of incoming data */
     export class Schema {
 
-        constructor() {
-    
-        
+        constructor() {        
         }
         
-        /** attempts to validate the integrity of a incoming company */
-        public validateCompany (company: repository.ICompany, callback: (errors: string[]) => void) : void {
+        /** attempts to validate the integrity of a incoming client */
+        public validateClient (client: repository.IClient, callback: (errors: string[]) => void) : void {
     
             var errors = []
 
-            if(!validation.typecheck.isString(company.name))    errors.push('schema: company.name is not a string')  
+            if(!validation.typecheck.isString(client.name))    errors.push('schema: client.name is not a string')  
 
-            if(!validation.typecheck.isString(company.slug))    errors.push('schema: company.slug is not a string')  
+            if(!validation.typecheck.isString(client.slug))    errors.push('schema: client.slug is not a string')  
 
-            if(!validation.typecheck.isString(company.email))   errors.push('schema: company.email is not a string')  
+            if(!validation.typecheck.isString(client.email))   errors.push('schema: client.email is not a string')  
 
-            if(!validation.typecheck.isString(company.phone))   errors.push('schema: company.phone is not a string')  
+            if(!validation.typecheck.isString(client.phone))   errors.push('schema: client.phone is not a string')  
 
-            if(!validation.typecheck.isString(company.website)) errors.push('schema: company.website is not a string')  
+            if(!validation.typecheck.isString(client.website)) errors.push('schema: client.website is not a string')  
 
-            if(!validation.typecheck.isString(company.address)) errors.push('schema: company.address is not a string')  
+            if(!validation.typecheck.isString(client.address)) errors.push('schema: client.address is not a string')  
 
-            if(!validation.typecheck.isString(company.comment)) errors.push('schema: company.comment is not a string')   
+            if(!validation.typecheck.isString(client.comment)) errors.push('schema: client.comment is not a string')   
 
             callback(errors)
         }
@@ -67,7 +65,7 @@ module schema {
         
             if(!validation.typecheck.isString(invoice.invoiceid)) errors.push('schema: invoice.invoiceid is not a string')    
 
-            if(!validation.typecheck.isString(invoice.company))   errors.push('schema: invoice.company is not a string')    
+            if(!validation.typecheck.isString(invoice.client))    errors.push('schema: invoice.client is not a string')    
 
             if(!validation.typecheck.isString(invoice.created)) {
             
@@ -111,6 +109,5 @@ module schema {
             callback(errors)
         }
     }
-
 }
 

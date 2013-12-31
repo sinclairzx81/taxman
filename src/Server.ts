@@ -108,25 +108,25 @@ class Server {
             response.render('./views/invoices/update.html', context)
         })
 
-        this.app.get('/companies', authorize, (request, response) => {
+        this.app.get('/clients', authorize, (request, response) => {
             
             var context = {request: request}
 
-            response.render('./views/companies/index.html', context)
+            response.render('./views/clients/index.html', context)
         })
 
-        this.app.get('/companies/create', authorize, (request, response) => {
+        this.app.get('/clients/create', authorize, (request, response) => {
             
             var context = { request: request }
                         
-            response.render('./views/companies/create.html', context)
+            response.render('./views/clients/create.html', context)
         })
 
-        this.app.get('/companies/:companyid', authorize, (request, response) => {
+        this.app.get('/clients/:slug', authorize, (request, response) => {
             
-            var context = { request: request, companyname: request.params.companyid }
+            var context = { request: request, slug: request.params.slug }
 
-            response.render('./views/companies/update.html', context)
+            response.render('./views/clients/update.html', context)
         })
         
         this.app.get('/settings', authorize, (request, response) => {
@@ -151,7 +151,7 @@ class Server {
             next()
         }
 
-        this.app.post('/api/companies', authorize, express.json(), (request, response) => {
+        this.app.post('/api/clients', authorize, express.json(), (request, response) => {
         
             var input: provider.GetCompaniesRequest = {
 
@@ -168,25 +168,26 @@ class Server {
             })
         })
 
-        this.app.get('/api/companies/:companyname', authorize, (request, response) => {
+        this.app.get('/api/clients/:slug', authorize, (request, response) => {
         
             
         })
 
-        this.app.post('/api/companies:companyname', authorize, (request, response) => {
+        this.app.post('/api/clients:slug', authorize, (request, response) => {
         
             
         })
 
-        this.app.put('/api/companies/:companyname', authorize, (request, response) => {
+        this.app.put('/api/clients/:slug', authorize, (request, response) => {
         
             
         })
 
-        this.app.del('/api/companies/:companyname', authorize, (request, response) => {
+        this.app.del('/api/clients/:slug', authorize, (request, response) => {
         
             
         })
+
 
         this.app.post('/api/invoices', authorize, express.json(), (request, response) => {
             
@@ -247,7 +248,7 @@ class Server {
                     
                         invoiceid   : request.body.invoiceid,
 
-                        company     : request.body.company,
+                        client      : request.body.client,
 
                         created     : new Date(request.body.created),
 
@@ -294,7 +295,7 @@ class Server {
                     
                         invoiceid   : request.body.invoiceid,
 
-                        company     : request.body.company,
+                        client      : request.body.client,
 
                         created     : new Date(request.body.created),
 

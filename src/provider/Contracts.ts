@@ -24,7 +24,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-/// <reference path="../repository/ICompany.ts" />
+/// <reference path="../repository/IClient.ts" />
 /// <reference path="../repository/IInvoice.ts" />
 
 module provider {
@@ -157,7 +157,7 @@ module provider {
 
     export interface GetCompaniesResponse extends IResponse {
 
-        companies? : repository.ICompany []
+        clients? : repository.IClient []
     }
 
     //------------------------------------
@@ -170,7 +170,7 @@ module provider {
 
     export interface GetCompanyResponse extends IResponse  {
 
-        company? : repository.ICompany
+        client? : repository.IClient
     }
 
     //------------------------------------
@@ -179,7 +179,7 @@ module provider {
 
     export interface UpdateCompanyRequest extends IRequest {
     
-        company : repository.ICompany
+        client : repository.IClient
     }
 
     export interface UpdateCompanyResponse extends IResponse  {
@@ -193,7 +193,7 @@ module provider {
 
     export interface DeleteCompanyRequest {
     
-        company : repository.ICompany
+        client : repository.IClient
     }
 
     export interface DeleteCompanyResponse extends IResponse  {

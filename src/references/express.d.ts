@@ -1293,7 +1293,7 @@ declare module "express" {
          *
          * ## Session#cookie
          *
-         *  Each session has a unique cookie object accompany it. This allows
+         *  Each session has a unique cookie object acclient it. This allows
          *  you to alter the session cookie per visitor. For example we can
          *  set `req.session.cookie.expires` to `false` to enable the cookie
          *  to remain for only the duration of the user-agent.

@@ -1,0 +1,60 @@
+﻿@import '../layout.html'
+
+@section title {
+
+    <title>taxman: clients</title>
+}
+
+@section container {
+
+    <div class="starter-template">
+
+        <h1>clients</h1>
+
+        <p class="lead">clients go here.</p>
+
+    </div>
+
+
+    <table class="table">
+
+        <thead>
+
+            <tr>
+
+                <td>name</td>
+
+                <td>email</td>
+
+                <td>phone</td>
+
+                <td>address</td>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @for(var i = 0; i < context.clients.length; i++) {
+
+            @{ var client = context.clients[i] }
+
+                <tr>
+
+                    <td><a href='/clients/@(client.slug)'>@(client.name    ? client.name    : '')</a></td>
+
+                    <td>@(client.email   ? client.email   : '')</td>
+
+                    <td>@(client.phone   ? client.phone   : '')</td>
+
+                    <td>@(client.address ? client.address : '')</td>
+
+                </tr>
+            }
+
+        </tbody>
+    </table>
+
+
+}

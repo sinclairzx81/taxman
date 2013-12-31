@@ -26,14 +26,28 @@ THE SOFTWARE.
 
 module repository {
 
-    /** common interface for a company */
-    export interface ICompany {
+    /** common interface for a client */
+    export interface IClient {
+
+        /** simple name of this client */
         name        : string
+        
+        /** slug reference for this client */
         slug        : string
+        
+        /** email address for this client */
         email       : string
+        
+        /** phone for this client */
         phone       : string
+        
+        /** website for this client */
         website     : string
+        
+        /** address for this client */
         address     : string
+        
+        /** any comments associated with this client */
         comment     : string
     }
 }

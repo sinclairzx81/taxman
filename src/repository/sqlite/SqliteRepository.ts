@@ -28,7 +28,7 @@ THE SOFTWARE.
 /// <reference path="../../loggers/ILogger.ts" />
 /// <reference path="../IRepository.ts" />
 /// <reference path="../ITable.ts" />
-/// <reference path="SqliteCompanyTable.ts" />
+/// <reference path="SqliteClientTable.ts" />
 /// <reference path="SqliteInvoiceTable.ts" />
 
 module repository {
@@ -37,7 +37,7 @@ module repository {
         
         public db        : any
 
-        public companies : ITable<repository.ICompany>;
+        public clients   : ITable<repository.IClient>;
 
         public invoices  : ITable<repository.IInvoice>;
 
@@ -45,7 +45,7 @@ module repository {
 
             this.db        = new sqlite3.Database(this.filename)
 
-            this.companies = new repository.SqliteCompanyTable(this.db, this.logger)
+            this.clients   = new repository.SqliteClientTable (this.db, this.logger)
 
             this.invoices  = new repository.SqliteInvoiceTable(this.db, this.logger)
         }     

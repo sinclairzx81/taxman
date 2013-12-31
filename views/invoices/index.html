@@ -2,13 +2,12 @@
 
 @section title {
 
-    <title>invoices</title>
+    <title>taxman: invoices</title>
 }
 
 @section scripts {
 
     <script type="text/javascript">
-
 
         //------------------------------------------------------
         // writes the form
@@ -37,7 +36,7 @@
 
                 buffer.push('    <td><a href="/invoices/' + invoice.invoiceid + '">' + invoice.invoiceid + '</a></td>')
 
-                buffer.push('    <td>' + invoice.company + '</td>')
+                buffer.push('    <td>' + invoice.client + '</td>')
 
                 buffer.push('    <td>' + invoice.created + '</td>')
 
@@ -140,7 +139,7 @@
 
                 <td>number</td>
 
-                <td>company</td>
+                <td>client</td>
 
                 <td>created</td>
 

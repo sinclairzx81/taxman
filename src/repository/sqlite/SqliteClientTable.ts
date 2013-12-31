@@ -27,11 +27,11 @@ THE SOFTWARE.
 /// <reference path="../../references.ts" />
 /// <reference path="../../loggers/ILogger.ts" />
 /// <reference path="../ITable.ts" />
-/// <reference path="../ICompany.ts" />
+/// <reference path="../IClient.ts" />
 
 module repository {
 
-    export class SqliteCompanyTable implements repository.ITable<repository.ICompany> {
+    export class SqliteClientTable implements repository.ITable<repository.IClient> {
 
         constructor(public db: any, public logger: loggers.ILogger) {
         
@@ -39,7 +39,7 @@ module repository {
 
         public schema (callback?: (error: any) => void) : void {
 
-            var sql = 'create table if not exists company ( name        TEXT,' + 
+            var sql = 'create table if not exists client  ( name        TEXT,' + 
             
                                                           ' slug        TEXT,' + 
             
@@ -66,7 +66,7 @@ module repository {
 
         public count  (callback?:(error: any, count:number) => void) : void {
         
-            var sql = 'select count(*) from company'
+            var sql = 'select count(*) from client'
 
             this.db.get(sql, (error, row) => {
                 
@@ -77,9 +77,9 @@ module repository {
             })              
         }
 
-        public add    (record: repository.ICompany, callback?: (error:any) => void) : void {
+        public add    (record: repository.IClient, callback?: (error:any) => void) : void {
             
-            var sql = 'insert into company (name, slug, email, phone, website, address, comment) values (?, ?, ?, ?, ?, ?, ?)'
+            var sql = 'insert into client (name, slug, email, phone, website, address, comment) values (?, ?, ?, ?, ?, ?, ?)'
             
             this.db.run(sql, record.name, record.slug, record.email, record.phone, record.website, record.address, record.comment, (error) => {
                 
@@ -90,9 +90,9 @@ module repository {
             })        
         }
 
-        public update (record:repository.ICompany,  callback?:(error:any) => void) : void {
+        public update (record:repository.IClient,  callback?:(error:any) => void) : void {
         
-            var sql = 'update company set slug = ?, email = ?, phone = ?, website = ?, address = ?, comment = ? where name = ?'
+            var sql = 'update client set slug = ?, email = ?, phone = ?, website = ?, address = ?, comment = ? where name = ?'
 
             this.db.run(sql, record.slug, record.name, record.email, record.phone, record.website, record.address, record.comment, record.name, (error) => {
                 
@@ -105,7 +105,7 @@ module repository {
         
         public remove (id:string, callback?:(error:any) => void) : void {
         
-            var sql = 'delete from company where name = ?'
+            var sql = 'delete from client where name = ?'
 
             this.db.run(sql, id, (error, row) => {
                 
@@ -116,9 +116,9 @@ module repository {
             })           
         }
         
-        public get    (id:string, callback?:(error:any, record: repository.ICompany) => void) : void {
+        public get    (id:string, callback?:(error:any, record: repository.IClient) => void) : void {
         
-            var sql = 'select * from company where name = ?'
+            var sql = 'select * from client where name = ?'
 
             this.db.get(sql, id, (error, row) => {
                 
@@ -129,11 +129,11 @@ module repository {
             })    
         }
         
-        public list   (skip: number, take: number, order?: {column:string; direction:string;}, callback?:(error:any, items: repository.ICompany[]) => void) : void {
+        public list   (skip: number, take: number, order?: {column:string; direction:string;}, callback?:(error:any, items: repository.IClient[]) => void) : void {
             
             order = order || { column: 'name', direction: 'asc' }
 
-            var sql = 'select * from company order by ' + this.makesafe(order.column) + ' ' + this.makesafe(order.direction) +  ' limit ?, ?'
+            var sql = 'select * from client order by ' + this.makesafe(order.column) + ' ' + this.makesafe(order.direction) +  ' limit ?, ?'
 
             this.db.all(sql, skip, take, (error, rows) => {
                 
@@ -151,21 +151,21 @@ module repository {
                         rows[i] = this.parse(rows[i])
                     }
 
-                    callback(error, <repository.ICompany[]>rows)
+                    callback(error, <repository.IClient[]>rows)
                 }
             })               
         }
         
-        public find (query: string, skip: number, take: number, order?: {column:string; direction:string;}, callback?:(error:any, items: repository.ICompany[]) => void) : void {
+        public find (query: string, skip: number, take: number, order?: {column:string; direction:string;}, callback?:(error:any, items: repository.IClient[]) => void) : void {
         
             order = order || { column: 'name', direction: 'asc' }
 
             throw Error('not implemented')
         }
 
-        private parse(record: any) : repository.ICompany {
+        private parse(record: any) : repository.IClient {
         
-            return <repository.ICompany>record
+            return <repository.IClient>record
         }
 
         private makesafe(val:string) : string {

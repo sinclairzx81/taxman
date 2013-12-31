@@ -1,5 +1,10 @@
 ﻿@import '../layout.html'
 
+@section title {
+
+    <title>taxman: create invoice</title>
+}
+
 @section scripts {
 
     <script type="text/javascript">
@@ -24,9 +29,9 @@
 
         var write_form = function(model) {
 
-            model.companies.forEach(function(company) {
+            model.clients.forEach(function(client) {
                 
-                $('#company').append('<option>' + company.name + '</option>')
+                $('#client').append('<option>' + client.name + '</option>')
             })
 
             //-----------------------------------
@@ -70,7 +75,7 @@
 
                 invoiceid   : $('#invoiceid').val(),
 
-                company     : $('#company').val(),
+                client     : $('#client').val(),
 
                 created     : (new Date().toISOString()),
 
@@ -100,9 +105,9 @@
 
             var model = {}
 
-            http.json.post('/api/companies', null, {skip: 0, take: 1000, order: {column: 'name', direction: 'desc'}}, function (response) {
+            http.json.post('/api/clients', null, {skip: 0, take: 1000, order: {column: 'name', direction: 'desc'}}, function (response) {
 
-                model.companies = response.companies
+                model.clients = response.clients
 
                 callback(model)
             })  
@@ -185,9 +190,9 @@
 
         <div class="form-group">
 
-            <label for='company'>company</label>
+            <label for='client'>client</label>
             
-            <select id='company' class='form-control selectpicker'></select>
+            <select id='client' class='form-control selectpicker'></select>
 
         </div>
 

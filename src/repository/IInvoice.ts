@@ -28,16 +28,38 @@ module repository {
 
     /** common interface for a invoice */
     export interface IInvoice {
+
+        /** the unique (user defined) id for this invoice */
         invoiceid   : string
-        company     : string
+        
+        /** the client for which this invoice applies (bound on client.name) */
+        client      : string
+        
+        /** when this invoice was created */
         created     : Date
+        
+        /** the start period in which this invoice applies */
         startdate   : Date
+        
+        /** the end period in which this invoice applies */
         enddate     : Date
+        
+        /** the recorded hours given to this invoice */
         hours       : number
+        
+        /** the rate for this invoice */
         rate        : number
+        
+        /** the current gst rate for this invoice */
         gstrate     : number
+
+        /** was this invoice sent */
+        sent        : boolean        
+        
+        /** was this invoice paid */
         paid        : boolean
-        sent        : boolean
+        
+        /** any comments associated with this invoice */
         comment     : string
     }
 }

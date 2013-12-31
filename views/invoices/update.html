@@ -1,5 +1,10 @@
 ﻿@import '../layout.html'
 
+@section title {
+
+    <title>taxman: update invoice</title>
+}
+
 @section scripts {
 
     <script type="text/javascript">
@@ -24,9 +29,9 @@
 
         var write_form = function(model) {
 
-            model.companies.forEach(function(company) {
+            model.clients.forEach(function(client) {
                 
-                $('#company').append('<option>' + company.name + '</option>')
+                $('#client').append('<option>' + client.name + '</option>')
             })
 
             var created   = moment(model.invoice.created).format('DD-MM-YYYY')
@@ -37,7 +42,7 @@
 
             $('#invoiceid').val(model.invoice.invoiceid)
 
-            $('#company').val(model.invoice.company)
+            $('#client').val(model.invoice.client)
 
             $('#created').val(created)
 
@@ -97,7 +102,7 @@
 
                 invoiceid   : $('#invoiceid').val(),
 
-                company     : $('#company').val(),
+                client     : $('#client').val(),
 
                 created     : created.toDate().toISOString(),
 
@@ -129,9 +134,9 @@
 
             var model = {}
 
-            http.json.post('/api/companies', null, {skip: 0, take: 1000, order: {column: 'name', direction: 'desc'}}, function (response) {
+            http.json.post('/api/clients', null, {skip: 0, take: 1000, order: {column: 'name', direction: 'desc'}}, function (response) {
 
-                model.companies = response.companies
+                model.clients = response.clients
 
                 http.json.get('/api/invoices/@(context.invoiceid)', null, function (response) {
 
@@ -214,9 +219,9 @@
 
         <div class="form-group">
 
-            <label for='company'>company</label>
+            <label for='client'>client</label>
             
-            <select id='company' class='form-control selectpicker'></select>
+            <select id='client' class='form-control selectpicker'></select>
 
         </div>
 

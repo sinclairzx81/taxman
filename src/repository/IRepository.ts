@@ -25,7 +25,7 @@ THE SOFTWARE.
 ---------------------------------------------------------------------------*/
 
 /// <reference path="ITable.ts" />
-/// <reference path="ICompany.ts" />
+/// <reference path="IClient.ts" />
 /// <reference path="IInvoice.ts" />
 
 module repository {
@@ -33,7 +33,7 @@ module repository {
     /** common base interface for all repository types */
     export interface IRepository {
 
-        companies : ITable<repository.ICompany>;
+        clients   : ITable<repository.IClient>;
 
         invoices  : ITable<repository.IInvoice>;        
     }
