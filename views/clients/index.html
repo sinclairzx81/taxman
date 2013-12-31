@@ -5,16 +5,79 @@
     <title>taxman: clients</title>
 }
 
+@section scripts {
+
+    <script type="text/javascript">
+
+        //------------------------------------------------------
+        // write form
+        //------------------------------------------------------
+
+        var write_form = function(model) {
+
+            model.clients.forEach(function(client) {
+
+                var buffer = []
+                
+                buffer.push('<tr>')
+                
+                buffer.push('    <td><a href="/clients/' + client.slug + '">' + client.name + '</a></td>')
+
+                buffer.push('    <td>' + client.email + '</td>')
+
+                buffer.push('    <td>' + client.phone + '</td>')
+
+                buffer.push('    <td>' + client.address + '</td>')
+
+                buffer.push('</tr>')
+                
+                $('#clients').append(buffer.join(''))
+            })
+        }
+
+        //------------------------------------------------------
+        // load model
+        //------------------------------------------------------
+
+        var load_model = function(callback) {
+            
+            var model = {}
+
+            var input = {skip:0, take:1000, order: {column: 'name', direction: 'desc'}}
+
+            http.json.post('/api/clients', null, input, function (response) {
+
+                model.clients = response.clients
+
+                callback(model)
+            })
+        }
+
+        //------------------------------------------------------
+        // setup
+        //------------------------------------------------------
+
+        $(document).ready(function () {
+
+            load_model(function(model) {
+
+                write_form(model)
+                
+            })
+        })
+
+    </script>
+}
+
 @section container {
 
     <div class="starter-template">
 
         <h1>clients</h1>
 
-        <p class="lead">clients go here.</p>
+        <p><a href="/clients/create" class="btn btn-default">create</a></p>
 
     </div>
-
 
     <table class="table">
 
@@ -22,39 +85,23 @@
 
             <tr>
 
-                <td>name</td>
+                <th>name</th>
 
-                <td>email</td>
+                <th>email</th>
 
-                <td>phone</td>
+                <th>phone</th>
 
-                <td>address</td>
+                <th>address</th>
 
             </tr>
 
         </thead>
 
-        <tbody>
+        <tbody id="clients">
 
-            @for(var i = 0; i < context.clients.length; i++) {
 
-            @{ var client = context.clients[i] }
-
-                <tr>
-
-                    <td><a href='/clients/@(client.slug)'>@(client.name    ? client.name    : '')</a></td>
-
-                    <td>@(client.email   ? client.email   : '')</td>
-
-                    <td>@(client.phone   ? client.phone   : '')</td>
-
-                    <td>@(client.address ? client.address : '')</td>
-
-                </tr>
-            }
 
         </tbody>
+
     </table>
-
-
 }

@@ -19,20 +19,22 @@
 
                 var buffer = []
 
-                if(invoice.sent == false && invoice.paid == false) {
+                //if(invoice.sent == false && invoice.paid == false) {
                 
-                    buffer.push('<tr>')
-                }
+                //    buffer.push('<tr>')
+                //}
 
-                if((invoice.sent == true && invoice.paid == false) ||  (invoice.sent == false && invoice.paid == true)) {
+                //if((invoice.sent == true && invoice.paid == false) ||  (invoice.sent == false && invoice.paid == true)) {
                 
-                    buffer.push('<tr class="warning">')
-                }
+                //    buffer.push('<tr class="warning">')
+                //}
 
-                if(invoice.sent == true && invoice.paid == true) {
+                //if(invoice.sent == true && invoice.paid == true) {
                 
-                    buffer.push('<tr class="success">')
-                }
+                //    buffer.push('<tr class="success">')
+                //}
+
+                buffer.push('<tr>')
 
                 buffer.push('    <td><a href="/invoices/' + invoice.invoiceid + '">' + invoice.invoiceid + '</a></td>')
 
@@ -75,7 +77,7 @@
         }
 
         //------------------------------------------------------
-        // loads invoices from the server
+        // loads model
         //------------------------------------------------------
 
         var load_model = function(callback) {
@@ -137,19 +139,19 @@
 
             <tr>
 
-                <td>number</td>
+                <th>number</th>
 
-                <td>client</td>
+                <th>client</th>
 
-                <td>created</td>
+                <th>created</th>
 
-                <td>start date</td>
+                <th>start date</th>
 
-                <td>end end</td>
+                <th>end end</th>
 
-                <td>amount</td>
+                <th>amount</th>
 
-                <td>amount + gst</td>
+                <th>including gst</th>
 
             </tr>
 

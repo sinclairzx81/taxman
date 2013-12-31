@@ -2,10 +2,221 @@
 
 @section title {
 
-    <title>taxman: update clients</title>
+    <title>taxman: update client</title>
+}
+
+@section scripts {
+
+    <script type="text/javascript">
+
+        //---------------------------------------------------
+        // write errors
+        //---------------------------------------------------
+
+        var write_errors = function(errors) {
+            
+            $('#errors').html('')
+
+            errors.forEach(function(error) {
+                
+                $('#errors').append('<div class="alert alert-danger">' + error + '</div>')
+            })
+        }
+
+        //---------------------------------------------------
+        // write form
+        //---------------------------------------------------
+
+        var write_form = function(model) {
+
+            $('#name').val(model.client.name)
+
+            $('#slug').val(model.client.slug)
+
+            $('#email').val(model.client.email)
+
+            $('#phone').val(model.client.phone)
+
+            $('#website').val(model.client.website)
+
+            $('#address').val(model.client.address)
+
+            $('#comment').val(model.client.comment)
+        }
+        
+        //---------------------------------------------------
+        // read form
+        //---------------------------------------------------
+
+        var read_form = function(invoice) {
+            
+            return {
+
+                name    : $('#name').val(),
+
+                slug    : $('#slug').val(),
+
+                email   : $('#email').val(),
+
+                phone   : $('#phone').val(),
+
+                website : $('#website').val(),
+
+                address : $('#address').val(),
+
+                comment : $('#comment').val(),
+            }
+        }
+
+        //---------------------------------------------------
+        // read form
+        //---------------------------------------------------
+
+        var load_model = function(callback) {
+
+            var model = {}
+
+            http.json.get('/api/clients/@(context.slug)', null, function (response) {
+
+                model.invoice = response.invoice
+
+                callback(model)
+            })
+        }
+
+        //---------------------------------------------------
+        // read form
+        //---------------------------------------------------
+        
+        var update_client = function() {
+
+            var invoice = read_form()
+
+            http.json.put('/api/clients/@(context.slug)', null, invoice, function(result) {
+                
+                if(result.success) {
+                    
+                    window.location = '/clients'
+
+                    return
+                }
+
+                write_errors(result.errors)
+            })            
+        }
+
+        //---------------------------------------------------
+        // delete invoice
+        //---------------------------------------------------
+        
+        var delete_client = function() {
+
+            if(confirm('are you sure you want to delete this client?')) {
+
+                http.json.del('/api/clients/@(context.slug)', null, null, function(result) {
+
+                    window.location = '/clients'
+                }) 
+            }
+        }
+
+        //---------------------------------------------------
+        // cancel invoice
+        //---------------------------------------------------
+        
+        var cancel_client = function() {
+        
+            window.location = '/clients'
+        }
+
+        $(document).ready(function () {
+
+            load_model(function(model) {
+                
+                write_form(model)   
+            })
+        })
+
+    </script>
 }
 
 @section container {
-
     
+    <div class="starter-template">
+
+        <h1>update client</h1>
+
+    </div>
+    
+    <div id="errors">
+
+    </div>
+
+    <div class="col-md-6" data-bind="">
+
+<!--                name    : $('#name').val(),
+
+                slug    : $('#slug').val(),
+
+                email   : $('#email').val(),
+
+                phone   : $('#phone').val(),
+
+                website : $('#website').val(),
+
+                address : $('#address').val(),
+
+                comment : $('#comment').val(),-->
+
+        <div class="form-group">
+
+            <label for='name'>name</label>
+            
+            <input id="name" type='text' class='form-control' />
+
+        </div>
+
+        <div class="form-group">
+
+            <label for='email'>email</label>
+            
+            <input id="email" type='text' class='form-control' />
+
+        </div>
+                    
+        <div class="form-group">
+
+            <label for='phone'>phone</label>
+            
+            <input id="phone" type='text' class='form-control' />
+
+        </div>
+
+        <div class="form-group">
+
+            <label for='address'>address</label>
+            
+            <textarea id='address' class='form-control'></textarea>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for='comment'>comment</label>
+            
+            <textarea id='comment' class='form-control'></textarea>
+
+        </div>
+
+        <div class="form-group">
+
+            <button type="submit" class="btn btn-default" onclick="update_client()">update</button>
+
+            <button type="submit" class="btn btn-default" onclick="delete_client()">delete</button>
+
+            <button type="submit" class="btn btn-default" onclick="cancel_client()">cancel</button>
+        
+        </div>
+
+    </div>
 }

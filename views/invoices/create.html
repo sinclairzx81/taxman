@@ -35,21 +35,24 @@
             })
 
             //-----------------------------------
-            // lastinvoice
+            // last invoice
             //-----------------------------------
 
-            $('#invoiceid').val(model.lastinvoice.invoiceid + '_')
+            if(model.lastinvoice) {
 
-            $('#client').val(model.lastinvoice.client)
+                $('#invoiceid').val(model.lastinvoice.invoiceid + '_')
 
-            $('#rate').val(model.lastinvoice.rate)
+                $('#client').val(model.lastinvoice.client)
 
-            $('#gstrate').val(model.lastinvoice.gstrate)
+                $('#rate').val(model.lastinvoice.rate)
 
-            $('#hours').val(0)
+                $('#gstrate').val(model.lastinvoice.gstrate) 
+            }
+
+            $('#hours').val(0)  
 
             //-----------------------------------
-            // initialize form
+            // setup form stuff
             //-----------------------------------
 
             $('.selectpicker').selectpicker()
@@ -185,7 +188,7 @@
 
     </div>
 
-    <div class="col-md-6" data-bind="">
+    <div class="col-md-6">
 
         <div class="form-group">
 
@@ -197,9 +200,9 @@
 
         <div class="form-group">
 
-            <label for="id">id</label>
+            <label for="invoiceid">invoice number</label>
 
-            <input id="invoiceid" type='text' class='form-control' data-bind="value: invoice.invoiceid" />
+            <input id="invoiceid" type='text' class='form-control' />
 
         </div>
 
@@ -209,7 +212,7 @@
 
             <div class="input-group">
 
-                <input id="startdate" type='text' class='date-picker form-control' data-bind="value: invoice.startdate" />
+                <input id="startdate" type='text' class='date-picker form-control' />
 
                 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
             </div>
@@ -222,7 +225,7 @@
             
             <div class="input-group">
 
-                <input id='enddate' type='text' class='date-picker form-control' data-bind="value: invoice.enddate" />
+                <input id='enddate' type='text' class='date-picker form-control' />
            
                 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 
@@ -234,7 +237,7 @@
 
             <label for='comment'>comment</label>
 
-            <textarea id='comment' class='form-control'data-bind="value: invoice.comment" ></textarea>
+            <textarea id='comment' class='form-control'></textarea>
 
         </div>
 
@@ -246,7 +249,7 @@
 
             <label for="hours">hours</label>
 
-            <input id='hours' type='text' class='form-control numeric' data-bind="value: invoice.hours" />
+            <input id='hours' type='text' class='form-control numeric' />
 
         </div>
 
@@ -254,7 +257,7 @@
 
             <label for="rate">rate</label>
 
-            <input id='rate' type='text' class='form-control numeric' data-bind="value: invoice.rate" />
+            <input id='rate' type='text' class='form-control numeric' />
 
         </div>
 
@@ -262,23 +265,23 @@
 
             <label for='gstrate'>gst rate</label>
 
-            <input id='gstrate' type='text' class='form-control numeric' data-bind="value: invoice.gstrate" />
+            <input id='gstrate' type='text' class='form-control numeric' />
 
         </div>
 
         <div class="form-group">
 
-            <label for="paid">sent</label>
+            <label class="checkbox-inline">
 
-            <input  id='sent' type='checkbox' class='form-control' data-bind="checked: invoice.sent" />
+              <input type="checkbox" id="sent"> sent
+            
+            </label>
+            
+            <label class="checkbox-inline">
 
-        </div>
+              <input type="checkbox" id="paid"> paid
 
-        <div class="form-group">
-
-            <label for="paid">paid</label>
-
-            <input id='paid' type='checkbox' class='form-control' data-bind="checked: invoice.paid" />
+            </label>
 
         </div>
 

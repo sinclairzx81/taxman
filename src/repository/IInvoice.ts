@@ -48,7 +48,7 @@ module repository {
         hours       : number
         
         /** the rate for this invoice */
-        rate        : number
+        rate        : number  
         
         /** the current gst rate for this invoice */
         gstrate     : number

@@ -54,12 +54,12 @@ module repository {
                                                           '  hours       REAL,'         +
             
                                                           '  rate        REAL,'         +
-            
+
                                                           '  gstrate     REAL,'         +
             
-                                                          '  sent        INTEGER,'          +
+                                                          '  sent        INTEGER,'      +
             
-                                                          '  paid        INTEGER,'          +
+                                                          '  paid        INTEGER,'      +
             
                                                           '  comment     TEXT,'         +
             
