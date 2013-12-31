@@ -39,21 +39,21 @@ module repository {
 
         public schema (callback?: (error: any) => void) : void {
 
-            var sql = 'create table if not exists client  ( name        TEXT,' + 
+            var sql = 'create table if not exists client  (   clientid    TEXT,' +  
             
-                                                          ' slug        TEXT,' + 
+                                                            ' name        TEXT,' + 
+
+                                                            ' email       TEXT,'  +  
             
-                                                          ' email       TEXT,'  +  
+                                                            ' phone       TEXT,'  + 
             
-                                                          ' phone       TEXT,'  + 
+                                                            ' website     TEXT,' +                                           
             
-                                                          ' website     TEXT,' +                                           
+                                                            ' address     TEXT,' +  
             
-                                                          ' address     TEXT,'         +  
+                                                            ' comment     TEXT,' +
             
-                                                          ' comment     TEXT,'         +
-            
-                                                          ' primary key(name) );'
+                                                            ' primary key(name) );'
             
             this.db.run(sql, (error) => {
 
@@ -79,9 +79,9 @@ module repository {
 
         public add    (record: repository.IClient, callback?: (error:any) => void) : void {
             
-            var sql = 'insert into client (name, slug, email, phone, website, address, comment) values (?, ?, ?, ?, ?, ?, ?)'
+            var sql = 'insert into client (name, clientid, email, phone, website, address, comment) values (?, ?, ?, ?, ?, ?, ?)'
             
-            this.db.run(sql, record.name, record.slug, record.email, record.phone, record.website, record.address, record.comment, (error) => {
+            this.db.run(sql, record.name, record.clientid, record.email, record.phone, record.website, record.address, record.comment, (error) => {
                 
                 if(callback){
                     
@@ -92,9 +92,9 @@ module repository {
 
         public update (record:repository.IClient,  callback?:(error:any) => void) : void {
         
-            var sql = 'update client set name = ?, email = ?, phone = ?, website = ?, address = ?, comment = ? where slug = ?'
+            var sql = 'update client set name = ?, email = ?, phone = ?, website = ?, address = ?, comment = ? where clientid = ?'
 
-            this.db.run(sql, record.name, record.email, record.phone, record.website, record.address, record.comment, record.slug, (error) => {
+            this.db.run(sql, record.name, record.email, record.phone, record.website, record.address, record.comment, record.clientid, (error) => {
                 
                 if(callback){
                     
@@ -105,7 +105,7 @@ module repository {
         
         public remove (id:string, callback?:(error:any) => void) : void {
         
-            var sql = 'delete from client where slug = ?'
+            var sql = 'delete from client where clientid = ?'
 
             this.db.run(sql, id, (error, row) => {
                 
@@ -118,7 +118,7 @@ module repository {
         
         public get    (id:string, callback?:(error:any, record: repository.IClient) => void) : void {
         
-            var sql = 'select * from client where slug = ?'
+            var sql = 'select * from client where clientid = ?'
 
             this.db.get(sql, id, (error, row) => {
                 

@@ -43,7 +43,7 @@ module schema {
 
             if(!validation.typecheck.isString(client.name))    errors.push('schema: client.name is not a string')  
 
-            if(!validation.typecheck.isString(client.slug))    errors.push('schema: client.slug is not a string')  
+            if(!validation.typecheck.isString(client.clientid))    errors.push('schema: client.clientid is not a string')  
 
             if(!validation.typecheck.isString(client.email))   errors.push('schema: client.email is not a string')  
 

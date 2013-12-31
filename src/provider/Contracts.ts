@@ -178,7 +178,7 @@ module provider {
     //------------------------------------
     export interface GetClientRequest extends IRequest {
     
-        slug       : string
+        clientid       : string
     }
 
     export interface GetClientResponse extends IResponse  {
@@ -220,7 +220,7 @@ module provider {
 
     export interface DeleteClientRequest {
     
-        slug  : string
+        clientid  : string
     }
 
     export interface DeleteClientResponse extends IResponse  {

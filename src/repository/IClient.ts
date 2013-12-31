@@ -32,8 +32,8 @@ module repository {
         /** simple name of this client */
         name        : string
         
-        /** slug reference for this client */
-        slug        : string
+        /** clientid reference for this client */
+        clientid        : string
         
         /** email address for this client */
         email       : string

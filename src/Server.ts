@@ -44,7 +44,7 @@ class Server {
         this.setup_api()
     }
 
-    private setup()       : void {
+    private setup() : void {
         
         this.app.use('/static', express.static('./static/'))
 
@@ -121,9 +121,9 @@ class Server {
             response.render('./views/clients/create.html', context)
         })
 
-        this.app.get('/clients/:slug', authorize, (request, response) => {
+        this.app.get('/clients/:clientid', authorize, (request, response) => {
             
-            var context = { request: request, slug: request.params.slug }
+            var context = { request: request, clientid: request.params.clientid }
 
             response.render('./views/clients/update.html', context)
         })
@@ -171,11 +171,11 @@ class Server {
             })
         })
 
-        this.app.get('/api/clients/:slug', authorize, (request, response) => {
+        this.app.get('/api/clients/:clientid', authorize, (request, response) => {
         
             var input: provider.GetClientRequest = {
             
-                slug : request.params.slug
+                clientid : request.params.clientid
             }
 
             this.provider.getClient(input, (output) => {
@@ -184,7 +184,7 @@ class Server {
             })
         })
 
-        this.app.put('/api/clients/:slug', authorize, express.json(), (request, response) => {
+        this.app.put('/api/clients/:clientid', authorize, express.json(), (request, response) => {
             
             this.schema.validateClient(request.body, (errors) => {
                 
@@ -201,7 +201,7 @@ class Server {
 
                         name        : request.body.name,
 
-                        slug        : request.body.slug,
+                        clientid        : request.body.clientid,
 
                         email       : request.body.email,
 
@@ -223,7 +223,9 @@ class Server {
         })
 
         this.app.post('/api/clients/create', authorize, express.json(), (request, response) => {
-        
+            
+            console.log(request.body)
+
             this.schema.validateClient(request.body, (errors) => {
                 
                 if(errors.length > 0) {
@@ -239,7 +241,7 @@ class Server {
 
                         name        : request.body.name,
 
-                        slug        : request.body.slug,
+                        clientid        : request.body.clientid,
 
                         email       : request.body.email,
 
@@ -261,11 +263,11 @@ class Server {
             
         })
 
-        this.app.del('/api/clients/:slug', authorize, (request, response) => {
+        this.app.del('/api/clients/:clientid', authorize, (request, response) => {
 
             var input: provider.DeleteClientRequest = {
             
-                slug : request.params.slug
+                clientid : request.params.clientid
             }
 
             this.provider.deleteClient(input, (output) => {

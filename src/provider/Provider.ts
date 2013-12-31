@@ -282,7 +282,7 @@ module provider {
 
             this.logger.log('provider: get client')
 
-            this.repository.clients.get(request.slug, (error, client) => {
+            this.repository.clients.get(request.clientid, (error, client) => {
 
                 if(error) {
                     
@@ -357,7 +357,7 @@ module provider {
             
             this.logger.log('provider: delete client')
 
-            this.repository.clients.remove(request.slug, (error) => {
+            this.repository.clients.remove(request.clientid, (error) => {
             
                 if(error) {
                 

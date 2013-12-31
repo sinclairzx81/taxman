@@ -31,7 +31,7 @@
 
             model.clients.forEach(function(client) {
                 
-                $('#client').append('<option>' + client.name + '</option>')
+                $('#client').append('<option value="' + client.clientid + '">' + client.name + '</option>')
             })
 
             //-----------------------------------
@@ -187,7 +187,7 @@
     <div id="errors">
 
     </div>
-
+    
     <div class="col-md-6">
 
         <div class="form-group">
@@ -212,9 +212,10 @@
 
             <div class="input-group">
 
-                <input id="startdate" type='text' class='date-picker form-control' />
+                <input id="startdate" type='text' class='date-picker form-control' placeholder="dd-mm-yyyy" />
 
                 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+
             </div>
 
         </div>
@@ -225,7 +226,7 @@
             
             <div class="input-group">
 
-                <input id='enddate' type='text' class='date-picker form-control' />
+                <input id='enddate' type='text' class='date-picker form-control' placeholder="dd-mm-yyyy" />
            
                 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 
@@ -249,7 +250,7 @@
 
             <label for="hours">hours</label>
 
-            <input id='hours' type='text' class='form-control numeric' />
+            <input id='hours' type='text' class='form-control numeric' placeholder="number of hours" />
 
         </div>
 
@@ -257,7 +258,7 @@
 
             <label for="rate">rate</label>
 
-            <input id='rate' type='text' class='form-control numeric' />
+            <input id='rate' type='text' class='form-control numeric' placeholder="hourly rate" />
 
         </div>
 
@@ -265,7 +266,7 @@
 
             <label for='gstrate'>gst rate</label>
 
-            <input id='gstrate' type='text' class='form-control numeric' />
+            <input id='gstrate' type='text' class='form-control numeric' placeholder="gst rate" />
 
         </div>
 

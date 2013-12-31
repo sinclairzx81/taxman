@@ -31,7 +31,7 @@
 
             model.clients.forEach(function(client) {
                 
-                $('#client').append('<option>' + client.name + '</option>')
+                $('#client').append('<option value="' + client.clientid + '">' + client.name + '</option>')
             })
 
             var created   = moment(model.invoice.created).format('DD-MM-YYYY')
@@ -276,7 +276,7 @@
 
             <label for='comment'>comment</label>
 
-            <textarea id='comment' class='form-control'></textarea>
+            <textarea id='comment' class='form-control' placeholder="comments..."></textarea>
 
         </div>
 
@@ -288,7 +288,7 @@
 
             <label for="hours">hours</label>
 
-            <input id='hours' type='text' class='form-control numeric' />
+            <input id='hours' type='text' class='form-control numeric' placeholder="number of hours" />
 
         </div>
 
@@ -296,7 +296,7 @@
 
             <label for="rate">rate</label>
 
-            <input id='rate' type='text' class='form-control numeric' />
+            <input id='rate' type='text' class='form-control numeric' placeholder="hourly rate" />
 
         </div>
 
@@ -304,7 +304,7 @@
 
             <label for='gstrate'>gst rate</label>
 
-            <input id='gstrate' type='text' class='form-control numeric' />
+            <input id='gstrate' type='text' class='form-control numeric' placeholder="gst rate" />
 
         </div>
 
@@ -330,9 +330,9 @@
 
         <button type="submit" class="btn btn-default" onclick="update_invoice()">update</button>
 
-        <button type="submit" class="btn btn-default" onclick="delete_invoice()">delete</button>
-
         <button type="submit" class="btn btn-default" onclick="cancel_invoice()">cancel</button>
+
+        <button type="submit" class="btn btn-danger" onclick="delete_invoice()">delete</button>
 
     </div>
 }

@@ -21,7 +21,7 @@
                 
                 buffer.push('<tr>')
                 
-                buffer.push('    <td><a href="/clients/' + client.slug + '">' + client.name + '</a></td>')
+                buffer.push('    <td><a href="/clients/' + client.clientid + '">' + client.name + '</a></td>')
 
                 buffer.push('    <td>' + client.email + '</td>')
 
@@ -78,7 +78,7 @@
         <p><a href="/clients/create" class="btn btn-default">create</a></p>
 
     </div>
-
+    
     <table class="table">
 
         <thead>

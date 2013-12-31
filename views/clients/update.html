@@ -31,7 +31,7 @@
 
             $('#name').val(model.client.name)
 
-            $('#slug').val(model.client.slug)
+            $('#clientid').val(model.client.clientid)
 
             $('#email').val(model.client.email)
 
@@ -54,7 +54,7 @@
 
                 name    : $('#name').val(),
 
-                slug    : $('#slug').val(),
+                clientid    : $('#clientid').val(),
 
                 email   : $('#email').val(),
 
@@ -76,7 +76,7 @@
 
             var model = {}
 
-            http.json.get('/api/clients/@(context.slug)', null, function (response) {
+            http.json.get('/api/clients/@(context.clientid)', null, function (response) {
 
                 model.client = response.client
 
@@ -92,7 +92,7 @@
 
             var invoice = read_form()
 
-            http.json.put('/api/clients/@(context.slug)', null, invoice, function(result) {
+            http.json.put('/api/clients/@(context.clientid)', null, invoice, function(result) {
                 
                 if(result.success) {
                     
@@ -113,7 +113,7 @@
 
             if(confirm('are you sure you want to delete this client?')) {
 
-                http.json.del('/api/clients/@(context.slug)', null, null, function(result) {
+                http.json.del('/api/clients/@(context.clientid)', null, null, function(result) {
 
                     window.location = '/clients'
                 }) 
@@ -154,7 +154,7 @@
     
     <div class="col-md-6">
 
-        <input type="hidden" id="slug" />
+        <input type="hidden" id="clientid" />
 
         <div class="form-group">
 
@@ -208,10 +208,10 @@
 
             <button type="submit" class="btn btn-default" onclick="update_client()">update</button>
 
-            <button type="submit" class="btn btn-default" onclick="delete_client()">delete</button>
-
             <button type="submit" class="btn btn-default" onclick="cancel_client()">cancel</button>
-        
+            
+            <button type="submit" class="btn btn-danger" onclick="delete_client()">delete</button>
+
         </div>
 
     </div>
