@@ -222,7 +222,7 @@ class Server {
             })
         })
 
-        this.app.post('/api/clients:slug', authorize, express.json(), (request, response) => {
+        this.app.post('/api/clients/create', authorize, express.json(), (request, response) => {
         
             this.schema.validateClient(request.body, (errors) => {
                 

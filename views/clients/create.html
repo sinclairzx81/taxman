@@ -5,7 +5,180 @@
     <title>taxman: create client</title>
 }
 
-@section container {
+@section scripts {
 
+    <script type="text/javascript">
+
+        //---------------------------------------------------
+        // write errors
+        //---------------------------------------------------
+
+        var write_errors = function(errors) {
+            
+            $('#errors').html('')
+
+            errors.forEach(function(error) {
+                
+                $('#errors').append('<div class="alert alert-danger">' + error + '</div>')
+            })
+        }
+
+        //---------------------------------------------------
+        // write form
+        //---------------------------------------------------
+
+        var write_form = function(model) {
+
+            
+        }
+        
+        //---------------------------------------------------
+        // read form
+        //---------------------------------------------------
+
+        var read_form = function(invoice) {
+
+            return {
+
+                name    : $('#name').val(),
+
+                slug    : $('#name').val().replace(/\s+/g, '-').toLowerCase(),
+
+                email   : $('#email').val(),
+
+                phone   : $('#phone').val(),
+
+                website : $('#website').val(),
+
+                address : $('#address').val(),
+
+                comment : $('#comment').val()
+            }
+        }
+
+        //---------------------------------------------------
+        // read form
+        //---------------------------------------------------
+
+        var load_model = function(callback) {
+
+            var model = {}
+
+            callback(model)
+        }
+
+        //---------------------------------------------------
+        // read form
+        //---------------------------------------------------
+        
+        var create_client = function() {
+
+            var invoice = read_form()
+
+            http.json.post('/api/clients/create', null, invoice, function(result) {
+                
+                if(result.success) {
+                    
+                    window.location = '/clients'
+
+                    return
+                }
+
+                write_errors(result.errors)
+            })            
+        }
+
+        //---------------------------------------------------
+        // cancel invoice
+        //---------------------------------------------------
+        
+        var cancel_client = function() {
+        
+            window.location = '/clients'
+        }
+
+        $(document).ready(function () {
+
+            load_model(function(model) {
+                
+                write_form(model)   
+            })
+        })
+
+    </script>
+}
+
+@section container {
     
+    <div class="starter-template">
+
+        <h1>create client</h1>
+
+    </div>
+    
+    <div id="errors">
+
+    </div>
+    
+    <div class="col-md-6">
+
+        <input type="hidden" id="slug" />
+
+        <div class="form-group">
+
+            <label for='name'>name</label>
+            
+            <input id="name" type='text' class='form-control' />
+
+        </div>
+
+        <div class="form-group">
+
+            <label for='email'>email</label>
+            
+            <input id="email" type='text' class='form-control' />
+
+        </div>
+                    
+        <div class="form-group">
+
+            <label for='phone'>phone</label>
+            
+            <input id="phone" type='text' class='form-control' />
+
+        </div>
+
+        <div class="form-group">
+
+            <label for='website'>website</label>
+            
+            <input id="website" type='text' class='form-control' />
+
+        </div>
+
+        <div class="form-group">
+
+            <label for='address'>address</label>
+            
+            <textarea id='address' class='form-control'></textarea>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for='comment'>comment</label>
+            
+            <textarea id='comment' class='form-control'></textarea>
+
+        </div>
+
+        <div class="form-group">
+
+            <button type="submit" class="btn btn-default" onclick="create_client()">create</button>
+
+            <button type="submit" class="btn btn-default" onclick="cancel_client()">cancel</button>
+        
+        </div>
+
+    </div>
 }
