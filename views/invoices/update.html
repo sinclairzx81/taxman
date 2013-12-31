@@ -69,6 +69,10 @@
 
             $('.date-picker').datepicker({ dateFormat: "dd-mm-yy" })
 
+            $('.date-picker').datepicker( "option", "showOtherMonths", true )
+
+            $('.date-picker').datepicker( "option", "selectOtherMonths", true )
+
             $('.numeric').keypress(function (e) {
                
                 if(e.which == 46) {

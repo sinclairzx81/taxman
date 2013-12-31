@@ -32,17 +32,6 @@
         }
 
         //------------------------------------------------------
-        // returns the computed amount + gst
-        //------------------------------------------------------
-
-        var compute_incometax = function (invoice) {
-
-            var figure = compute_amount(invoice) * (parseFloat(invoice.gstrate) + 1)
-
-            return parseFloat(figure.toFixed(2))
-        }
-
-        //------------------------------------------------------
         // write table
         //------------------------------------------------------
 
@@ -193,6 +182,10 @@
         $(document).ready(function () {
 
             $('.date-picker').datepicker({ dateFormat: "dd-mm-yy" })
+
+            $('.date-picker').datepicker( "option", "showOtherMonths", true )
+
+            $('.date-picker').datepicker( "option", "selectOtherMonths", true )
 
             $('#tax-cents-in-dollar').keyup(function () { write_taxes() })
         })
