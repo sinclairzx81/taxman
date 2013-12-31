@@ -49,10 +49,10 @@
             //------------------------------------------------------            
             
             $('#invoices').html()
-
+            
+            var buffer = []
+            
             model.invoices.forEach(function(invoice) {
-
-                var buffer = []
 
                 buffer.push('<tr>')
 
@@ -69,9 +69,9 @@
                 buffer.push('    <td>$' + invoice.amountgst.toFixed(2) + '</td>')
 
                 buffer.push('</tr>')
-                
-                $('#invoices').append(buffer.join(''))
             })
+
+            $('#invoices').html(buffer.join(''))
 
             //------------------------------------------------------
             // taxible income
@@ -130,7 +130,7 @@
             // after tax
             //-----------------------------------------------------------
 
-            var after_tax = actual_income - total_tax
+            var after_tax = taxable_income - total_tax
             
             $('#after-tax').html('$' + after_tax.toFixed(2))
 
@@ -157,7 +157,7 @@
 
             http.json.post('/api/invoices/range', null, range, function(response) {
                 
-                model.invoices = model.invoices = response.invoices.map(function(invoice) {
+                model.invoices = response.invoices.map(function(invoice) {
                     
                     invoice.created   = moment(invoice.created).local().format('LL')
 
@@ -200,7 +200,7 @@
 
             <div class="input-group">
 
-                <input id="startdate" type='text' class='date-picker form-control' value="01-10-2013" placeholder="dd-mm-yyyy" />
+                <input id="startdate" type='text' class='date-picker form-control' placeholder="dd-mm-yyyy" />
 
                 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 
@@ -214,7 +214,7 @@
             
             <div class="input-group">
 
-                <input id='enddate' type='text' class='date-picker form-control' value="01-10-2016" placeholder="dd-mm-yyyy"/>
+                <input id='enddate' type='text' class='date-picker form-control' placeholder="dd-mm-yyyy"/>
            
                 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 
@@ -240,83 +240,6 @@
 
         </div>
 
-        <table class="table">
-
-          <tbody>
-            <tr>
-            <th>
-                Taxable income
-            </th>
-            <th>
-                Income tax rates for every<br>
-                $1 of taxable income<br>
-                (excl ACC earners' levy)
-            </th>
-            <th>
-                PAYE rates for every<br>
-                $1 of taxable income<br>
-                (incl ACC earners' levy - see "Note 1" below)
-            </th>
-            </tr>
-            <tr class="oddrow">
-            <td>
-                up to $14,000
-            </td>
-            <td align="center">
-                10.5 cents
-            </td>
-            <td align="center">
-                12.20 cents
-            </td>
-            </tr>
-            <tr>
-            <td>
-                from $14,001 to $48,000
-            </td>
-            <td align="center">
-                17.5 cents
-            </td>
-            <td align="center">
-                19.20 cents
-            </td>
-            </tr>
-            <tr class="oddrow">
-            <td>
-                from $48,001 to $70,000
-            </td>
-            <td align="center">
-                30 cents
-            </td>
-            <td align="center">
-                31.70 cents
-            </td>
-            </tr>
-            <tr>
-            <td>
-                $70,001 and over
-            </td>
-            <td align="center">
-                33 cents
-            </td>
-            <td align="center">
-                34.70 cents
-            </td>
-            </tr>
-            <tr class="oddrow">
-            <td>
-                No-notification - see "Note 2 below"
-            </td>
-            <td align="center">
-                45 cents
-            </td>
-            <td align="center">
-                46.70 cents
-            </td>
-            </tr>
-            </tbody>
-        </table>
-
-
     </div>
 
 
@@ -325,81 +248,38 @@
     <div class="col-md-8">
         
         <div class="row">
-            
+                
             <table class="table">
-                <tr>
-
-                    <th>taxible income</th><td id="taxible-income">$0</td>
-
-                <tr>
-
-                <tr>
-
-                    <th>actual income</th><td id="actual-income">$0</td>
-
-                <tr>
-
-                </tr>
-
-                    <th>gst to pay</th><td id="gst-to-pay">$0</td>
-
-                <tr>
-
-                </tr>
-
-                    <th>tax to pay</th><td id="tax-to-pay">$0</td>
-
-                </tr>
-
-                </tr>
-
-                    <th>total tax</th><td id="total-tax">$0</td>
-
-                </tr>
-
-
-                </tr>
-
-                    <th>after tax</th><td id="after-tax">$0</td>
-
-                </tr>
-
+                <thead>
+                    <tr><th colspan="2">Earnings and Taxes</th></tr>
+                </thead>
+                <tbody>
+                    <tr><th>taxible income</th><td id="taxible-income">$0</td></tr>
+                    <tr><th>actual income</th><td id="actual-income">$0</td></tr>
+                    <tr><th>gst to pay</th><td id="gst-to-pay">$0</td></tr>
+                    <tr><th>tax to pay</th><td id="tax-to-pay">$0</td></tr>
+                    <tr><th>total tax</th><td id="total-tax">$0</td></tr>
+                    <tr><th>after tax</th><td id="after-tax">$0</td></tr>
+                </tbody>
             </table>
 
         </div>
 
         <div class="row">
-
             <table class="table">
-
                 <thead>
-
                     <tr>
-
                         <th>number</th>
-
                         <th>client</th>
-
                         <th>start date</th>
-
                         <th>end end</th>
-
                         <th>amount</th>
-
                         <th>+ gst</th>
-
                     </tr>
-
                 </thead>
-
-                <tbody id="invoices">
-
-                </tbody>
-
+                <tbody id="invoices" />
             </table>
-
         </div>
-
     </div>
     
     
