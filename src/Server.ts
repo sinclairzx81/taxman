@@ -25,6 +25,7 @@ THE SOFTWARE.
 ---------------------------------------------------------------------------*/
 
 /// <reference path="references.ts" />
+/// <reference path="providers/Provider.ts" />
 /// <reference path="loggers/ILogger.ts" />
 
 class Server {
@@ -33,13 +34,15 @@ class Server {
         
         this.setup()
 
-        this.handlers()
+        this.setup_pages()
+
+        this.setup_api()
     }
 
-    private setup() : void {
+    private setup()       : void {
         
         this.app.use('/static', express.static('./static/'))
-        
+
         this.app.use((request, response, next) => {
 
             response.render = (path, context) => {
@@ -54,30 +57,22 @@ class Server {
             }
             
             next()
-        })
+        })        
     }
 
-    private handlers() : void {
+    private setup_pages() : void {
             
         var authorize = (request, response, next) => {
             
             next()
         }
-
-        //---------------------------------------------
-        // index
-        //---------------------------------------------
         
         this.app.get('/', (request, response) => {
             
             var context = { request: request }
             
-            response.render('./views/index.html', context)
+            response.render('./views/dashboard/index.html', context)
         })
-
-        //---------------------------------------------------------------
-        // dashboard
-        //---------------------------------------------------------------
 
         this.app.get('/dashboard', authorize, (request, response) => {
                
@@ -86,103 +81,32 @@ class Server {
             response.render('./views/dashboard/index.html', context)
         })
 
-        //---------------------------------------------------------------
-        // invoices
-        //---------------------------------------------------------------
         this.app.get('/invoices', authorize, (request, response) => {
 
-            this.provider.get_invoices((invoices) => {
-            
-                var context = { request: request, invoices: invoices }
+            var context = {request: request}
 
-                response.render('./views/invoices/index.html', context)                   
-            })
+            response.render('./views/invoices/index.html', context)                   
         })
 
         this.app.get('/invoices/create', authorize, (request, response) => {
             
-            this.provider.get_companies((companies) => {
+            var context = {request: request}
 
-                var context = { request: request, companies: companies }
-
-                response.render('./views/invoices/create.html', context)
-            })
+            response.render('./views/invoices/create.html', context)
         })
 
-        this.app.get('/invoices/:id', authorize, (request, response) => {
+        this.app.get('/invoices/:invoiceid', authorize, (request, response) => {
 
-            this.provider.get_companies((companies) => {
-                
-                this.provider.get_invoice(request.params.id, (invoice) => {
-                    
-                    console.log(invoice)
-                    
-                    var context = { request: request, invoice: invoice, companies: companies, errors: null }
+            var context = {request: request, invoiceid : request.params.invoiceid}
 
-                    response.render('./views/invoices/update.html', context)            
-                })                
-            })
+            response.render('./views/invoices/update.html', context)
         })
-
-        this.app.post('/invoices/:id', authorize, express.urlencoded(), (request, response) => {
-
-            var invoice: repository.IInvoice = {
-            
-                id          : request.body.id,
-
-                company     : request.body.company,
-
-                created     : new Date(request.body.created),
-
-                startdate   : new Date(request.body.startdate),
-
-                enddate     : new Date(request.body.enddate),
-
-                hours       : parseFloat(request.body.hours),
-
-                rate        : parseFloat(request.body.rate),
-
-                gstrate     : parseFloat(request.body.gstrate),
-
-                sent        : request.body.sent ? true : false,
-
-                paid        : request.body.paid ? true : false,
-
-                comment     : request.body.comment,
-            }
-
-            this.provider.update_invoice(invoice, (success, errors) => {
-
-                if(!success) {
-                    
-                    console.log(errors)
-
-                    this.provider.get_companies((companies) => {
-
-                        var context = { request: request, invoice: invoice, companies: companies, errors: errors }
-
-                        response.render('./views/invoices/update.html', context)
-                    })
-
-                    return
-                }
-
-                response.redirect('/invoices')
-            })
-        })
-
-        //---------------------------------------------------------------
-        // companies
-        //---------------------------------------------------------------
 
         this.app.get('/companies', authorize, (request, response) => {
             
-            this.provider.get_companies((companies) => {
-            
-                var context = { request: request, companies: companies }
+            var context = {request: request}
 
-                response.render('./views/companies/index.html', context)            
-            })
+            response.render('./views/companies/index.html', context)
         })
 
         this.app.get('/companies/create', authorize, (request, response) => {
@@ -192,23 +116,12 @@ class Server {
             response.render('./views/companies/create.html', context)
         })
 
-        this.app.get('/companies/:id', authorize, (request, response) => {
+        this.app.get('/companies/:companyid', authorize, (request, response) => {
             
-            var context = { request: request }
+            var context = { request: request, companyname: request.params.companyid }
 
             response.render('./views/companies/update.html', context)
         })
-
-        this.app.post('/companies/:id', authorize, (request, response) => {
-            
-            var context = { request: request }
-
-            response.render('./views/companies/update.html', context)
-        })
-        
-        //---------------------------------------------
-        // settings
-        //---------------------------------------------
         
         this.app.get('/settings', authorize, (request, response) => {
             
@@ -217,16 +130,126 @@ class Server {
             response.render('./views/settings/index.html', context)
         })
 
-        //---------------------------------------------
-        // tools
-        //---------------------------------------------
-        
         this.app.get('/tools', authorize, (request, response) => {
             
-            var context = { request: request }
+            var context = {  request: request }
                
             response.render('./views/tools/index.html', context)
         })
     }
+
+    private setup_api ()  : void {
+    
+        var authorize = (request, response, next) => {
+            
+            next()
+        }
+
+        this.app.post('/api/companies', authorize, express.json(), (request, response) => {
+        
+            var input: providers.GetCompaniesRequest = {
+
+                skip  : request.body.skip,
+
+                take  : request.body.take,
+
+                order : request.body.order
+            }
+
+            this.provider.GetCompanies(input, (output) => {
+
+                console.log(output)
+
+                response.json(output)    
+            })            
+            
+        })
+
+        this.app.get('/api/companies/:companyname', authorize, (request, response) => {
+        
+            
+        })
+
+        this.app.post('/api/companies:companyname', authorize, (request, response) => {
+        
+            
+        })
+
+        this.app.put('/api/companies/:companyname', authorize, (request, response) => {
+        
+            
+        })
+
+        this.app.del('/api/companies/:companyname', authorize, (request, response) => {
+        
+            
+        })
+
+        this.app.post('/api/invoices', authorize, express.json(), (request, response) => {
+            
+            var input: providers.GetInvoicesRequest = {
+
+                skip  : request.body.skip,
+
+                take  : request.body.take,
+
+                order : request.body.order
+            }
+
+            this.provider.GetInvoices(input, (output) => {
+
+                response.json(output)    
+            })
+        })
+
+        this.app.get('/api/invoices/count', authorize, (request, response) => {
+        
+            var input: providers.CountInvoicesRequest = {
+                
+            }
+
+            this.provider.CountInvoices(input, (output) => {
+            
+                response.json(output)
+            })
+        })
+
+        this.app.get('/api/invoices/:invoiceid', authorize, (request, response) => {
+        
+            var input: providers.GetInvoiceRequest = {
+            
+                invoiceid : request.params.invoiceid
+            }
+
+            this.provider.GetInvoice(input, (output) => {
+                
+                response.json(output)
+            })
+        })
+
+        this.app.post('/api/invoices:invoiceid', authorize, (request, response) => {
+        
+            
+        })
+
+        this.app.put('/api/invoices/:invoiceid', authorize, express.json(), (request, response) => {
+        
+            var input: providers.UpdateInvoiceRequest = {
+            
+                invoice : request.params
+            }
+
+            this.provider.UpdateInvoice(input, (output) => {
+            
+                response.json(output)
+            })
+        })
+
+        this.app.del('/api/invoices/:invoiceid', authorize, (request, response) => {
+        
+            
+        })                                  
+    }
+
 }
 

@@ -27,51 +27,88 @@ THE SOFTWARE.
 module util.typecheck {
 
     /** test to see if this object is a boolean */
-    export function isBoolean(instance:any) : boolean {
+    export function isBoolean(value:any) : boolean {
 
-        return (typeof instance) === 'boolean'
+        return (typeof value) === 'boolean'
     }
 
-
     /** test to see if this object is a integer */
-    export function isInteger(instance:any) : boolean {
+    export function isInteger(value:any) : boolean {
 
-        return (typeof instance === "number") && Math.floor(instance) === instance
+        return (typeof value === "number") && Math.floor(value) === value
     }
 
     /** test to see if this object is a number */
-    export function isNumber(instance:any) : boolean {
+    export function isNumber(value:any) : boolean {
 
-        return (typeof instance === "number")
+        return (typeof value === "number")
     }
 
     /** test to see if this object is an array */
-    export function isArray(instance:any) : boolean {
+    export function isArray(value:any) : boolean {
 
-        return Object.prototype.toString.call( instance ) === '[object Array]'
+        return Object.prototype.toString.call( value ) === '[object Array]'
     }
 
     /** tests to see if this object is a string */
-    export function isString(instance:any) : boolean {
+    export function isString(value:any) : boolean {
 
-        return (typeof instance) === 'string'
+        return (typeof value) === 'string'
     }
 
     /** tests to see if this object is a object */
-    export function isObject(instance:any) : boolean {
+    export function isObject(value:any) : boolean {
             
-        return (typeof instance) === 'object' && !util.typecheck.isArray(instance)
+        return (typeof value) === 'object' && !util.typecheck.isArray(value)
     }
 
     /** tests to see if this object is a function */
-    export function isFunction(instance:any) : boolean {
+    export function isFunction(value:any) : boolean {
         
-        return (typeof instance) === 'function'
+        return (typeof value) === 'function'
     }
 
     /** tests to see if the object is a date */
-    export function isDate(instance:any) : boolean {
+    export function isDate(value:any) : boolean {
 
-        return instance.getMonth !== undefined
+        if (typeof value != 'object') {
+            return false
+        }
+        if (value.getDate            == null ||
+            value.getDay             == null ||
+            value.getFullYear        == null ||
+            value.getHours           == null ||
+            value.getMilliseconds    == null ||
+            value.getMinutes         == null ||
+            value.getMonth           == null ||
+            value.getSeconds         == null ||
+            value.getTime            == null ||
+            value.getTimezoneOffset  == null ||
+            value.getUTCDate         == null ||
+            value.getUTCDay          == null ||
+            value.getUTCFullYear     == null ||
+            value.getUTCHours        == null ||
+            value.getUTCMilliseconds == null ||
+            value.getUTCMinutes      == null ||
+            value.getUTCMonth        == null ||
+            value.setDate            == null ||
+            value.setFullYear        == null ||
+            value.setHours           == null ||
+            value.setMilliseconds    == null ||
+            value.setMinutes         == null ||
+            value.setMonth           == null ||
+            value.setSeconds         == null ||
+            value.setTime            == null ||
+            value.setUTCDate         == null ||
+            value.setUTCFullYear     == null ||
+            value.setUTCHours        == null ||
+            value.setUTCMilliseconds == null ||
+            value.setUTCMinutes      == null ||
+            value.setUTCMonth        == null ||
+            value.setUTCSeconds      == null) {
+
+            return false
+        }
+        return true
     }
 }

@@ -39,7 +39,7 @@ module repository {
 
         public schema (callback?: (error: any) => void) : void {
 
-            var sql = 'create table if not exists invoice  ( id          TEXT,' +
+            var sql = 'create table if not exists invoice  ( invoiceid   TEXT,' +
 
                                                           '  company     TEXT,' + 
 
@@ -77,10 +77,26 @@ module repository {
             var sql = 'select count(*) from invoice'
 
             this.db.get(sql, (error, row) => {
-                
+
                 if(callback) {
+
+                    if(error) {
+                
+                        callback(error, 0)
+
+                        return
+                    }
+                                   
+                    try {
                     
-                    callback(error, row['count(*)'])
+                        var count = row['count(*)']
+
+                        callback(null, count)
+
+                    } catch(e) {
+                    
+                        callback(e, 0)
+                    }
                 }
             })              
         }
@@ -91,9 +107,9 @@ module repository {
 
             var paid = record.paid ? 1 : 0
 
-            var sql  = 'insert into invoice (id, company, created, startdate, enddate, hours, rate, gstrate, sent, paid, comment ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
+            var sql  = 'insert into invoice (invoiceid, company, created, startdate, enddate, hours, rate, gstrate, sent, paid, comment ) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)'
 
-            this.db.run(sql, record.id, record.company, record.created, record.startdate, record.enddate, record.hours, record.rate, record.gstrate, sent, paid, record.comment, (error) => {
+            this.db.run(sql, record.invoiceid, record.company, record.created, record.startdate, record.enddate, record.hours, record.rate, record.gstrate, sent, paid, record.comment, (error) => {
                 
                 if(callback) {
                 
@@ -108,9 +124,9 @@ module repository {
 
             var paid = record.paid ? 1 : 0
 
-            var sql = 'update invoice set company = ?, created = ?, startdate = ?, enddate = ?, hours = ?, rate = ?, gstrate = ?, sent = ?, paid = ?, comment = ? where id = ?'
+            var sql = 'update invoice set company = ?, created = ?, startdate = ?, enddate = ?, hours = ?, rate = ?, gstrate = ?, sent = ?, paid = ?, comment = ? where invoiceid = ?'
 
-            this.db.run(sql, record.company, record.created, record.startdate, record.enddate, record.hours, record.rate, record.gstrate, sent, paid, record.comment, record.id, (error) => {
+            this.db.run(sql, record.company, record.created, record.startdate, record.enddate, record.hours, record.rate, record.gstrate, sent, paid, record.comment, record.invoiceid, (error) => {
                 
                 if(callback) {
                 
@@ -121,7 +137,7 @@ module repository {
         
         public remove (id:string, callback?:(error:any) => void) : void {
         
-            var sql = 'delete from invoice where id = ?'
+            var sql = 'delete from invoice where invoiceid = ?'
 
             this.db.run(sql, id, (error, row) => {
                 
@@ -134,7 +150,7 @@ module repository {
         
         public get    (id:string, callback?:(error:any, record: repository.IInvoice) => void) : void {
         
-            var sql = 'select * from invoice where id = ?'
+            var sql = 'select * from invoice where invoiceid = ?'
 
             this.db.get(sql, id, (error, row) => {
                 

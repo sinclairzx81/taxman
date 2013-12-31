@@ -28,7 +28,7 @@ module repository {
 
     /** common interface for a invoice */
     export interface IInvoice {
-        id          : string
+        invoiceid   : string
         company     : string
         created     : Date
         startdate   : Date

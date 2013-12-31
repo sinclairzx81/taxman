@@ -7,65 +7,42 @@
 
 @section scripts {
 
-    
+    <script type="text/javascript">
+
+        var model = {}
+
+        var load_invoices = function(callback) {
+        
+            var input = {skip:0, take:100, order: {column: 'created', direction: 'desc'}}
+
+            http.json.post('/api/invoices', null, input, function (response) {
+
+                model.invoices = response.invoices.map(function(invoice) {
+                
+                    invoice.amount    = amount(invoice)
+
+                    invoice.amountgst = amountgst(invoice)
+
+                    return invoice
+                })
+
+                callback()
+            })
+        }
+
+
+        $(document).ready(function () {
+
+            load_invoices(function() {
+
+                ko.applyBindings(model)
+            })
+        })
+
+    </script>
 }
 
 @section container {
-
-    @{
-        //------------------------------------------------------
-        // formats the date
-        //------------------------------------------------------
-        
-        var formatDate = function(date) {
-            
-            var dates   = ['0th',  '1st',  '2nd',  '3rd',  '4th',  '5th',  '6th',  '7th', 
-
-                           '8th',  '9th',  '10th', '11th', '12th', '13th', '14th', '15th', 
-
-                           '16th', '17th', '18th', '19th', '20th', '21st', '22nd', '23rd', 
-
-                           '24th', '25th', '26th', '27th', '28th', '29th', '30th', '31st', '32nd']
-            
-            var months  = ['January',   'Feburary', 'March',    'April', 
-
-                           'May',       'June',     'July',     'August', 
-
-                           'September', 'October',  'November', 'December']
-                      
-            var weekday = ['Sunday',   'Monday', 'Tuesday', 'Wednesday',
- 
-                           'Thursday', 'Friday', 'Saturday']
-            
-            return (weekday[date.getDay()]  + ' ' +
-
-                    dates[date.getDate()]   + ' ' + 
-
-                    months[date.getMonth()] + ' ' + 
-
-                    date.getFullYear())
-        }
-        
-        //------------------------------------------------------
-        // returns the computed amount
-        //------------------------------------------------------
-        
-        var amount = function(invoice) {
-
-            return invoice.rate * invoice.hours
-        }
-        
-        //------------------------------------------------------
-        // returns the computed amount + gst
-        //------------------------------------------------------
-              
-        var amountgst = function(invoice) {
-            
-            var figure = amount(invoice) * (invoice.gstrate + 1)
-            
-            return figure.toFixed(2)
-        }
-    }
 
     <div class="starter-template">
 
@@ -78,53 +55,50 @@
     <table class="table">
 
         <thead>
-            
+
             <tr>
-                
+
                 <td>number</td>
-                
+
                 <td>company</td>
-                
+
                 <td>created</td>
 
                 <td>start date</td>
-                
+
                 <td>end end</td>
-                
+
                 <td>amount</td>
-                
+
                 <td>amount + gst</td>
 
             </tr>
 
         </thead>
 
-        <tbody>
-        
-            @for(var i = 0; i < context.invoices.length; i++) {  
-            
-                @{ var invoice = context.invoices[i] }
+        <script type="text/html" id="invoices.template">
 
-                <tr class="paid">
+            <tr class="paid">
 
-                    <td><a href="/invoices/@(invoice.id)">@(invoice.id)</a></td>
-                
-                    <td>@(invoice.company)</td>
-                    
-                    <td>@(formatDate(invoice.created))</td>
+                <td><a data-bind="text: id, attr: { href: '/invoices/' + id}"></a></td>
 
-                    <td>@(formatDate(invoice.startdate))</td>
-                
-                    <td>@(formatDate(invoice.enddate))</td>
-                
-                    <td>$@( amount(invoice) )</td>
-                
-                    <td>$@( amountgst(invoice) )</td>
+                <td data-bind="text: company"></td>
 
-                </tr>
-            }
-        
-        </tbody>
+                <td data-bind="text: created"></td>
+
+                <td data-bind="text: startdate"></td>
+
+                <td data-bind="text: enddate"></td>
+
+                <td data-bind="text: '$' + amount"></td>
+
+                <td data-bind="text: '$' + amountgst"></td>
+
+            </tr>
+
+        </script>
+
+        <tbody data-bind="template: { name: 'invoices.template', foreach: invoices }" />
 
     </table>
 }

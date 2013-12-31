@@ -27,8 +27,46 @@ THE SOFTWARE.
 /// <reference path="references/node.d.ts" />
 /// <reference path="references/express.d.ts" />
 
+//-----------------------------------------------
+// express setup
+//-----------------------------------------------
+
 var express     = require('express')
+
+//-----------------------------------------------
+// magnum setup
+//-----------------------------------------------
 
 var magnum      = require('magnum')
 
+//-----------------------------------------------
+// sqlite3 setup
+//-----------------------------------------------
+
 var sqlite3     = require('sqlite3').verbose()
+
+//-----------------------------------------------
+// validation setup
+//-----------------------------------------------
+
+var Validator   = require('validator').Validator
+
+Validator.prototype.error = function (message) {
+
+    this._errors.push(message);
+
+    return this;
+}
+
+Validator.prototype.errors = function () {
+
+    var result = this._errors.splice(0)
+
+    this._errors = []
+
+    return result;
+}
+
+var validator = new Validator()
+
+

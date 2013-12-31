@@ -28,17 +28,13 @@ THE SOFTWARE.
 /// <reference path="../loggers/ILogger.ts" />
 /// <reference path="../repository/IRepository.ts" />
 /// <reference path="../util/Async.ts" />
-/// <reference path="Validator.ts" />
+/// <reference path="Contracts.ts" />
 
 module providers {
 
     export class Provider {
         
-        private validator: providers.Validator;
-
-        constructor(public repository: repository.IRepository, public logger: loggers.ILogger) {
-
-            this.validator = new providers.Validator()
+        constructor(private repository: repository.IRepository, private logger: loggers.ILogger) {
             
             this.logger.log('provider: company schema')
 
@@ -54,90 +50,185 @@ module providers {
         }
 
         //----------------------------------------------------
-        // invoices:
+        // GetInvoices:
         //----------------------------------------------------
-
-        public get_invoices (callback: ( invoices: repository.IInvoice[]) => void ) : void {
         
-            this.repository.invoices.list(0, 1000, {column: 'created', direction: 'desc'}, (err:any, invoices:  repository.IInvoice[]) => {
+        public GetInvoices (request: providers.GetInvoicesRequest, callback: ( response: providers.GetInvoicesResponse) => void) : void {
             
-                callback(invoices)
-            })
-        }
+            this.logger.log('provider: GetInvoices(' + JSON.stringify(request) + ')')
 
-        public get_invoice(id:string, callback: ( invoice: repository.IInvoice )=>void ) : void {
-        
-            this.repository.invoices.get(id, (err:any, invoice:  repository.IInvoice) => {
+            this.repository.invoices.list(request.skip, request.take, request.order, (error:any, invoices:  repository.IInvoice[]) => {
             
-                callback(invoice)
-            })
-        }
+                if(error) {
+                    
+                    this.logger.log('provider: there was an error.')
 
-        public update_invoice(invoice: repository.IInvoice, callback: (success:boolean, errors: string[]) => void ) : void {
-
-            this.validator.validate_invoice(invoice, (errors) => {
-            
-                if(errors.length > 0) {
-                
-                    callback(false, errors)
+                    callback({success: false, errors: [error.toString()]})
 
                     return
                 }
-                
-                this.repository.companies.get(invoice.company, (error, company) => {
-            
-                    if(error) {
-                
-                        callback(false, [error.toString()])
 
-                        return
-                    }
-
-                    if(!company) {
-                
-                        callback(false, ['company not found'])
-
-                        return
-                    }
-
-                    this.repository.invoices.update(invoice, (error) => {
-                
-                        if(error) {
-                    
-                            callback(false, [error.toString()])
-
-                            return
-                        }
-
-                        callback(true, null)
-                    })
-                })
-
+                callback({success: true, errors: null, invoices: invoices})
             })
-
         }
 
         //----------------------------------------------------
-        // companies:
+        // CountInvoices:
+        //----------------------------------------------------
+        public CountInvoices(request: providers.CountInvoicesRequest, callback: (response: providers.CountInvoicesResponse) => void): void {
+        
+            this.logger.log('provider: CountInvoices(' + JSON.stringify(request) + ')')
+
+            this.repository.invoices.count((error, count) => {
+            
+                if(error) {
+                    
+                    this.logger.log('provider: there was an error.')
+
+                    callback({success: false, errors: [error.toString()]})
+
+                    return
+                }
+
+                callback({success: true, errors: null, count: count})
+            })
+        }
+
+        //----------------------------------------------------
+        // GetInvoice:
         //----------------------------------------------------
         
-        public get_companies(callback: ( companies: repository.ICompany[] )=>void ) : void {
+        public GetInvoice(request: providers.GetInvoiceRequest, callback: ( response: providers.GetInvoiceResponse) => void ) : void {
+        
+            this.logger.log('provider: GetInvoice(' + JSON.stringify(request) + ')')
 
-            this.repository.companies.list(0, 1000, null, (error, companies) => {
+            this.repository.invoices.get(request.invoiceid, (error:any, invoice:  repository.IInvoice) => {
             
-                callback(companies)
+                if(error) {
+                    
+                    this.logger.log('provider: there was an error.')
+
+                    callback({success: false, errors: [error.toString()]})
+
+                    return
+                }
+
+                callback({success: true, errors: null, invoice: invoice})
+            })
+        }
+
+        //----------------------------------------------------
+        // UpdateInvoice:
+        //----------------------------------------------------
+        
+        public UpdateInvoice(request: providers.UpdateInvoiceRequest, callback: ( response: providers.UpdateInvoiceResponse) => void ) : void {
+
+            this.logger.log('provider: UpdateInvoice(' + JSON.stringify(request) + ')')
+
+            this.repository.companies.get(request.invoice.company, (error, company) => {
+            
+                if(error) {
+                    
+                    this.logger.log('provider: there was an error finding the company')
+
+                    callback({success: false, errors: [error.toString()]})
+
+                    return
+                }
+
+                if(!company) {
+                    
+                    this.logger.log('provider: company does not exist')
+
+                    callback({success: false, errors: ['company not found']})
+
+                    return
+                }
+
+                this.repository.invoices.update(request.invoice, (error) => {
+
+                    if(error) {
+                        
+                        this.logger.log('provider: there was an error updating the invoice')
+
+                        callback({success: false, errors: [error.toString()]})
+
+                        return
+                    }
+
+                    callback({success: true, errors: null})
+                })
+            })
+        }
+
+        //----------------------------------------------------
+        // DeleteInvoice:
+        //----------------------------------------------------
+        
+        public DeleteInvoice(request: providers.DeleteInvoiceRequest, callback: (response: providers.DeleteInvoiceResponse) => void ) : void {
+            
+            this.logger.log('provider: DeleteInvoice(' + JSON.stringify(request) + ')')
+
+            this.repository.invoices.remove(request.invoice.invoiceid, (error) => {
+            
+                if(error) {
+                
+                    callback({success : false, errors: [error.toString()]})
+
+                    return
+                }
+
+                callback({success:true, errors:null})
+            })
+        }
+
+        //----------------------------------------------------
+        // GetCompanies:
+        //----------------------------------------------------
+        
+        public GetCompanies(request: providers.GetCompaniesRequest, callback: (response: providers.GetCompaniesResponse) => void) : void {
+
+            this.logger.log('provider: GetCompanies(' + JSON.stringify(request) + ')')
+
+            this.repository.companies.list(request.skip, request.take, request.order, (error, companies) => {
+            
+                if(error) {
+                    
+                    this.logger.log('provider: there was an error.')
+
+                    callback({success: false, errors: [error.toString()]})
+
+                    return
+                }
+
+                callback({success: true, errors: null, companies: companies})
             })
         }
 
         //--------------------------------------------------------------
-        // data migration
+        // Import
         //--------------------------------------------------------------
 
-        public import_data(json:string, callback:(results:any) => void ) : void { 
+        public Import(request: providers.ImportRequest, callback: (response: providers.ImportResponse) => void) : void {
             
             this.logger.log('provider: importing data')
 
-            var data = JSON.parse(json)
+            var data = null
+            
+            try {
+
+                this.logger.log('provider: parsing json string')
+
+                data = JSON.parse(request.json)
+            }
+            catch(e) {
+                
+                callback({success:false, errors: [e.toString()]})
+
+                return
+            }
+
+            this.logger.log('provider: grooming invoice dates')
 
             for(var i = 0; i < data.invoices.length; i++) {
             
@@ -148,26 +239,139 @@ module providers {
                 data.invoices[i].enddate   = new Date(data.invoices[i].enddate)
             }
 
-            util.async.series((data:any, callback:any) => { this.repository.companies.add(data, callback) }, data.companies, (results) => {
+            this.logger.log('provider: importing companies')
 
-                util.async.series((data:any, callback:any) => { this.repository.invoices.add(data, callback) }, data.invoices, (results) => {
+            util.async.series((data:any, callback:any) => { this.repository.companies.add(data, callback) }, data.companies, (errors) => {
 
-                    callback(results)
+                var success = 0
+
+                var failed  = 0
+
+                console.log(JSON.stringify(errors, null, 4))
+
+                for(var i = 0; i < errors.length; i++) {
+                    
+                    if(!errors[i]) {
+                        
+                        success += 1
+
+                        continue
+                    }
+
+                    failed += 1
+                }
+
+                this.logger.log('provider: company import result success: ' + success.toString() + ' failed: ' + failed.toString())
+
+                if(failed > 0) {
+                
+                    callback({success: false, errors : errors})   
+                    
+                    return                                     
+                }
+
+
+                this.logger.log('provider: importing invoices')
+
+                util.async.series((data:any, callback:any) => { this.repository.invoices.add(data, callback) }, data.invoices, (errors) => {
+
+                    var success = 0;
+
+                    var failed  = 0;
+
+                    console.log(JSON.stringify(errors, null, 4))
+
+                    for(var i = 0; i < errors.length; i++) {
+                    
+                        if(!errors[i]) {
+                        
+                            success += 1
+
+                            continue
+                        }
+
+                        failed += 1
+                    }
+
+
+
+                    this.logger.log('provider: company import result success: ' + success.toString() + ' failed: ' + failed.toString())
+
+                    if(failed > 0) {
+                    
+                        callback({success: false, errors : errors})  
+                        
+                        return                                      
+                    }
+                                        
+                    callback({success: true, errors : null})
                 })
             })
         }
 
-        public export_data(callback: (json:string) => void) : void {
+        //--------------------------------------------------------------
+        // Export
+        //--------------------------------------------------------------
+
+        public Export(request: providers.ExportRequest, callback: (response: providers.ExportResponse) => void) : void {
             
             this.logger.log('provider: exporting data')
 
-            this.repository.companies.count((err, company_count) => {
+            this.logger.log('provider: counting companies')
+
+            this.repository.companies.count((error, company_count) => {
                 
+                if(error) {
+                
+                    this.logger.log('provider: there was an error.')
+
+                    callback({success: false, errors: [error.toString()]})
+
+                    return
+                }
+
+                this.logger.log('provider: counted ' + company_count.toString() + ' companies')
+
+                this.logger.log('provider: listing companies')
+
                 this.repository.companies.list(0, company_count, {column: 'name', direction: 'desc'}, (error, companies) => {
+
+                    if(error) {
                 
-                    this.repository.invoices.count((err, invoice_count) => {
-                    
+                        this.logger.log('provider: there was an error.')
+
+                        callback({success: false, errors: [error.toString()]})
+
+                        return
+                    }
+
+                    this.logger.log('provider: counting invoices')
+
+                    this.repository.invoices.count((error, invoice_count) => {
+
+                        if(error) {
+                
+                            this.logger.log('provider: there was an error.')
+
+                            callback({success: false, errors: [error.toString()]})
+
+                            return
+                        }
+                                               
+                        this.logger.log('provider: counted ' + invoice_count.toString() + ' invoices')
+
+                        this.logger.log('provider: listing invoices')
+
                         this.repository.invoices.list(0, invoice_count, {column: 'created', direction: 'desc'}, (error, invoices) => {
+
+                            if(error) {
+                
+                                this.logger.log('provider: there was an error.')
+
+                                callback({success: false, errors: [error.toString()]})
+
+                                return
+                            }
 
                             var data = {
 
@@ -176,7 +380,7 @@ module providers {
                                 invoices  : invoices
                             }
 
-                            callback(JSON.stringify(data, null, 4))
+                            callback({success: true,  json: JSON.stringify(data, null, 4)})
                         })
                     })
                 })

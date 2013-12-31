@@ -66,7 +66,7 @@ module util.async {
 
                if(copy.length == 0) {
                     
-                   callback(results)
+                   callback.apply(this, results)
 
                    return
                }
