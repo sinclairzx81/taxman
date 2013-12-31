@@ -122,6 +122,35 @@ module provider {
         }
 
         //----------------------------------------------------
+        // getInvoiceRange:
+        //----------------------------------------------------
+
+         /** gets invoices within a specified date range */
+        public getInvoiceRange(request: provider.GetInvoiceRangeRequest, callback: (response: provider.GetInvoiceRangeResponse) => void) : void {
+        
+            this.logger.log('provider: get invoice range')
+
+            var range = { column :'startdate', min : request.startdate, max: request.enddate }
+
+            var order = {column :'created', direction:'desc' }
+
+            this.repository.invoices.range(request.skip, request.take, range, order, (error:any, invoices: repository.IInvoice[]) => {
+            
+                if(error) {
+                    
+                    this.logger.log('provider: there was an error.')
+
+                    callback({success: false, errors: [error.toString()]})
+
+                    return
+                }
+
+                callback({success: true, errors: null, invoices: invoices})
+            })
+
+        }
+
+        //----------------------------------------------------
         // updateInvoice:
         //----------------------------------------------------
         

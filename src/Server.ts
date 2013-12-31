@@ -151,11 +151,11 @@ class Server {
         }
 
         //------------------------------------------------
-        // INVOICES
+        // CLIENTS
         //------------------------------------------------
 
         this.app.post('/api/clients', authorize, express.json(), (request, response) => {
-        
+
             var input: provider.GetClientsRequest = {
 
                 skip  : request.body.skip,
@@ -294,6 +294,25 @@ class Server {
             this.provider.getInvoices(input, (output) => {
 
                 response.json(output)    
+            })
+        })
+
+        this.app.post('/api/invoices/range', authorize, express.json(), (request, response) => {
+
+            var input: provider.GetInvoiceRangeRequest = {
+
+                skip      : request.body.skip,
+
+                take      : request.body.take, 
+
+                startdate : new Date(request.body.startdate),
+
+                enddate   : new Date(request.body.enddate)
+            }
+
+            this.provider.getInvoiceRange(input, (output) => {
+            
+                response.json(output)
             })
         })
 

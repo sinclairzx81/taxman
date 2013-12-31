@@ -155,6 +155,13 @@ module repository {
                 }
             })               
         }
+
+        public range  (skip: number, take: number, range:  {column: string; min:any; max:any; }, order?: {column:string; direction:string;}, callback?:(error:any, items: repository.IClient[]) => void) : void {
+            
+            this.logger.log('sqlite: client range')
+
+            order = order || { column: 'name', direction: 'asc' }
+        }
         
         public find (query: string, skip: number, take: number, order?: {column:string; direction:string;}, callback?:(error:any, items: repository.IClient[]) => void) : void {
         

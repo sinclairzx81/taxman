@@ -223,7 +223,41 @@ module repository {
                 }
             })               
         }
+
+        public range  (skip: number, take: number, range:  {column: string; min:any; max:any; }, order?: {column:string; direction:string;}, callback?:(error:any, items: repository.IInvoice[]) => void) : void {
         
+            this.logger.log('sqlite: invoice range')
+
+            order = order || { column: 'id', direction: 'asc' }
+
+            var sql = 'select * from invoice where ' + this.makesafe(range.column) + ' >= ? and ' + this.makesafe(range.column) + ' <= ? order by ' + this.makesafe(order.column) + ' ' + this.makesafe(order.direction) + ' limit ?, ?'
+            
+            this.db.all(sql, range.min, range.max, skip, take, (error, rows) => {
+                
+               this.logger.log('sqlite: invoice list complete')
+
+                if(callback) {
+
+                    if(!rows) {
+                        
+                        callback(error, [])
+
+                        return
+                    }
+
+                    for(var i = 0; i < rows.length; i++) {
+                        
+                        if(rows[i]) {
+                    
+                            rows[i] = this.parse(rows[i])
+                        }                        
+                    }
+                     
+                    callback(error, <repository.IInvoice[]>rows)
+                }
+            })                        
+        }   
+             
         public find   (query: string, skip: number, take: number, order? : {column:string; direction:string;} , callback?:(error:any, items: repository.IInvoice[]) => void) : void {
             
             this.logger.log('sqlite: invoice find')

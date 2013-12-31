@@ -122,6 +122,28 @@ module provider {
     
         
     }
+
+    //------------------------------------
+    // GetInvoiceRange
+    //------------------------------------
+
+    export interface GetInvoiceRangeRequest extends IRequest {
+        
+        skip      : number
+
+        take      : number
+
+        startdate : Date
+
+        enddate   : Date
+    }
+
+    export interface GetInvoiceRangeResponse extends IResponse {
+    
+        invoices?: repository.IInvoice[]
+    }
+
+
     //------------------------------------
     // DeleteInvoice
     //------------------------------------

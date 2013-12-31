@@ -1,12 +1,77 @@
 ﻿@import '../layout.html'
 
+
+@section scripts {
+
+    <script type="text/javascript">
+
+        $(document).ready(function() {
+
+            $('.date-picker').datepicker({ dateFormat: "dd-mm-yy" })
+        })
+        
+        var go = function() {
+            
+            var startdate = moment($('#startdate').val(), 'DD-MM-YYYY')
+
+            var enddate   = moment($('#enddate').val(), 'DD-MM-YYYY')
+
+            var data = {
+                
+                skip         : 0,
+
+                take        : 1000,
+
+                startdate   : startdate.toDate().toISOString(),
+
+                enddate     : enddate.toDate().toISOString(),                
+            }
+
+            http.json.post('/api/invoices/range', null, data, function(response){
+                
+                console.log(response)
+           })
+        }
+
+    </script>
+}
+
 @section container {
 
     <div class="starter-template">
 
         <h1>tools</h1>
 
-        <p class="lead">tools go here.</p>
+    </div>
+    
+    
+    <div class="form-group">
+
+        <label for="startdate">start date</label>
+
+        <div class="input-group">
+
+            <input id="startdate" type='text' class='date-picker form-control' placeholder="dd-mm-yyyy" />
+
+            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+
+        </div>
 
     </div>
+
+    <div class="form-group">
+
+        <label for="enddate">end date</label>
+            
+        <div class="input-group">
+
+            <input id='enddate' type='text' class='date-picker form-control' placeholder="dd-mm-yyyy"/>
+           
+            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+
+        </div>
+
+    </div>
+    
+    <input type="button" value="go" onclick="go()" />
 }

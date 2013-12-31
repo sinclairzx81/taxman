@@ -43,6 +43,8 @@ module repository {
         
         list   (skip: number, take: number, order?: {column:string; direction:string;}, callback?:(error:any, items: T[]) => void) : void
         
+        range  (skip: number, take: number, range: {column: string; min:any; max:any; }, order?: {column:string; direction:string;}, callback?:(error:any, items: T[]) => void) : void
+        
         find   (query: string, skip: number, take: number, order?: {column:string; direction:string;}, callback?:(error:any, items: T[]) => void) : void 
     }
 }
