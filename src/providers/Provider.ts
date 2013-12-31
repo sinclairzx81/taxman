@@ -28,18 +28,13 @@ THE SOFTWARE.
 /// <reference path="../loggers/ILogger.ts" />
 /// <reference path="../repository/IRepository.ts" />
 /// <reference path="../util/Async.ts" />
-/// <reference path="Validator.ts" />
 /// <reference path="Contracts.ts" />
 
 module providers {
 
     export class Provider {
-        
-        private validator : providers.Validator
 
         constructor(private repository: repository.IRepository, private logger: loggers.ILogger) {
-            
-            this.validator = new providers.Validator()
 
             this.logger.log('provider: company schema')
 
@@ -133,50 +128,38 @@ module providers {
 
             this.logger.log('provider: validating invoice')
 
-            this.validator.ValidateInvoice(request.invoice, (errors, invoice) => {
-                
-                if(errors.length > 0) {
+            this.repository.companies.get(request.invoice.company, (error, company) => {
+            
+                if(error) {
                     
-                    this.logger.log('provider: could not validate invoice')
+                    this.logger.log('provider: there was an error finding the company')
 
-                    callback({success: false, errors: errors})
+                    callback({success: false, errors: [error.toString()]})
 
                     return
                 }
 
-                this.repository.companies.get(request.invoice.company, (error, company) => {
-            
-                    if(error) {
+                if(!company) {
                     
-                        this.logger.log('provider: there was an error finding the company')
+                    this.logger.log('provider: company does not exist')
+
+                    callback({success: false, errors: ['company not found']})
+
+                    return
+                }
+
+                this.repository.invoices.update(request.invoice, (error) => {
+
+                    if(error) {
+                        
+                        this.logger.log('provider: there was an error updating the invoice')
 
                         callback({success: false, errors: [error.toString()]})
 
                         return
                     }
 
-                    if(!company) {
-                    
-                        this.logger.log('provider: company does not exist')
-
-                        callback({success: false, errors: ['company not found']})
-
-                        return
-                    }
-
-                    this.repository.invoices.update(request.invoice, (error) => {
-
-                        if(error) {
-                        
-                            this.logger.log('provider: there was an error updating the invoice')
-
-                            callback({success: false, errors: [error.toString()]})
-
-                            return
-                        }
-
-                        callback({success: true, errors: null})
-                    })
+                    callback({success: true, errors: null})
                 })
             })
         }

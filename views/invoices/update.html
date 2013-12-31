@@ -6,11 +6,79 @@
 
         var model = {}
 
+        var map_invoice = function(invoice) {
+
+            var created   =  moment(new Date(invoice.created))
+
+            var startdate = moment(new Date(invoice.startdate))
+
+            var enddate   =  moment(new Date(invoice.enddate))
+
+            return {
+
+                invoiceid   : ko.observable(invoice.invoiceid),
+
+                company     : ko.observable(invoice.company),
+
+                created     : ko.observable(created.format('DD-MM-YYYY')),
+
+                startdate   : ko.observable(startdate.format('DD-MM-YYYY')),
+
+                enddate     : ko.observable(enddate.format('DD-MM-YYYY')),
+
+                hours       : ko.observable(invoice.hours),
+
+                rate        : ko.observable(invoice.rate),
+
+                gstrate     : ko.observable(invoice.gstrate),
+
+                paid        : ko.observable(invoice.paid    == null ? false : invoice.paid),
+
+                sent        : ko.observable(invoice.sent    == null ? false : invoice.sent),
+
+                comment     : ko.observable(invoice.comment == null ? ''    : invoice.comment)
+            }
+        }
+
+        var unmap_invoice = function(invoice) {
+
+            var created   =  moment(invoice.created, 'dd-mm-yyyy')
+
+            var startdate  = moment(invoice.startdate, 'dd-mm-yyyy')
+
+            var enddate   =  moment(invoice.enddate, 'dd-mm-yyyy')
+
+            return {
+
+                invoiceid   : invoice.invoiceid(),
+
+                company     : invoice.company(),
+
+                created     : created.toISOString(),
+
+                startdate   : startdate.toISOString(),
+
+                enddate     : enddate.toISOString(),
+
+                hours       : invoice.hours(),
+
+                rate        : invoice.rate(),
+
+                gstrate     : invoice.gstrate(),
+
+                paid        : invoice.paid(),
+
+                sent        : invoice.sent(),
+
+                comment     : invoice.comment()
+            }
+        }
+
         var load_invoice = function(callback) {
 
             http.json.get('/api/invoices/@(context.invoiceid)', null, function (response) {
 
-                model.invoice = ko.mapping.fromJS(response.invoice)
+                model.invoice = map_invoice(response.invoice)
 
                 callback()
             })
@@ -28,7 +96,7 @@
 
         var update_invoice = function() {
 
-            var invoice = ko.mapping.toJS(model.invoice)
+            var invoice = unmap_invoice(model.invoice)
 
             http.json.put('/api/invoices/@(context.invoiceid)', null, invoice, function(result) {
                 
@@ -59,15 +127,11 @@
 
             $('.date-picker').datepicker({
 
-                format         : "dd/mm/yyyy",
-
-                todayBtn       : true,
+                format         : "dd-mm-yyyy",
 
                 orientation    : "bottom auto",
 
                 autoclose      : true,
-
-                todayHighlight : true
             })
 
             $('.numeric').keypress(function (e) {
@@ -93,7 +157,7 @@
                 load_invoice(function() {
 
                     ko.applyBindings(model)
-                })            
+                })         
             })
         })
 

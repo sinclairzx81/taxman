@@ -45,7 +45,7 @@ module validation.enforce   {
             return value
         }
 
-        if(validation.typecheck.isFloat(value)) {
+        if(validation.typecheck.isNumeric(value)) {
         
             return parseInt(value)
         }
@@ -69,7 +69,7 @@ module validation.enforce   {
             return value
         }
 
-        if(validation.typecheck.isFloat(value)) {
+        if(validation.typecheck.isNumeric(value)) {
         
             return value
         }
@@ -93,14 +93,17 @@ module validation.enforce   {
             return value
         }
 
-        var convert = validation.strings.toDate(value)
-
-        if(convert.success) {
+        if(validation.typecheck.isString(value)) {
         
-            return convert.value
+           var convert = validation.strings.toDate(value)
+
+           if(convert.success) {
+           
+                return convert.value
+           }
         }
 
-        throw Error('not a date.')
+        throw Error('not a date')
     }
     
     /** brute forces this value to a boolean */
@@ -132,8 +135,13 @@ module validation.strings   {
     }
     
     /** converts this string to a integer */
-    export function toInteger(value: string) : ConversionResult<number> {
+    export function toInteger(value: any) : ConversionResult<number> {
     
+        if(!validation.typecheck.isString(value)) {
+        
+            return {success: false, value: null}
+        }
+
         var num = parseInt(value)
 
         if(isNaN(num)){
@@ -145,8 +153,13 @@ module validation.strings   {
     }
 
     /** converts this string to a numeric value */
-    export function toNumeric(value: string)   : ConversionResult<number> {
+    export function toNumeric(value: any)   : ConversionResult<number> {
     
+        if(!validation.typecheck.isString(value)) {
+        
+            return {success: false, value: null}
+        }
+
         var num = parseFloat(value)
 
         if(isNaN(num)){
@@ -158,8 +171,13 @@ module validation.strings   {
     }
     
     /** converts this string to a boolean */
-    export function toBoolean(value: string) : ConversionResult<boolean> {
+    export function toBoolean(value: any) : ConversionResult<boolean> {
         
+        if(!validation.typecheck.isString(value)) {
+        
+            return {success: false, value: null}
+        }
+
         if(value == 'True')  return  { success:true, value : true  }
 
         if(value == 'true')  return  { success:true, value : true  }
@@ -171,23 +189,27 @@ module validation.strings   {
         return {success: false, value: null}
     }
 
-    /** converts this string to a Date */
-    export function toDate(value: string)    : ConversionResult<Date> {
+    /** converts this string to a Date. String must be a valid iso8601 string. */
+    export function toDate(value: any)    : ConversionResult<Date> {
         
-        var date = new Date(value)
+        if(validation.strings.isDate(value)) {
+        
+            return { success: true, value: new Date(value) }
+        }
 
-        var test = JSON.stringify(date)
+        return { success: false, value: null }
+    }
 
-        if(test == null) {
-        
-            return {success: false, value: null}
-        } 
-        
-        return { success: true, value: date }
+    /** validates this string as a iso8601 date. */
+    export function isDate(value:any) : boolean {
+    
+        var regex = /^([\+-]?\d{4}(?!\d{2}\b))((-?)((0[1-9]|1[0-2])(\3([12]\d|0[1-9]|3[01]))?|W([0-4]\d|5[0-2])(-?[1-7])?|(00[1-9]|0[1-9]\d|[12]\d{2}|3([0-5]\d|6[1-6])))([T\s]((([01]\d|2[0-3])((:?)[0-5]\d)?|24\:?00)([\.,]\d+(?!:))?)?(\17[0-5]\d([\.,]\d+)?)?([zZ]|([\+-])([01]\d|2[0-3]):?([0-5]\d)?)?)?)?$/i    
+
+        return regex.test(value)
     }
 
     /** validates this string is a email address */
-    export function isEmail(value: string) : boolean {
+    export function isEmail(value: any) : boolean {
         
         if(value.length > 2083) {
             
@@ -201,7 +223,7 @@ module validation.strings   {
     }
     
     /** validates this string is a URL address */
-    export function isUrl(value: string) : boolean {
+    export function isUrl(value: any) : boolean {
         
         if(value.length > 2083) {
             
@@ -214,7 +236,7 @@ module validation.strings   {
     }
 
     /** validates this string is a IPv4 address */
-    export function isIPv4(value: string) : boolean {
+    export function isIPv4(value: any) : boolean {
 
         if (/^(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)$/.test(value)) {
             
@@ -230,7 +252,7 @@ module validation.strings   {
     }
     
     /** validates this string is a IPv6 address */
-    export function isIPv6(value: string) : boolean {
+    export function isIPv6(value: any) : boolean {
 
         if (/^::|^::1|^([a-fA-F0-9]{1,4}::?){1,7}([a-fA-F0-9]{1,4})$/.test(value)) {
 
@@ -241,7 +263,7 @@ module validation.strings   {
     }
 
     /** validates this string is string characters */
-    export function isAlpha(value: string) : boolean {
+    export function isAlpha(value: any) : boolean {
 
         if(/^[a-zA-Z]+$/.test(value)) {
         
@@ -252,7 +274,7 @@ module validation.strings   {
     }
    
     /** validates this string is alpha numeric */
-    export function isAlphanumeric(value: string) : boolean {
+    export function isAlphanumeric(value: any) : boolean {
 
         if(/^[a-zA-Z0-9]+$/.test(value)) {
         
@@ -263,7 +285,7 @@ module validation.strings   {
     }
     
     /** validates this string is numeric */
-    export function isNumeric(value: string) : boolean {
+    export function isNumeric(value: any) : boolean {
 
         if(/^(?:-?(?:[0-9]+))?(?:\.[0-9]*)?(?:[eE][\+\-]?(?:[0-9]+))?$/.test(value)) {
         
@@ -274,7 +296,7 @@ module validation.strings   {
     }
     
     /** validates this string is hex */
-    export function isHexadecimal(value: string) : boolean {
+    export function isHexadecimal(value: any) : boolean {
 
         if(/^[0-9a-fA-F]+$/.test(value)) {
         
@@ -285,7 +307,7 @@ module validation.strings   {
     }
 
     /** validates this string is a hex color */
-    export function isHexColor(value: string) : boolean {
+    export function isHexColor(value: any) : boolean {
 
         if(/^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(value)) {
         
@@ -296,19 +318,19 @@ module validation.strings   {
     }
 
     /** validates this string is lowercase */
-    export function isLowercase(value: string) : boolean {
+    export function isLowercase(value: any) : boolean {
 
         return value === value.toLowerCase();
     }
     
     /** validates this string is uppercase */
-    export function isUppercase(value: string) : boolean {
+    export function isUppercase(value: any) : boolean {
 
         return value === value.toUpperCase();
     }
 
     /** validates this string a integer */
-    export function isInteger(value: string) : boolean {
+    export function isInteger(value: any) : boolean {
 
         if(/^(?:-?(?:0|[1-9][0-9]*))$/.test(value)) {
         
@@ -319,19 +341,19 @@ module validation.strings   {
     }
 
     /** validates this string is not null */
-    export function notNull(value: string) : boolean {
+    export function notNull(value: any) : boolean {
         
         return value != null;
     }
     
     /** validates this string is null */
-    export function isNull(value: string) : boolean {
+    export function isNull(value: any) : boolean {
 
         return value == null;
     }
     
     /** validates this string as not empty */
-    export function notEmpty(value: string) : boolean {
+    export function notEmpty(value: any) : boolean {
 
         if(value == null) {
         
@@ -342,13 +364,13 @@ module validation.strings   {
     }
 
     /** validates this string as a guid */
-    export function isUUID4(value: string) : boolean {
+    export function isUUID4(value: any) : boolean {
 
        return /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(value)
     }
 
     /** validates this string as a credit card */
-    export function isCreditCard(value: string) : boolean {
+    export function isCreditCard(value: any) : boolean {
         
         var sanitized = value.replace(/[^0-9]+/g, '');
         
@@ -422,7 +444,7 @@ module validation.typecheck {
     }
 
     /** test to see if this object is a number */
-    export function isFloat(value:any) : boolean {
+    export function isNumeric(value:any) : boolean {
 
         return (typeof value === "number")
     }

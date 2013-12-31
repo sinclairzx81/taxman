@@ -27,11 +27,16 @@ THE SOFTWARE.
 /// <reference path="references.ts" />
 /// <reference path="providers/Provider.ts" />
 /// <reference path="loggers/ILogger.ts" />
+/// <reference path="Schema.ts" />
 
 class Server {
 
+    private schema: Schema;
+
     constructor(public app: ExpressApplication, public provider: providers.Provider, public logger: loggers.ILogger ) {
         
+        this.schema = new Schema()
+
         this.setup()
 
         this.setup_pages()
@@ -159,8 +164,7 @@ class Server {
             this.provider.GetCompanies(input, (output) => {
 
                 response.json(output)    
-            })            
-            
+            })
         })
 
         this.app.get('/api/companies/:companyname', authorize, (request, response) => {
@@ -231,15 +235,48 @@ class Server {
         })
 
         this.app.put('/api/invoices/:invoiceid', authorize, express.json(), (request, response) => {
-        
-            var input: providers.UpdateInvoiceRequest = {
             
-                invoice : request.body
-            }
+            this.schema.validateInvoice(request.body, (errors) => {
+                
+                if(errors.length > 0) {
+                    
+                    response.json({success: false, errors: errors})
 
-            this.provider.UpdateInvoice(input, (output) => {
+                    return
+                }
+
+                var input: providers.UpdateInvoiceRequest = {
+                
+                    invoice : {
+                    
+                        invoiceid   : request.body.invoiceid,
+
+                        company     : request.body.company,
+
+                        created     : new Date(request.body.created),
+
+                        startdate   : new Date(request.body.startdate),
+
+                        enddate     : new Date(request.body.enddate),
+
+                        hours       : request.body.hours,
+
+                        rate        : request.body.rate,
+
+                        gstrate     : request.body.gstrate,
+
+                        paid        : request.body.paid,
+
+                        sent        : request.body.sent,
+
+                        comment     : request.body.comment                 
+                    }
+                }
+
+                this.provider.UpdateInvoice(input, (output) => {
             
-                response.json(output)
+                    response.json(output)
+                })                
             })
         })
 
