@@ -43,11 +43,11 @@
 
                 model.invoices = response.invoices.map(function(invoice) {
                     
-                    invoice.created   = moment(invoice.created).format('LL')
+                    invoice.created   = moment(invoice.created).local().format('LL')
 
-                    invoice.startdate = moment(invoice.startdate).format('LL')
+                    invoice.startdate = moment(invoice.startdate).local().format('LL')
 
-                    invoice.enddate   = moment(invoice.enddate).format('LL')
+                    invoice.enddate   = moment(invoice.enddate).local().format('LL')
 
                     invoice.amount    = compute_amount(invoice)
 

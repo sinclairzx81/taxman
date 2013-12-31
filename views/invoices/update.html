@@ -4,99 +4,128 @@
 
     <script type="text/javascript">
 
-        var model = {}
+        //---------------------------------------------------
+        // write errors
+        //---------------------------------------------------
 
-        var map_invoice = function(invoice) {
+        var write_errors = function(errors) {
+            
+            $('#errors').html('')
 
-            var created   =  moment(new Date(invoice.created))
-
-            var startdate = moment(new Date(invoice.startdate))
-
-            var enddate   =  moment(new Date(invoice.enddate))
-
-            return {
-
-                invoiceid   : ko.observable(invoice.invoiceid),
-
-                company     : ko.observable(invoice.company),
-
-                created     : ko.observable(created.format('DD-MM-YYYY')),
-
-                startdate   : ko.observable(startdate.format('DD-MM-YYYY')),
-
-                enddate     : ko.observable(enddate.format('DD-MM-YYYY')),
-
-                hours       : ko.observable(invoice.hours),
-
-                rate        : ko.observable(invoice.rate),
-
-                gstrate     : ko.observable(invoice.gstrate),
-
-                paid        : ko.observable(invoice.paid    == null ? false : invoice.paid),
-
-                sent        : ko.observable(invoice.sent    == null ? false : invoice.sent),
-
-                comment     : ko.observable(invoice.comment == null ? ''    : invoice.comment)
-            }
-        }
-
-        var unmap_invoice = function(invoice) {
-
-            var created   =  moment(invoice.created, 'dd-mm-yyyy')
-
-            var startdate  = moment(invoice.startdate, 'dd-mm-yyyy')
-
-            var enddate   =  moment(invoice.enddate, 'dd-mm-yyyy')
-
-            return {
-
-                invoiceid   : invoice.invoiceid(),
-
-                company     : invoice.company(),
-
-                created     : created.toISOString(),
-
-                startdate   : startdate.toISOString(),
-
-                enddate     : enddate.toISOString(),
-
-                hours       : invoice.hours(),
-
-                rate        : invoice.rate(),
-
-                gstrate     : invoice.gstrate(),
-
-                paid        : invoice.paid(),
-
-                sent        : invoice.sent(),
-
-                comment     : invoice.comment()
-            }
-        }
-
-        var load_invoice = function(callback) {
-
-            http.json.get('/api/invoices/@(context.invoiceid)', null, function (response) {
-
-                model.invoice = map_invoice(response.invoice)
-
-                callback()
+            errors.forEach(function(error) {
+                
+                $('#errors').append('<div class="alert alert-danger">' + error + '</div>')
             })
         }
 
-        var load_companies = function(callback) {
+        //---------------------------------------------------
+        // write form
+        //---------------------------------------------------
+
+        var write_form = function(model) {
+
+            model.companies.forEach(function(company) {
+                
+                $('#company').append('<option>' + company.name + '</option>')
+            })
+
+            var created   = moment(model.invoice.created).format('DD-MM-YYYY')
+
+            var startdate = moment(model.invoice.startdate).format('DD-MM-YYYY')
+
+            var enddate   = moment(model.invoice.enddate).format('DD-MM-YYYY')
+
+            $('#invoiceid').val(model.invoice.invoiceid)
+
+            $('#company').val(model.invoice.company)
+
+            $('#created').val(created)
+
+            $('#startdate').val(startdate)
+
+            $('#enddate').val(enddate)
+
+            $('#hours').val(model.invoice.hours)
+
+            $('#rate').val(model.invoice.rate)
+
+            $('#gstrate').val(model.invoice.gstrate)
+
+            $('#paid').prop('checked', model.invoice.paid)
+
+            $('#sent').prop('checked', model.invoice.sent)
+
+            $('#comment').val(model.invoice.comment)
+        }
         
+        //---------------------------------------------------
+        // read form
+        //---------------------------------------------------
+
+        var read_form = function(invoice) {
+            
+            var created   = moment($('#created').val(), 'DD-MM-YYYY')
+
+            var startdate = moment($('#startdate').val(), 'DD-MM-YYYY')
+
+            var enddate   = moment($('#enddate').val(), 'DD-MM-YYYY')
+            
+            return {
+
+                invoiceid   : $('#invoiceid').val(),
+
+                company     : $('#company').val(),
+
+                created     : created.toDate().toISOString(),
+
+                startdate   : startdate.toDate().toISOString(),
+
+                enddate     : enddate.toDate().toISOString(),
+
+                hours       : parseFloat($('#hours').val()),
+
+                rate        : parseFloat($('#rate').val()),
+
+                gstrate     : parseFloat($('#gstrate').val()),
+
+                paid        : $('#paid').is(':checked'),
+
+                sent        : $('#sent').is(':checked'),
+
+                comment     : $('#comment').val(),
+            }
+        }
+
+
+
+        //---------------------------------------------------
+        // read form
+        //---------------------------------------------------
+
+        var load_model = function(callback) {
+
+            var model = {}
+
             http.json.post('/api/companies', null, {skip: 0, take: 1000, order: {column: 'name', direction: 'desc'}}, function (response) {
 
                 model.companies = response.companies
 
-                callback()
-            })            
+                http.json.get('/api/invoices/@(context.invoiceid)', null, function (response) {
+
+                    model.invoice = response.invoice
+
+                    callback(model)
+                })
+            })  
         }
 
+        //---------------------------------------------------
+        // read form
+        //---------------------------------------------------
+        
         var update_invoice = function() {
 
-            var invoice = unmap_invoice(model.invoice)
+            var invoice = read_form()
 
             http.json.put('/api/invoices/@(context.invoiceid)', null, invoice, function(result) {
                 
@@ -107,19 +136,25 @@
                     return
                 }
 
-                model.errors(result.errors)
+                write_errors(result.errors)
             })
         }
 
-        var delete_invoice = function() {
+        //---------------------------------------------------
+        // delete invoice
+        //---------------------------------------------------
         
-            var invoice = ko.mapping.toJS(model.invoice)
+        var delete_invoice = function() {
 
-            http.json.del('/api/invoices/@(context.invoiceid)', null, invoice, function(result) {
+            http.json.del('/api/invoices/@(context.invoiceid)', null, null, function(result) {
 
             })            
         }
 
+        //---------------------------------------------------
+        // cancel invoice
+        //---------------------------------------------------
+        
         var cancel_invoice = function() {
         
             window.location = '/invoices'
@@ -127,7 +162,7 @@
 
         $(document).ready(function () {
 
-            $('.date-picker').datepicker({format: "dd-mm-yyyy"})
+            $('.date-picker').datepicker({ dateFormat: "dd-mm-yy" })
 
             $('.numeric').keypress(function (e) {
                
@@ -145,20 +180,14 @@
                 }
             }) 
 
-            model.errors = ko.observableArray([])
+            load_model(function(model) {
 
-            load_companies(function() {
-
-                load_invoice(function() {
-
-                    ko.applyBindings(model)
-                })         
+                write_form(model)   
             })
         })
 
     </script>
 }
-
 
 @section container {
     
@@ -168,13 +197,9 @@
 
     </div>
     
-    <div data-bind="foreach: errors">
+    <div id="errors">
 
-        <div class="alert alert-danger">
-
-            <span data-bind="text: $data"></span>
-
-        </div>
+        
 
     </div>
 
@@ -200,7 +225,7 @@
 
             <label for="id">id</label>
 
-            <input id="invoiceid" type='text' class='form-control' data-bind="value: invoice.invoiceid" />
+            <input id="invoiceid" type='text' readonly='true' class='form-control' data-bind="value: invoice.invoiceid" />
 
         </div>
                     
@@ -210,7 +235,7 @@
 
             <div class="input-group">
 
-                <input id="created" type='text' readonly class='form-control' data-bind="value: invoice.created" />
+                <input id="created" type='text' readonly='true' class='form-control' data-bind="value: invoice.created" />
 
                 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
 
