@@ -5,33 +5,181 @@
 
     <script type="text/javascript">
 
+        //------------------------------------------------------
+        // returns the computed amount
+        //------------------------------------------------------
+        
+        var compute_amount = function(invoice) {
+
+            return invoice.rate * invoice.hours
+        }
+        
+        //------------------------------------------------------
+        // returns the computed amount + gst
+        //------------------------------------------------------
+              
+        var compute_amountgst = function(invoice) {
+            
+            var figure = compute_amount(invoice) * (invoice.gstrate + 1)
+            
+           // * (invoice.gstrate + 1)
+
+            return figure
+        }
+
+        //------------------------------------------------------
+        // returns the computed amount + gst
+        //------------------------------------------------------
+              
+        var compute_incometax = function(invoice) {
+            
+            var figure = compute_amount(invoice) * (parseFloat(invoice.gstrate) + 1)
+            
+            return parseFloat(figure.toFixed(2))
+        }
+
+        //------------------------------------------------------
+        // write form
+        //------------------------------------------------------
+        
+        var write_form = function(model) {
+
+            //------------------------------------------------------
+            // write invoices
+            //------------------------------------------------------            
+            
+            $('#invoices').html()
+
+            model.invoices.forEach(function(invoice) {
+
+                var buffer = []
+
+                buffer.push('<tr>')
+
+                buffer.push('    <td><a href="/invoices/' + invoice.invoiceid + '">' + invoice.invoiceid + '</a></td>')
+
+                buffer.push('    <td>' + invoice.client + '</td>')
+
+                buffer.push('    <td>' + invoice.startdate + '</td>')
+
+                buffer.push('    <td>' + invoice.enddate + '</td>')
+
+                buffer.push('    <td>$' + invoice.amount.toFixed(2) + '</td>')
+
+                buffer.push('    <td>$' + invoice.amountgst.toFixed(2) + '</td>')
+
+                buffer.push('</tr>')
+                
+                $('#invoices').append(buffer.join(''))
+            })
+
+            //------------------------------------------------------
+            // taxible income
+            //------------------------------------------------------
+
+            var taxable_income = 0
+
+            model.invoices.forEach(function(invoice) {
+                
+                taxable_income = taxable_income + compute_amountgst(invoice)
+            })
+
+            $('#taxible-income').html('$' + taxable_income.toFixed(2))
+
+            //-----------------------------------------------------------
+            // actual income
+            //-----------------------------------------------------------
+
+            var actual_income = 0
+
+            model.invoices.forEach(function(invoice) {
+            
+                actual_income = actual_income + compute_amount(invoice)
+            })
+
+            $('#actual-income').html('$' + actual_income.toFixed(2))
+
+            //-----------------------------------------------------------
+            // gst to pay
+            //-----------------------------------------------------------
+
+            var gst_to_pay = taxable_income - actual_income
+            
+            $('#gst-to-pay').html('$' + gst_to_pay.toFixed(2))
+
+            //-----------------------------------------------------------
+            // tax to pay
+            //-----------------------------------------------------------
+
+            var tax_cents_in_dollar = parseFloat($('#taxrate').val())
+
+            var tax_to_pay = actual_income * (tax_cents_in_dollar * 0.01)
+
+            $('#tax-to-pay').html('$' + tax_to_pay.toFixed(2))
+
+            //-----------------------------------------------------------
+            // total tax
+            //-----------------------------------------------------------
+
+            var total_tax = gst_to_pay + tax_to_pay
+            
+            $('#total-tax').html('$' + total_tax.toFixed(2))
+
+
+            //-----------------------------------------------------------
+            // after tax
+            //-----------------------------------------------------------
+
+            var after_tax = actual_income - total_tax
+            
+            $('#after-tax').html('$' + after_tax.toFixed(2))
+
+        }
+
+        //------------------------------------------------------
+        // returns the computed amount + gst
+        //------------------------------------------------------
+        
+        var search_range = function() {
+
+            var model = {}
+
+            var range = {
+                
+                skip        : 0,
+
+                take        : 1000,
+
+                startdate   : moment($('#startdate').val(), 'DD-MM-YYYY').toDate().toISOString(),
+
+                enddate     : moment($('#enddate').val(), 'DD-MM-YYYY').toDate().toISOString(),                
+            }
+
+            http.json.post('/api/invoices/range', null, range, function(response) {
+                
+                model.invoices = model.invoices = response.invoices.map(function(invoice) {
+                    
+                    invoice.created   = moment(invoice.created).local().format('LL')
+
+                    invoice.startdate = moment(invoice.startdate).local().format('LL')
+
+                    invoice.enddate   = moment(invoice.enddate).local().format('LL')
+
+                    invoice.amount    = compute_amount(invoice)
+
+                    invoice.amountgst = compute_amountgst(invoice)
+
+                    return invoice
+                })
+
+                write_form(model)
+           })
+        }
+
         $(document).ready(function() {
 
             $('.date-picker').datepicker({ dateFormat: "dd-mm-yy" })
         })
-        
-        var go = function() {
-            
-            var startdate = moment($('#startdate').val(), 'DD-MM-YYYY')
-
-            var enddate   = moment($('#enddate').val(), 'DD-MM-YYYY')
-
-            var data = {
-                
-                skip         : 0,
-
-                take        : 1000,
-
-                startdate   : startdate.toDate().toISOString(),
-
-                enddate     : enddate.toDate().toISOString(),                
-            }
-
-            http.json.post('/api/invoices/range', null, data, function(response){
-                
-                console.log(response)
-           })
-        }
 
     </script>
 }
@@ -44,34 +192,215 @@
 
     </div>
     
-    
-    <div class="form-group">
+    <div class="col-md-4">
 
-        <label for="startdate">start date</label>
+        <div class="form-group">
 
-        <div class="input-group">
+            <label for="startdate">start date</label>
 
-            <input id="startdate" type='text' class='date-picker form-control' placeholder="dd-mm-yyyy" />
+            <div class="input-group">
 
-            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                <input id="startdate" type='text' class='date-picker form-control' value="01-10-2013" placeholder="dd-mm-yyyy" />
+
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+
+            </div>
 
         </div>
 
-    </div>
+        <div class="form-group">
 
-    <div class="form-group">
-
-        <label for="enddate">end date</label>
+            <label for="enddate">end date</label>
             
-        <div class="input-group">
+            <div class="input-group">
 
-            <input id='enddate' type='text' class='date-picker form-control' placeholder="dd-mm-yyyy"/>
+                <input id='enddate' type='text' class='date-picker form-control' value="01-10-2016" placeholder="dd-mm-yyyy"/>
            
-            <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <label for="taxrate">tax rate (cents in the dollar)</label>
+            
+            <div class="input-group">
+
+                <input id='taxrate' type='text' class='form-control' placeholder="17.5" />
+
+            </div>
+
+        </div>
+
+        <div class="form-group">
+
+            <input type="button" class="btn" value="search range" onclick="search_range()" />
+
+        </div>
+
+        <table class="table">
+
+          <tbody>
+            <tr>
+            <th>
+                Taxable income
+            </th>
+            <th>
+                Income tax rates for every<br>
+                $1 of taxable income<br>
+                (excl ACC earners' levy)
+            </th>
+            <th>
+                PAYE rates for every<br>
+                $1 of taxable income<br>
+                (incl ACC earners' levy - see "Note 1" below)
+            </th>
+            </tr>
+            <tr class="oddrow">
+            <td>
+                up to $14,000
+            </td>
+            <td align="center">
+                10.5 cents
+            </td>
+            <td align="center">
+                12.20 cents
+            </td>
+            </tr>
+            <tr>
+            <td>
+                from $14,001 to $48,000
+            </td>
+            <td align="center">
+                17.5 cents
+            </td>
+            <td align="center">
+                19.20 cents
+            </td>
+            </tr>
+            <tr class="oddrow">
+            <td>
+                from $48,001 to $70,000
+            </td>
+            <td align="center">
+                30 cents
+            </td>
+            <td align="center">
+                31.70 cents
+            </td>
+            </tr>
+            <tr>
+            <td>
+                $70,001 and over
+            </td>
+            <td align="center">
+                33 cents
+            </td>
+            <td align="center">
+                34.70 cents
+            </td>
+            </tr>
+            <tr class="oddrow">
+            <td>
+                No-notification - see "Note 2 below"
+            </td>
+            <td align="center">
+                45 cents
+            </td>
+            <td align="center">
+                46.70 cents
+            </td>
+            </tr>
+            </tbody>
+        </table>
+
+
+    </div>
+
+
+    
+
+    <div class="col-md-8">
+        
+        <div class="row">
+            
+            <table class="table">
+                <tr>
+
+                    <th>taxible income</th><td id="taxible-income">$0</td>
+
+                <tr>
+
+                <tr>
+
+                    <th>actual income</th><td id="actual-income">$0</td>
+
+                <tr>
+
+                </tr>
+
+                    <th>gst to pay</th><td id="gst-to-pay">$0</td>
+
+                <tr>
+
+                </tr>
+
+                    <th>tax to pay</th><td id="tax-to-pay">$0</td>
+
+                </tr>
+
+                </tr>
+
+                    <th>total tax</th><td id="total-tax">$0</td>
+
+                </tr>
+
+
+                </tr>
+
+                    <th>after tax</th><td id="after-tax">$0</td>
+
+                </tr>
+
+            </table>
+
+        </div>
+
+        <div class="row">
+
+            <table class="table">
+
+                <thead>
+
+                    <tr>
+
+                        <th>number</th>
+
+                        <th>client</th>
+
+                        <th>start date</th>
+
+                        <th>end end</th>
+
+                        <th>amount</th>
+
+                        <th>+ gst</th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody id="invoices">
+
+                </tbody>
+
+            </table>
 
         </div>
 
     </div>
     
-    <input type="button" value="go" onclick="go()" />
+    
 }

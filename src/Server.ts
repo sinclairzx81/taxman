@@ -293,7 +293,7 @@ class Server {
 
             this.provider.getInvoices(input, (output) => {
 
-                response.json(output)    
+                response.json(output)
             })
         })
 
