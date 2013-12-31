@@ -6,6 +6,12 @@
     <script type="text/javascript">
 
         //------------------------------------------------------
+        // model
+        //------------------------------------------------------
+
+        var model = {}
+
+        //------------------------------------------------------
         // returns the computed amount
         //------------------------------------------------------
         
@@ -21,8 +27,6 @@
         var compute_amountgst = function(invoice) {
             
             var figure = compute_amount(invoice) * (invoice.gstrate + 1)
-            
-           // * (invoice.gstrate + 1)
 
             return figure
         }
@@ -39,10 +43,10 @@
         }
 
         //------------------------------------------------------
-        // write form
+        // write table
         //------------------------------------------------------
         
-        var write_form = function(model) {
+        var write_table = function() {
 
             //------------------------------------------------------
             // write invoices
@@ -51,27 +55,24 @@
             $('#invoices').html()
             
             var buffer = []
-            
             model.invoices.forEach(function(invoice) {
-
                 buffer.push('<tr>')
-
                 buffer.push('    <td><a href="/invoices/' + invoice.invoiceid + '">' + invoice.invoiceid + '</a></td>')
-
                 buffer.push('    <td>' + invoice.client + '</td>')
-
                 buffer.push('    <td>' + invoice.startdate + '</td>')
-
                 buffer.push('    <td>' + invoice.enddate + '</td>')
-
                 buffer.push('    <td>$' + invoice.amount.toFixed(2) + '</td>')
-
                 buffer.push('    <td>$' + invoice.amountgst.toFixed(2) + '</td>')
-
                 buffer.push('</tr>')
             })
-
             $('#invoices').html(buffer.join(''))
+        }
+
+        //------------------------------------------------------
+        // write taxes
+        //------------------------------------------------------
+
+        var write_taxes = function() {
 
             //------------------------------------------------------
             // taxible income
@@ -107,11 +108,19 @@
             
             $('#gst-to-pay').html('$' + gst_to_pay.toFixed(2))
 
+
+
+            //-----------------------------------------------------------
+            // tax_cents_in_dollar
+            //-----------------------------------------------------------
+
+            var tax_cents_in_dollar =  parseFloat($('#tax-cents-in-dollar').val())
+
+            if(isNaN(tax_cents_in_dollar)) return
+
             //-----------------------------------------------------------
             // tax to pay
             //-----------------------------------------------------------
-
-            var tax_cents_in_dollar = parseFloat($('#taxrate').val())
 
             var tax_to_pay = actual_income * (tax_cents_in_dollar * 0.01)
 
@@ -125,15 +134,13 @@
             
             $('#total-tax').html('$' + total_tax.toFixed(2))
 
-
             //-----------------------------------------------------------
             // after tax
             //-----------------------------------------------------------
 
             var after_tax = taxable_income - total_tax
             
-            $('#after-tax').html('$' + after_tax.toFixed(2))
-
+            $('#after-tax').html('$' + after_tax.toFixed(2))            
         }
 
         //------------------------------------------------------
@@ -141,130 +148,89 @@
         //------------------------------------------------------
         
         var search_range = function() {
-
-            var model = {}
-
             var range = {
-                
                 skip        : 0,
-
                 take        : 1000,
-
                 startdate   : moment($('#startdate').val(), 'DD-MM-YYYY').toDate().toISOString(),
-
                 enddate     : moment($('#enddate').val(), 'DD-MM-YYYY').toDate().toISOString(),                
             }
-
             http.json.post('/api/invoices/range', null, range, function(response) {
-                
                 model.invoices = response.invoices.map(function(invoice) {
-                    
                     invoice.created   = moment(invoice.created).local().format('LL')
-
                     invoice.startdate = moment(invoice.startdate).local().format('LL')
-
                     invoice.enddate   = moment(invoice.enddate).local().format('LL')
-
                     invoice.amount    = compute_amount(invoice)
-
                     invoice.amountgst = compute_amountgst(invoice)
-
                     return invoice
                 })
-
-                write_form(model)
+                write_table()
+                write_taxes()
            })
         }
 
         $(document).ready(function() {
-
             $('.date-picker').datepicker({ dateFormat: "dd-mm-yy" })
+            $('#tax-cents-in-dollar').keyup(function() {write_taxes()})
         })
 
     </script>
 }
 
 @section container {
-
+    
     <div class="starter-template">
 
-        <h1>tools</h1>
+        <h1>Tools</h1>
 
     </div>
+
+
     
     <div class="col-md-4">
-
         <div class="form-group">
-
             <label for="startdate">start date</label>
-
             <div class="input-group">
-
                 <input id="startdate" type='text' class='date-picker form-control' placeholder="dd-mm-yyyy" />
-
                 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-
             </div>
-
         </div>
 
         <div class="form-group">
-
             <label for="enddate">end date</label>
-            
             <div class="input-group">
-
                 <input id='enddate' type='text' class='date-picker form-control' placeholder="dd-mm-yyyy"/>
-           
                 <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
-
             </div>
-
         </div>
 
         <div class="form-group">
-
-            <label for="taxrate">tax rate (cents in the dollar)</label>
-            
+            <label for="tax-cents-in-dollar">tax rate (cents in the dollar)</label>
             <div class="input-group">
-
-                <input id='taxrate' type='text' class='form-control' placeholder="17.5" />
-
+                <input id='tax-cents-in-dollar' type='text' class='form-control' placeholder="cents in the dollar" />
             </div>
-
         </div>
 
         <div class="form-group">
-
             <input type="button" class="btn" value="search range" onclick="search_range()" />
-
         </div>
-
     </div>
-
-
     
-
     <div class="col-md-8">
-        
         <div class="row">
-                
             <table class="table">
                 <thead>
                     <tr><th colspan="2">Earnings and Taxes</th></tr>
                 </thead>
                 <tbody>
-                    <tr><th>taxible income</th><td id="taxible-income">$0</td></tr>
-                    <tr><th>actual income</th><td id="actual-income">$0</td></tr>
-                    <tr><th>gst to pay</th><td id="gst-to-pay">$0</td></tr>
-                    <tr><th>tax to pay</th><td id="tax-to-pay">$0</td></tr>
-                    <tr><th>total tax</th><td id="total-tax">$0</td></tr>
-                    <tr><th>after tax</th><td id="after-tax">$0</td></tr>
+                    <tr><th>taxible income</th><td id="taxible-income">$0.00</td></tr>
+                    <tr><th>actual income</th><td id="actual-income">$0.00</td></tr>
+                    <tr><th>gst to pay</th><td id="gst-to-pay">$0.00</td></tr>
+                    <tr><th>tax to pay</th><td id="tax-to-pay">$0.00</td></tr>
+                    <tr><th>total tax</th><td id="total-tax">$0.00</td></tr>
+                    <tr><th>after tax</th><td id="after-tax">$0.00</td></tr>
                 </tbody>
             </table>
-
         </div>
-
         <div class="row">
             <table class="table">
                 <thead>
@@ -280,7 +246,5 @@
                 <tbody id="invoices" />
             </table>
         </div>
-    </div>
-    
-    
+    </div>  
 }

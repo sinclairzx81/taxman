@@ -445,7 +445,27 @@ class Server {
             
                 response.json(output)
             })            
-        })                                  
+        })
+
+        //------------------------------------------------
+        // INVOICES
+        //------------------------------------------------        
+        
+        this.app.get('/api/export', authorize, (request, response) => {
+        
+            var input: provider.ExportRequest = {
+
+            }
+
+            this.provider.exportData(input, (output) => {
+                
+                response.setHeader('Content-Type', 'application/json')
+
+                response.write(output.json)
+
+                response.end()
+            })
+        })                            
     }
 
 }
