@@ -234,8 +234,6 @@ module repository {
         }  
         
         private parse(record: any) : repository.IInvoice {
-            
-            this.logger.log('sqlite: parsing row')
 
             record.created   = new Date(record.created)
 

@@ -25,17 +25,18 @@ THE SOFTWARE.
 ---------------------------------------------------------------------------*/
 
 /// <reference path="references.ts" />
-/// <reference path="provider/Provider.ts" />
 /// <reference path="loggers/ILogger.ts" />
-/// <reference path="Schema.ts" />
+/// <reference path="provider/Provider.ts" />
+/// <reference path="schema/Schema.ts" />
+
 
 class Server {
 
-    private schema: Schema;
+    private schema: schema.Schema;
 
     constructor(public app: ExpressApplication, public provider: provider.Provider, public logger: loggers.ILogger ) {
         
-        this.schema = new Schema()
+        this.schema = new schema.Schema()
 
         this.setup()
 

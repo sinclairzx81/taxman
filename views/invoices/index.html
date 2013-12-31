@@ -9,7 +9,51 @@
 
     <script type="text/javascript">
 
-        var model = {}
+
+        //------------------------------------------------------
+        // writes the form
+        //------------------------------------------------------
+
+        var write_form = function(model) {
+
+            model.invoices.forEach(function(invoice) {
+
+                var buffer = []
+
+                if(invoice.sent == false && invoice.paid == false) {
+                
+                    buffer.push('<tr>')
+                }
+
+                if((invoice.sent == true && invoice.paid == false) ||  (invoice.sent == false && invoice.paid == true)) {
+                
+                    buffer.push('<tr class="warning">')
+                }
+
+                if(invoice.sent == true && invoice.paid == true) {
+                
+                    buffer.push('<tr class="success">')
+                }
+
+                buffer.push('    <td><a href="/invoices/' + invoice.invoiceid + '">' + invoice.invoiceid + '</a></td>')
+
+                buffer.push('    <td>' + invoice.company + '</td>')
+
+                buffer.push('    <td>' + invoice.created + '</td>')
+
+                buffer.push('    <td>' + invoice.startdate + '</td>')
+
+                buffer.push('    <td>' + invoice.enddate + '</td>')
+
+                buffer.push('    <td>$' + invoice.amount + '</td>')
+
+                buffer.push('    <td>$' + invoice.amountgst + '</td>')
+
+                buffer.push('</tr>')
+                
+                $('#invoices').append(buffer.join(''))
+            })
+        }
 
         //------------------------------------------------------
         // returns the computed amount
@@ -35,8 +79,10 @@
         // loads invoices from the server
         //------------------------------------------------------
 
-        var load_invoices = function(callback) {
-        
+        var load_model = function(callback) {
+            
+            var model = {}
+
             var input = {skip:0, take:1000, order: {column: 'created', direction: 'desc'}}
 
             http.json.post('/api/invoices', null, input, function (response) {
@@ -56,7 +102,7 @@
                     return invoice
                 })
 
-                callback()
+                callback(model)
             })
         }
 
@@ -65,12 +111,11 @@
         //------------------------------------------------------
 
         $(document).ready(function () {
-            
-           
 
-            load_invoices(function() {
+            load_model(function(model) {
 
-                ko.applyBindings(model)
+                write_form(model)
+                
             })
         })
 
@@ -111,29 +156,11 @@
 
         </thead>
 
-        <script type="text/html" id="invoices.template">
+        <tbody id="invoices">
 
-            <tr class="paid">
 
-                <td><a data-bind="text: invoiceid, attr: { href: '/invoices/' + invoiceid}"></a></td>
 
-                <td data-bind="text: company"></td>
-
-                <td data-bind="text: created"></td>
-
-                <td data-bind="text: startdate"></td>
-
-                <td data-bind="text: enddate"></td>
-
-                <td data-bind="text: '$' + amount"></td>
-
-                <td data-bind="text: '$' + amountgst"></td>
-
-            </tr>
-
-        </script>
-
-        <tbody data-bind="template: { name: 'invoices.template', foreach: invoices }" />
+        </tbody>
 
     </table>
 }
