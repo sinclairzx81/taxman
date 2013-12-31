@@ -101,7 +101,9 @@
             http.json.put('/api/invoices/@(context.invoiceid)', null, invoice, function(result) {
                 
                 if(result.success) {
-                
+                    
+                    window.location = '/invoices'
+
                     return
                 }
 
@@ -125,14 +127,7 @@
 
         $(document).ready(function () {
 
-            $('.date-picker').datepicker({
-
-                format         : "dd-mm-yyyy",
-
-                orientation    : "bottom auto",
-
-                autoclose      : true,
-            })
+            $('.date-picker').datepicker({format: "dd-mm-yyyy"})
 
             $('.numeric').keypress(function (e) {
                
@@ -213,7 +208,13 @@
 
             <label for="created">created</label>
 
-            <input id="created" type='text' readonly class='form-control' data-bind="value: invoice.created" />
+            <div class="input-group">
+
+                <input id="created" type='text' readonly class='form-control' data-bind="value: invoice.created" />
+
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+
+            </div>
 
         </div>
 
@@ -221,7 +222,12 @@
 
             <label for="startdate">start date</label>
 
-            <input id="startdate" type='text' class='date-picker form-control' data-bind="value: invoice.startdate" />
+            <div class="input-group">
+
+                <input id="startdate" type='text' class='date-picker form-control' data-bind="value: invoice.startdate" />
+
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+            </div>
 
         </div>
 
@@ -229,7 +235,13 @@
 
             <label for="enddate">end date</label>
             
-            <input id='enddate' type='text' class='date-picker form-control' data-bind="value: invoice.enddate" /><i class="icon-th"></i>
+            <div class="input-group">
+
+                <input id='enddate' type='text' class='date-picker form-control' data-bind="value: invoice.enddate" />
+           
+                <span class="input-group-addon"><span class="glyphicon glyphicon-calendar"></span></span>
+
+            </div>
 
         </div>
 

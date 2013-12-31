@@ -28,25 +28,25 @@ var server     = new taxman.Server(app, provider, logger)
 // bootstrap
 //----------------------------------------
 
-setTimeout(function() {
+//setTimeout(function() {
 
-    var fs = require('fs')
+//    var fs = require('fs')
 
-    fs.readFile('c:/input/invoices.json', 'utf8', function(err, json) {
+//    fs.readFile('c:/input/invoices.json', 'utf8', function(err, json) {
 
-        provider.Import({json: json}, function(results) {
+//        provider.Import({json: json}, function(results) {
 
-            provider.Export({}, function(data) {
+//            provider.Export({}, function(data) {
                 
-                fs.writeFile('c:/input/invoices3.json', data.json, function () {
+//                fs.writeFile('c:/input/invoices3.json', data.json, function () {
 
-                    console.log('done')
-                })
-            })            
-        })
-    })
+//                    console.log('done')
+//                })
+//            })            
+//        })
+//    })
 
-}, 1500)
+//}, 1500)
 
 
 

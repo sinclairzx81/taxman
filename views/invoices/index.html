@@ -11,17 +11,47 @@
 
         var model = {}
 
+        //------------------------------------------------------
+        // returns the computed amount
+        //------------------------------------------------------
+        
+        var compute_amount = function(invoice) {
+
+            return invoice.rate * invoice.hours
+        }
+        
+        //------------------------------------------------------
+        // returns the computed amount + gst
+        //------------------------------------------------------
+              
+        var compute_amountgst = function(invoice) {
+            
+            var figure = compute_amount(invoice) * (invoice.gstrate + 1)
+            
+            return figure.toFixed(2)
+        }
+
+        //------------------------------------------------------
+        // loads invoices from the server
+        //------------------------------------------------------
+
         var load_invoices = function(callback) {
         
-            var input = {skip:0, take:100, order: {column: 'created', direction: 'desc'}}
+            var input = {skip:0, take:1000, order: {column: 'created', direction: 'desc'}}
 
             http.json.post('/api/invoices', null, input, function (response) {
 
                 model.invoices = response.invoices.map(function(invoice) {
-                
-                    invoice.amount    = amount(invoice)
+                    
+                    invoice.created   = moment(invoice.created).format('LL')
 
-                    invoice.amountgst = amountgst(invoice)
+                    invoice.startdate = moment(invoice.startdate).format('LL')
+
+                    invoice.enddate   = moment(invoice.enddate).format('LL')
+
+                    invoice.amount    = compute_amount(invoice)
+
+                    invoice.amountgst = compute_amountgst(invoice)
 
                     return invoice
                 })
@@ -30,6 +60,9 @@
             })
         }
 
+        //------------------------------------------------------
+        // initalize
+        //------------------------------------------------------
 
         $(document).ready(function () {
 
