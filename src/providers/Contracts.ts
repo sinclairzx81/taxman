@@ -115,7 +115,7 @@ module providers {
 
     export interface DeleteInvoiceRequest {
     
-        invoice : repository.IInvoice
+        invoiceid : string
     }
 
     export interface DeleteInvoiceResponse extends IResponse  {

@@ -61,7 +61,7 @@ module repository {
             
                                                           '  comment     TEXT,'         +
             
-                                                          '  primary key(id));'
+                                                          '  primary key(invoiceid));'
 
             this.db.run(sql, (error) => {
 

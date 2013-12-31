@@ -169,7 +169,7 @@ module providers {
             
             this.logger.log('provider: DeleteInvoice(' + JSON.stringify(request) + ')')
 
-            this.repository.invoices.remove(request.invoice.invoiceid, (error) => {
+            this.repository.invoices.remove(request.invoiceid, (error) => {
             
                 if(error) {
                 
@@ -247,8 +247,6 @@ module providers {
 
                 var failed  = 0
 
-                console.log(JSON.stringify(errors, null, 4))
-
                 for(var i = 0; i < errors.length; i++) {
                     
                     if(!errors[i]) {
@@ -278,8 +276,6 @@ module providers {
                     var success = 0;
 
                     var failed  = 0;
-
-                    console.log(JSON.stringify(errors, null, 4))
 
                     for(var i = 0; i < errors.length; i++) {
                     

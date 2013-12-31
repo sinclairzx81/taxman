@@ -43,7 +43,7 @@ module util.async {
 
                 if(complete == inputs.length) {
                 
-                    callback(results)
+                    callback(results[0])
                 }
             })
         }        
@@ -62,11 +62,11 @@ module util.async {
            
            func(input, (... args:any[]) => {
 
-               results.push(args)
+               results.push(args[0])
 
                if(copy.length == 0) {
                     
-                   callback.apply(this, results)
+                   callback(results)
 
                    return
                }

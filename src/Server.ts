@@ -158,8 +158,6 @@ class Server {
 
             this.provider.GetCompanies(input, (output) => {
 
-                console.log(output)
-
                 response.json(output)    
             })            
             
@@ -236,7 +234,7 @@ class Server {
         
             var input: providers.UpdateInvoiceRequest = {
             
-                invoice : request.params
+                invoice : request.body
             }
 
             this.provider.UpdateInvoice(input, (output) => {
@@ -247,7 +245,15 @@ class Server {
 
         this.app.del('/api/invoices/:invoiceid', authorize, (request, response) => {
         
+            var input: providers.DeleteInvoiceRequest = {
             
+                invoiceid : request.params.invoiceid
+            }
+
+            this.provider.DeleteInvoice(input, (output) => {
+            
+                response.json(output)
+            })            
         })                                  
     }
 
