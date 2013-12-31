@@ -39,6 +39,8 @@ module repository {
 
         public schema (callback?: (error: any) => void) : void {
 
+            this.logger.log('sqlite: setting invoice schema')
+
             var sql = 'create table if not exists invoice  ( invoiceid   TEXT,' +
 
                                                           '  company     TEXT,' + 
@@ -65,6 +67,8 @@ module repository {
 
             this.db.run(sql, (error) => {
 
+                this.logger.log('sqlite: setting invoice schema complete')
+
                 if(callback) {
                     
                     callback(error)
@@ -73,7 +77,9 @@ module repository {
         }
 
         public count  (callback?:(error: any, count:number) => void) : void {
-        
+            
+            this.logger.log('sqlite: invoice count')
+
             var sql = 'select count(*) from invoice'
 
             this.db.get(sql, (error, row) => {
@@ -81,7 +87,9 @@ module repository {
                 if(callback) {
 
                     if(error) {
-                
+                        
+                        this.logger.log('sqlite: invoice count error')
+
                         callback(error, 0)
 
                         return
@@ -103,6 +111,8 @@ module repository {
 
         public add    (record: repository.IInvoice,  callback?:(error:any) => void) : void {
             
+            this.logger.log('sqlite: invoice add')
+
             var sent = record.sent ? 1 : 0
 
             var paid = record.paid ? 1 : 0
@@ -111,6 +121,8 @@ module repository {
 
             this.db.run(sql, record.invoiceid, record.company, record.created, record.startdate, record.enddate, record.hours, record.rate, record.gstrate, sent, paid, record.comment, (error) => {
                 
+                this.logger.log('sqlite: invoice add complete')
+
                 if(callback) {
                 
                     callback(error)
@@ -120,6 +132,8 @@ module repository {
 
         public update (record:repository.IInvoice,  callback?:(error:any) => void) : void {
         
+            this.logger.log('sqlite: invoice update')
+
             var sent = record.sent ? 1 : 0
 
             var paid = record.paid ? 1 : 0
@@ -128,6 +142,8 @@ module repository {
 
             this.db.run(sql, record.company, record.created, record.startdate, record.enddate, record.hours, record.rate, record.gstrate, sent, paid, record.comment, record.invoiceid, (error) => {
                 
+                this.logger.log('sqlite: invoice update complete')
+
                 if(callback) {
                 
                     callback(error)
@@ -136,11 +152,15 @@ module repository {
         }
         
         public remove (id:string, callback?:(error:any) => void) : void {
-        
+            
+            this.logger.log('sqlite: invoice remove')
+
             var sql = 'delete from invoice where invoiceid = ?'
 
             this.db.run(sql, id, (error, row) => {
                 
+                this.logger.log('sqlite: invoice complete')
+
                 if(callback) {
                     
                     callback(error)
@@ -149,26 +169,39 @@ module repository {
         }
         
         public get    (id:string, callback?:(error:any, record: repository.IInvoice) => void) : void {
-        
+            
+            this.logger.log('sqlite: invoice get')
+
             var sql = 'select * from invoice where invoiceid = ?'
 
             this.db.get(sql, id, (error, row) => {
                 
+                this.logger.log('sqlite: invoice get complete')
+
                 if(callback) {
                     
-                    callback(error, this.parse(row))
+                    if(row) {
+                    
+                        row = this.parse(row)
+                    }
+
+                    callback(error, row)
                 }
             })    
         }
         
         public list   (skip: number, take: number, order?: {column:string; direction:string;}, callback?:(error:any, items: repository.IInvoice[]) => void) : void {
-        
+            
+            this.logger.log('sqlite: invoice list')
+
             order = order || { column: 'id', direction: 'asc' }
 
             var sql = 'select * from invoice order by ' + this.makesafe(order.column) + ' ' + this.makesafe(order.direction) + ' limit ?, ?'
             
             this.db.all(sql, skip, take, (error, rows) => {
                 
+               this.logger.log('sqlite: invoice list complete')
+
                 if(callback) {
 
                     if(!rows) {
@@ -179,10 +212,13 @@ module repository {
                     }
 
                     for(var i = 0; i < rows.length; i++) {
+                        
+                        if(rows[i]) {
                     
-                        rows[i] = this.parse(rows[i])
+                            rows[i] = this.parse(rows[i])
+                        }                        
                     }
-                          
+                     
                     callback(error, <repository.IInvoice[]>rows)
                 }
             })               
@@ -190,6 +226,8 @@ module repository {
         
         public find   (query: string, skip: number, take: number, order? : {column:string; direction:string;} , callback?:(error:any, items: repository.IInvoice[]) => void) : void {
             
+            this.logger.log('sqlite: invoice find')
+
             order = order || { column: 'id', direction: 'asc' }
 
             throw Error('not implemented')
@@ -197,6 +235,8 @@ module repository {
         
         private parse(record: any) : repository.IInvoice {
             
+            this.logger.log('sqlite: parsing row')
+
             record.created   = new Date(record.created)
 
             record.startdate = new Date(record.startdate)

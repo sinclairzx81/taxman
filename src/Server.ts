@@ -229,7 +229,7 @@ class Server {
             })
         })
 
-        this.app.post('/api/invoices:invoiceid', authorize, (request, response) => {
+        this.app.post('/api/invoices/create', authorize, express.json(), (request, response) => {
             
             this.schema.validateInvoice(request.body, (errors) => {
 
@@ -239,7 +239,7 @@ class Server {
 
                     return
                 }
-
+                
                 var input: provider.CreateInvoiceRequest = {
                 
                     invoice : {

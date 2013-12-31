@@ -72,7 +72,7 @@
 
                 company     : $('#company').val(),
 
-                created     : new Date().toISOString(),
+                created     : (new Date().toISOString()),
 
                 startdate   : startdate.toDate().toISOString(),
 
@@ -116,11 +116,13 @@
 
             var invoice = read_form()
 
-            http.json.put('/api/invoices/create', null, invoice, function(result) {
+            alert(JSON.stringify(invoice, null, 4))
+
+            http.json.post('/api/invoices/create', null, invoice, function(result) {
                 
                 if(result.success) {
                     
-                    window.location = '/invoices'
+                    //window.location = '/invoices'
 
                     return
                 }

@@ -148,18 +148,30 @@ module provider {
                     return
                 }
 
-                this.repository.invoices.update(request.invoice, (error) => {
+                this.repository.invoices.get(request.invoice.invoiceid, (error, company) => {
 
                     if(error) {
-                        
-                        this.logger.log('provider: there was an error updating the invoice')
+                    
+                        this.logger.log('provider: unable to lookup for existing invoice')
 
                         callback({success: false, errors: [error.toString()]})
 
                         return
                     }
 
-                    callback({success: true, errors: null})
+                    this.repository.invoices.add(request.invoice, (error) => {
+
+                        if(error) {
+                        
+                            this.logger.log('provider: unable to add new invoice')
+
+                            callback({success: false, errors: [error.toString()]})
+
+                            return
+                        }
+
+                        callback({success: true, errors: null})
+                    })
                 })
             })
         }
