@@ -136,6 +136,19 @@ module provider {
         
     }
 
+    //------------------------------------
+    // LastInvoice
+    //------------------------------------
+
+    export interface LastInvoiceRequest {
+    
+         
+    }
+
+    export interface LastInvoiceResponse extends IResponse  {
+    
+        invoice : repository.IInvoice
+    }
 
     //------------------------------------
     // GetCompanies

@@ -53,6 +53,7 @@ module provider {
         // getInvoices:
         //----------------------------------------------------
         
+        /** lists invoices */
         public getInvoices (request: provider.GetInvoicesRequest, callback: ( response: provider.GetInvoicesResponse) => void) : void {
             
             this.logger.log('provider: get invoices')
@@ -76,6 +77,7 @@ module provider {
         // countInvoices:
         //----------------------------------------------------
         
+        /** counts invoices */
         public countInvoices(request: provider.CountInvoicesRequest, callback: (response: provider.CountInvoicesResponse) => void): void {
         
             this.logger.log('provider: count invoices')
@@ -99,6 +101,7 @@ module provider {
         // getInvoice:
         //----------------------------------------------------
         
+        /** gets a invoice */
         public getInvoice(request: provider.GetInvoiceRequest, callback: ( response: provider.GetInvoiceResponse) => void ) : void {
         
             this.logger.log('provider: get invoice')
@@ -122,6 +125,7 @@ module provider {
         // updateInvoice:
         //----------------------------------------------------
         
+        /** creates a invoice */
         public createInvoice(request: provider.CreateInvoiceRequest, callback: ( response: provider.CreateInvoiceResponse) => void ) : void {
 
             this.logger.log('provider: create invoice')
@@ -180,6 +184,7 @@ module provider {
         // updateInvoice:
         //----------------------------------------------------
         
+        /** updates a invoice */
         public updateInvoice(request: provider.UpdateInvoiceRequest, callback: ( response: provider.UpdateInvoiceResponse) => void ) : void {
 
             this.logger.log('provider: update invoice')
@@ -226,6 +231,7 @@ module provider {
         // deleteInvoice:
         //----------------------------------------------------
         
+        /** deletes a invoice */
         public deleteInvoice(request: provider.DeleteInvoiceRequest, callback: (response: provider.DeleteInvoiceResponse) => void ) : void {
             
             this.logger.log('provider: delete invoice')
@@ -247,6 +253,7 @@ module provider {
         // getCompanies:
         //----------------------------------------------------
         
+        /** gets companies */
         public getCompanies(request: provider.GetCompaniesRequest, callback: (response: provider.GetCompaniesResponse) => void) : void {
 
             this.logger.log('provider: get clients')
@@ -270,6 +277,7 @@ module provider {
         // importData
         //--------------------------------------------------------------
 
+        /** imports data */
         public importData(request: provider.ImportRequest, callback: (response: provider.ImportResponse) => void) : void {
             
             this.logger.log('provider: importing data')
@@ -367,6 +375,8 @@ module provider {
         //--------------------------------------------------------------
         // exportData
         //--------------------------------------------------------------
+
+        /** exports all data */
 
         public exportData(request: provider.ExportRequest, callback: (response: provider.ExportResponse) => void) : void {
             

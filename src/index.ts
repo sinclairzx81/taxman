@@ -60,10 +60,12 @@ THE SOFTWARE.
 
 module.exports.util       = util
 
+module.exports.validation       = validation
+
 module.exports.loggers    = loggers
 
 module.exports.repository = repository
 
-module.exports.provider  = provider
+module.exports.provider   = provider
 
 module.exports.Server     = Server

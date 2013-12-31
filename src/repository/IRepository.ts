@@ -33,8 +33,10 @@ module repository {
     /** common base interface for all repository types */
     export interface IRepository {
 
+        /** client records */
         clients   : ITable<repository.IClient>;
 
+        /** invoice records */
         invoices  : ITable<repository.IInvoice>;        
     }
 }

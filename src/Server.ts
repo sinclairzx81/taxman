@@ -188,6 +188,9 @@ class Server {
             
         })
 
+        //------------------------------------------------
+        // INVOICES
+        //------------------------------------------------
 
         this.app.post('/api/invoices', authorize, express.json(), (request, response) => {
             
@@ -330,6 +333,8 @@ class Server {
             
                 invoiceid : request.params.invoiceid
             }
+
+            
 
             this.provider.deleteInvoice(input, (output) => {
             

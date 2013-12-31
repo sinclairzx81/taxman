@@ -159,7 +159,7 @@ module repository {
 
             this.db.run(sql, id, (error, row) => {
                 
-                this.logger.log('sqlite: invoice complete')
+                this.logger.log('sqlite: invoice remove complete')
 
                 if(callback) {
                     

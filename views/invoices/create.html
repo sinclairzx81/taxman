@@ -35,6 +35,20 @@
             })
 
             //-----------------------------------
+            // lastinvoice
+            //-----------------------------------
+
+            $('#invoiceid').val(model.lastinvoice.invoiceid + '_')
+
+            $('#client').val(model.lastinvoice.client)
+
+            $('#rate').val(model.lastinvoice.rate)
+
+            $('#gstrate').val(model.lastinvoice.gstrate)
+
+            $('#hours').val(0)
+
+            //-----------------------------------
             // initialize form
             //-----------------------------------
 
@@ -109,7 +123,12 @@
 
                 model.clients = response.clients
 
-                callback(model)
+                http.json.post('/api/invoices', null, {skip: 0, take: 1, order: {column: 'created', direction: 'desc'}}, function (response) {
+
+                    model.lastinvoice = response.invoices[0]
+
+                    callback(model)
+                }) 
             })  
         }
 
@@ -121,13 +140,11 @@
 
             var invoice = read_form()
 
-            alert(JSON.stringify(invoice, null, 4))
-
             http.json.post('/api/invoices/create', null, invoice, function(result) {
                 
                 if(result.success) {
                     
-                    //window.location = '/invoices'
+                    window.location = '/invoices'
 
                     return
                 }
@@ -146,24 +163,6 @@
         }
 
         $(document).ready(function () {
-
-            $('.date-picker').datepicker({ dateFormat: "dd-mm-yy" })
-
-            $('.numeric').keypress(function (e) {
-               
-                if(e.which == 46) {
-
-                    if($(e.target).val().indexOf('.') == -1) {
-                        
-                        return true
-                    }
-                }
-
-                if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
-
-                    return false;
-                }
-            }) 
 
             load_model(function(model) {
 
