@@ -250,11 +250,11 @@ module provider {
         }
 
         //----------------------------------------------------
-        // getCompanies:
+        // getClients:
         //----------------------------------------------------
         
-        /** gets companies */
-        public getCompanies(request: provider.GetCompaniesRequest, callback: (response: provider.GetCompaniesResponse) => void) : void {
+        /** gets clients */
+        public getClients(request: provider.GetClientsRequest, callback: (response: provider.GetClientsResponse) => void) : void {
 
             this.logger.log('provider: get clients')
 
@@ -270,6 +270,103 @@ module provider {
                 }
 
                 callback({success: true, errors: null, clients: clients})
+            })
+        }
+
+        //----------------------------------------------------
+        // getClient:
+        //----------------------------------------------------
+
+        /** gets client */
+        public getClient(request: provider.GetClientRequest, callback: (response: provider.GetClientResponse) => void) : void {
+
+            this.logger.log('provider: get client')
+
+            this.repository.clients.get(request.slug, (error, client) => {
+
+                if(error) {
+                    
+                    this.logger.log('provider: there was an error.')
+
+                    callback({success: false, errors: [error.toString()]})
+
+                    return
+                }
+
+                callback({success: true, errors: null, client : client})
+            })
+        }
+
+        //----------------------------------------------------
+        // updateInvoice:
+        //----------------------------------------------------
+        
+        /** updates a client */
+        public updateClient(request: provider.UpdateClientRequest, callback: ( response: provider.UpdateClientResponse) => void ) : void {
+
+            this.logger.log('provider: update client')
+
+            this.logger.log('provider: validating client')
+
+            this.repository.clients.update(request.client, (error) => {
+
+                if(error) {
+                        
+                    this.logger.log('provider: there was an error updating the client')
+
+                    callback({success: false, errors: [error.toString()]})
+
+                    return
+                }
+
+                callback({success: true, errors: null})
+            })
+        }
+        //----------------------------------------------------
+        // createClient:
+        //----------------------------------------------------
+        
+        /** creates a client */
+        public createClient(request: provider.CreateClientRequest, callback: ( response: provider.CreateClientResponse) => void ) : void {
+
+            this.logger.log('provider: create client')
+
+            this.logger.log('provider: validating client')
+
+            this.repository.clients.add(request.client, (error) => {
+
+                if(error) {
+                        
+                    this.logger.log('provider: there was an error adding the client')
+
+                    callback({success: false, errors: [error.toString()]})
+
+                    return
+                }
+
+                callback({success: true, errors: null})
+            })
+        }
+
+        //----------------------------------------------------
+        // deleteClient:
+        //----------------------------------------------------
+
+        /** deletes a invoice */
+        public deleteClient(request: provider.DeleteClientRequest, callback: (response: provider.DeleteClientResponse) => void ) : void {
+            
+            this.logger.log('provider: delete client')
+
+            this.repository.clients.remove(request.slug, (error) => {
+            
+                if(error) {
+                
+                    callback({success : false, errors: [error.toString()]})
+
+                    return
+                }
+
+                callback({success:true, errors:null})
             })
         }
 

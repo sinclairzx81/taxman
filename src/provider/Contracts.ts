@@ -151,10 +151,10 @@ module provider {
     }
 
     //------------------------------------
-    // GetCompanies
+    // GetClients
     //------------------------------------
 
-    export interface GetCompaniesRequest extends IRequest {
+    export interface GetClientsRequest extends IRequest {
 
         skip : number
 
@@ -168,7 +168,7 @@ module provider {
         }
     }
 
-    export interface GetCompaniesResponse extends IResponse {
+    export interface GetClientsResponse extends IResponse {
 
         clients? : repository.IClient []
     }
@@ -176,26 +176,40 @@ module provider {
     //------------------------------------
     // GetInvoice
     //------------------------------------
-    export interface GetCompanyRequest extends IRequest {
+    export interface GetClientRequest extends IRequest {
     
-        name       : string
+        slug       : string
     }
 
-    export interface GetCompanyResponse extends IResponse  {
+    export interface GetClientResponse extends IResponse  {
 
         client? : repository.IClient
+    }
+
+    //------------------------------------
+    // CreateInvoice
+    //------------------------------------
+
+    export interface CreateClientRequest extends IRequest {
+    
+        client : repository.IClient
+    }
+
+    export interface CreateClientResponse extends IResponse  {
+    
+        
     }
 
     //------------------------------------
     // UpdateInvoice
     //------------------------------------
 
-    export interface UpdateCompanyRequest extends IRequest {
+    export interface UpdateClientRequest extends IRequest {
     
         client : repository.IClient
     }
 
-    export interface UpdateCompanyResponse extends IResponse  {
+    export interface UpdateClientResponse extends IResponse  {
     
         
     }
@@ -204,12 +218,12 @@ module provider {
     // DeleteInvoice
     //------------------------------------
 
-    export interface DeleteCompanyRequest {
+    export interface DeleteClientRequest {
     
-        client : repository.IClient
+        slug  : string
     }
 
-    export interface DeleteCompanyResponse extends IResponse  {
+    export interface DeleteClientResponse extends IResponse  {
     
         
     }

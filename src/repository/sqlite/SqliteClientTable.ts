@@ -92,9 +92,9 @@ module repository {
 
         public update (record:repository.IClient,  callback?:(error:any) => void) : void {
         
-            var sql = 'update client set slug = ?, email = ?, phone = ?, website = ?, address = ?, comment = ? where name = ?'
+            var sql = 'update client set name = ?, email = ?, phone = ?, website = ?, address = ?, comment = ? where slug = ?'
 
-            this.db.run(sql, record.slug, record.name, record.email, record.phone, record.website, record.address, record.comment, record.name, (error) => {
+            this.db.run(sql, record.name, record.email, record.phone, record.website, record.address, record.comment, record.slug, (error) => {
                 
                 if(callback){
                     
@@ -105,7 +105,7 @@ module repository {
         
         public remove (id:string, callback?:(error:any) => void) : void {
         
-            var sql = 'delete from client where name = ?'
+            var sql = 'delete from client where slug = ?'
 
             this.db.run(sql, id, (error, row) => {
                 
@@ -118,7 +118,7 @@ module repository {
         
         public get    (id:string, callback?:(error:any, record: repository.IClient) => void) : void {
         
-            var sql = 'select * from client where name = ?'
+            var sql = 'select * from client where slug = ?'
 
             this.db.get(sql, id, (error, row) => {
                 

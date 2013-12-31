@@ -29,7 +29,6 @@ THE SOFTWARE.
 /// <reference path="provider/Provider.ts" />
 /// <reference path="schema/Schema.ts" />
 
-
 class Server {
 
     private schema: schema.Schema;
@@ -151,9 +150,13 @@ class Server {
             next()
         }
 
+        //------------------------------------------------
+        // INVOICES
+        //------------------------------------------------
+
         this.app.post('/api/clients', authorize, express.json(), (request, response) => {
         
-            var input: provider.GetCompaniesRequest = {
+            var input: provider.GetClientsRequest = {
 
                 skip  : request.body.skip,
 
@@ -162,7 +165,7 @@ class Server {
                 order : request.body.order
             }
             
-            this.provider.getCompanies(input, (output) => {
+            this.provider.getClients(input, (output) => {
 
                 response.json(output)    
             })
@@ -170,22 +173,105 @@ class Server {
 
         this.app.get('/api/clients/:slug', authorize, (request, response) => {
         
+            var input: provider.GetClientRequest = {
             
+                slug : request.params.slug
+            }
+
+            this.provider.getClient(input, (output) => {
+
+                response.json(output)
+            })
         })
 
-        this.app.post('/api/clients:slug', authorize, (request, response) => {
-        
+        this.app.put('/api/clients/:slug', authorize, express.json(), (request, response) => {
             
+            this.schema.validateClient(request.body, (errors) => {
+                
+                if(errors.length > 0) {
+                    
+                    response.json({success: false, errors: errors})
+
+                    return
+                }                
+
+                var input: provider.UpdateClientRequest = {
+            
+                    client : {
+
+                        name        : request.body.name,
+
+                        slug        : request.body.slug,
+
+                        email       : request.body.email,
+
+                        phone       : request.body.phone,
+
+                        website     : request.body.website,
+
+                        address     : request.body.address,
+
+                        comment     : request.body.comment,                    
+                    }
+                }
+                
+                this.provider.updateClient(input, (output) => {
+                
+                    response.json(output)
+                })      
+            })
         })
 
-        this.app.put('/api/clients/:slug', authorize, (request, response) => {
+        this.app.post('/api/clients:slug', authorize, express.json(), (request, response) => {
         
+            this.schema.validateClient(request.body, (errors) => {
+                
+                if(errors.length > 0) {
+                    
+                    response.json({success: false, errors: errors})
+
+                    return
+                } 
+
+                var input: provider.UpdateClientRequest = {
+            
+                    client : {
+
+                        name        : request.body.name,
+
+                        slug        : request.body.slug,
+
+                        email       : request.body.email,
+
+                        phone       : request.body.phone,
+
+                        website     : request.body.website,
+
+                        address     : request.body.address,
+
+                        comment     : request.body.comment,                    
+                    }
+                }
+                
+                this.provider.createClient(input, (output) => {
+                
+                    response.json(output)
+                })      
+            })
             
         })
 
         this.app.del('/api/clients/:slug', authorize, (request, response) => {
-        
+
+            var input: provider.DeleteClientRequest = {
             
+                slug : request.params.slug
+            }
+
+            this.provider.deleteClient(input, (output) => {
+            
+                response.json(output)
+            })
         })
 
         //------------------------------------------------
@@ -333,8 +419,6 @@ class Server {
             
                 invoiceid : request.params.invoiceid
             }
-
-            
 
             this.provider.deleteInvoice(input, (output) => {
             
