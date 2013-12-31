@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 /// <reference path="../repository/ICompany.ts" />
 /// <reference path="../repository/IInvoice.ts" />
-/// <reference path="../util/TypeCheck.ts" />
+/// <reference path="../util/Validation.ts" />
 
 module providers {
 
@@ -37,34 +37,56 @@ module providers {
             
         }
 
-        public validate_invoice(invoice: repository.IInvoice, callback: (errors: string []) => void ) : void {
+        public ValidateInvoice(input: repository.IInvoice, callback: (errors: string[], output: repository.IInvoice) => void ) : void {
         
-            if(!invoice) {
+            if(!input) {
             
-                callback(['invoice is null'])
+                callback(['invoice is null'], null)
 
                 return
             }
 
             var errors = []
+            //export interface IInvoice {
+            //    invoiceid   : string
+            //    company     : string
+            //    created     : Date
+            //    startdate   : Date
+            //    enddate     : Date
+            //    hours       : number
+            //    rate        : number
+            //    gstrate     : number
+            //    paid        : boolean
+            //    sent        : boolean
+            //    comment     : string
+            //}
+            try { input.invoiceid   = validation.enforce.asString(input.invoiceid) } catch(e) {errors.push('invoiceid: ' + e.toString()) }
+            try { input.company     = validation.enforce.asString(input.company) }   catch(e) {errors.push('company: ' + e.toString()) }
+            try { input.created     = validation.enforce.asDate(input.created) }     catch(e) {errors.push('created: ' + e.toString()) }
+            try { input.startdate   = validation.enforce.asDate(input.startdate) }   catch(e) {errors.push('startdate: ' + e.toString()) }
+            try { input.enddate     = validation.enforce.asDate(input.enddate) }     catch(e) {errors.push('enddate: ' + e.toString()) }
+            try { input.hours       = validation.enforce.asNumeric(input.hours) }    catch(e) {errors.push('hours: ' + e.toString()) }
+            try { input.rate        = validation.enforce.asNumeric(input.rate) }     catch(e) {errors.push('rate: ' + e.toString()) }
+            try { input.gstrate     = validation.enforce.asNumeric(input.gstrate) }  catch(e) {errors.push('gstrate: ' + e.toString()) }
+            try { input.paid        = validation.enforce.asBoolean(input.paid) }     catch(e) {errors.push('paid: ' + e.toString()) }
+            try { input.sent        = validation.enforce.asBoolean(input.sent) }     catch(e) {errors.push('sent: ' + e.toString()) }
+            try { input.comment     = validation.enforce.asString(input.comment) }   catch(e) {errors.push('comment: ' + e.toString()) }
 
-            if(!util.typecheck.isNumber(invoice.hours))    {errors.push('hours is not a number ' + invoice.hours)}
-
-            if(!util.typecheck.isNumber(invoice.rate))     {errors.push('rate is not a number ' + invoice.rate)}
-
-            if(!util.typecheck.isNumber(invoice.gstrate))  {errors.push('gst rate is not a number ' + invoice.gstrate)}
-
-            if(!util.typecheck.isDate(invoice.created))    {errors.push('created is not a date')}
-
-            if(!util.typecheck.isDate(invoice.startdate))  {errors.push('start date is not a date')}
-
-            if(!util.typecheck.isDate(invoice.enddate))    {errors.push('end date is not a date')}
-            
-            callback(errors)
+            callback(errors, input)
         }
 
-        public validate_company(invoice: repository.IInvoice, callback: (errors: string []) => void ) : void {
-        
+        public ValidateCompany(input: repository.ICompany, callback: (errors: string [], output: repository.ICompany) => void ) : void {
+            
+            if(!input) {
+            
+                callback(['company is null'], null)
+
+                return
+            }
+
+            var errors = []
+            
+            callback(errors, input)
         
         }
      }

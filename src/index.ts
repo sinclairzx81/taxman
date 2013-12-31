@@ -31,6 +31,7 @@ THE SOFTWARE.
 //-------------------------------------------------------
 /// <reference path="util/Numeric.ts" />
 /// <reference path="util/Async.ts" />
+/// <reference path="util/Validation.ts" />
 
 //-------------------------------------------------------
 // loggers

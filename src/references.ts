@@ -49,24 +49,24 @@ var sqlite3     = require('sqlite3').verbose()
 // validation setup
 //-----------------------------------------------
 
-var Validator   = require('validator').Validator
+//var Validator   = require('validator').Validator
 
-Validator.prototype.error = function (message) {
+//Validator.prototype.error = function (message) {
 
-    this._errors.push(message);
+//    this._errors.push(message);
 
-    return this;
-}
+//    return this;
+//}
 
-Validator.prototype.errors = function () {
+//Validator.prototype.errors = function () {
 
-    var result = this._errors.splice(0)
+//    var result = this._errors.splice(0)
 
-    this._errors = []
+//    this._errors = []
 
-    return result;
-}
+//    return result;
+//}
 
-var validator = new Validator()
+//var validator = new Validator()
 
 

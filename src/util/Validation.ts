@@ -1,0 +1,531 @@
+﻿/*--------------------------------------------------------------------------
+
+The MIT License (MIT)
+
+Copyright (c) 2013 Haydn Paterson (sinclair) <haydn.developer@gmail.com>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+
+---------------------------------------------------------------------------*/
+
+module validation.enforce   {
+
+    /** brute forces this value to a string */
+    export function asString(value: any) : string {
+        
+        if(value == null) {
+        
+            throw Error('value is null')
+        }
+
+        return value.toString()
+    }
+    
+    /** brute forces this value to a integer */
+    export function asInteger(value: any) : number {
+    
+        if(validation.typecheck.isInteger(value)) {
+        
+            return value
+        }
+
+        if(validation.typecheck.isFloat(value)) {
+        
+            return parseInt(value)
+        }
+
+        if(validation.typecheck.isString(value)) {
+        
+            if(validation.strings.isNumeric(value)) {
+            
+                return parseInt(value)
+            }
+        }
+
+        throw Error('not a integer')
+    }
+    
+    /** brute forces this value to a numeric */
+    export function asNumeric (value: any) : number {
+    
+        if(validation.typecheck.isInteger(value)) {
+        
+            return value
+        }
+
+        if(validation.typecheck.isFloat(value)) {
+        
+            return value
+        }
+
+        if(validation.typecheck.isString(value)) {
+        
+            if(validation.strings.isNumeric(value)) {
+            
+                return parseFloat(value)
+            }
+        }
+
+        throw Error('not a integer')
+    }
+    
+    /** brute forces this value to a date */
+    export function asDate(value: any) : Date {
+    
+        if(validation.typecheck.isDate(value)) {
+        
+            return value
+        }
+
+        var convert = validation.strings.toDate(value)
+
+        if(convert.success) {
+        
+            return convert.value
+        }
+
+        throw Error('not a date.')
+    }
+    
+    /** brute forces this value to a boolean */
+    export function asBoolean(value: any) : boolean {
+    
+        if(validation.typecheck.isBoolean(value)) {
+        
+            return value
+        }
+
+        var convert = validation.strings.toBoolean(value)
+
+        if(convert.success) {
+        
+            return convert.value
+        }
+
+        throw Error('not a boolean.')
+    }
+}
+
+module validation.strings   {
+
+    export interface ConversionResult<T> {
+    
+        success: boolean
+
+        value  : T
+    }
+    
+    /** converts this string to a integer */
+    export function toInteger(value: string) : ConversionResult<number> {
+    
+        var num = parseInt(value)
+
+        if(isNaN(num)){
+        
+            return {success: false, value: null}
+        }
+
+        return {success: true, value: num}
+    }
+
+    /** converts this string to a numeric value */
+    export function toNumeric(value: string)   : ConversionResult<number> {
+    
+        var num = parseFloat(value)
+
+        if(isNaN(num)){
+        
+            return {success: false, value: null}
+        }
+
+        return {success: true, value: num}
+    }
+    
+    /** converts this string to a boolean */
+    export function toBoolean(value: string) : ConversionResult<boolean> {
+        
+        if(value == 'True')  return  { success:true, value : true  }
+
+        if(value == 'true')  return  { success:true, value : true  }
+
+        if(value == 'False') return { success:true,  value : false }
+
+        if(value == 'false') return { success:true,  value : false }
+
+        return {success: false, value: null}
+    }
+
+    /** converts this string to a Date */
+    export function toDate(value: string)    : ConversionResult<Date> {
+        
+        var date = new Date(value)
+
+        var test = JSON.stringify(date)
+
+        if(test == null) {
+        
+            return {success: false, value: null}
+        } 
+        
+        return { success: true, value: date }
+    }
+
+    /** validates this string is a email address */
+    export function isEmail(value: string) : boolean {
+        
+        if(value.length > 2083) {
+            
+            return false
+        }
+
+        var match = value.match(/^(?:[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+\.)*[\w\!\#\$\%\&\'\*\+\-\/\=\?\^\`\{\|\}\~]+@(?:(?:(?:[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!\.)){0,61}[a-zA-Z0-9]?\.)+[a-zA-Z0-9](?:[a-zA-Z0-9\-](?!$)){0,61}[a-zA-Z0-9]?)|(?:\[(?:(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\.){3}(?:[01]?\d{1,2}|2[0-4]\d|25[0-5])\]))$/)
+
+        return (match != null) 
+
+    }
+    
+    /** validates this string is a URL address */
+    export function isUrl(value: string) : boolean {
+        
+        if(value.length > 2083) {
+            
+            return false
+        }
+
+        var match = value.match(/^(?!mailto:)(?:(?:https?|ftp):\/\/)?(?:\S+(?::\S*)?@)?(?:(?:(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[0-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]+-?)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))|localhost)(?::\d{2,5})?(?:\/[^\s]*)?$/i)
+
+        return (match != null) 
+    }
+
+    /** validates this string is a IPv4 address */
+    export function isIPv4(value: string) : boolean {
+
+        if (/^(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)\.(\d?\d?\d)$/.test(value)) {
+            
+            var parts: any = value.split('.').sort();
+            
+            if (parts[3] > 255) {
+
+                return false;
+            }
+            return true;
+        }
+        return false;
+    }
+    
+    /** validates this string is a IPv6 address */
+    export function isIPv6(value: string) : boolean {
+
+        if (/^::|^::1|^([a-fA-F0-9]{1,4}::?){1,7}([a-fA-F0-9]{1,4})$/.test(value)) {
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /** validates this string is string characters */
+    export function isAlpha(value: string) : boolean {
+
+        if(/^[a-zA-Z]+$/.test(value)) {
+        
+            return true
+        }
+
+        return false
+    }
+   
+    /** validates this string is alpha numeric */
+    export function isAlphanumeric(value: string) : boolean {
+
+        if(/^[a-zA-Z0-9]+$/.test(value)) {
+        
+            return true
+        }
+
+        return false
+    }
+    
+    /** validates this string is numeric */
+    export function isNumeric(value: string) : boolean {
+
+        if(/^(?:-?(?:[0-9]+))?(?:\.[0-9]*)?(?:[eE][\+\-]?(?:[0-9]+))?$/.test(value)) {
+        
+            return true
+        }
+
+        return false
+    }
+    
+    /** validates this string is hex */
+    export function isHexadecimal(value: string) : boolean {
+
+        if(/^[0-9a-fA-F]+$/.test(value)) {
+        
+            return true
+        }
+
+        return false
+    }
+
+    /** validates this string is a hex color */
+    export function isHexColor(value: string) : boolean {
+
+        if(/^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(value)) {
+        
+            return true
+        }
+
+        return false
+    }
+
+    /** validates this string is lowercase */
+    export function isLowercase(value: string) : boolean {
+
+        return value === value.toLowerCase();
+    }
+    
+    /** validates this string is uppercase */
+    export function isUppercase(value: string) : boolean {
+
+        return value === value.toUpperCase();
+    }
+
+    /** validates this string a integer */
+    export function isInteger(value: string) : boolean {
+
+        if(/^(?:-?(?:0|[1-9][0-9]*))$/.test(value)) {
+        
+            return true
+        }
+
+        return false
+    }
+
+    /** validates this string is not null */
+    export function notNull(value: string) : boolean {
+        
+        return value != null;
+    }
+    
+    /** validates this string is null */
+    export function isNull(value: string) : boolean {
+
+        return value == null;
+    }
+    
+    /** validates this string as not empty */
+    export function notEmpty(value: string) : boolean {
+
+        if(value == null) {
+        
+            return false
+        }
+
+        return value.length > 0
+    }
+
+    /** validates this string as a guid */
+    export function isUUID4(value: string) : boolean {
+
+       return /^[0-9A-F]{8}-[0-9A-F]{4}-4[0-9A-F]{3}-[89AB][0-9A-F]{3}-[0-9A-F]{12}$/i.test(value)
+    }
+
+    /** validates this string as a credit card */
+    export function isCreditCard(value: string) : boolean {
+        
+        var sanitized = value.replace(/[^0-9]+/g, '');
+        
+        if (sanitized.match(/^(?:4[0-9]{12}(?:[0-9]{3})?|5[1-5][0-9]{14}|6(?:011|5[0-9][0-9])[0-9]{12}|3[47][0-9]{13}|3(?:0[0-5]|[68][0-9])[0-9]{11}|(?:2131|1800|35\d{3})\d{11})$/) === null) {
+            
+            return null
+        }
+        
+        var sum = 0;
+        
+        var digit;
+        
+        var tmpNum;
+        
+        var shouldDouble = false;
+        
+        for (var i = sanitized.length - 1; i >= 0; i--) {
+
+            digit = sanitized.substring(i, (i + 1))
+
+            tmpNum = parseInt(digit, 10)
+            
+            if (shouldDouble) {
+                
+                tmpNum *= 2
+
+                if (tmpNum >= 10) {
+
+                    sum += ((tmpNum % 10) + 1)
+                }
+                else {
+                    sum += tmpNum
+                }
+            }
+            else {
+
+                sum += tmpNum
+            }
+            if (shouldDouble) {
+
+                shouldDouble = false
+            }
+            else {
+                shouldDouble = true
+            }
+        }
+
+        if ((sum % 10) === 0) {
+
+            return true
+
+        } else {
+
+            return false;
+        }
+    }
+}
+
+module validation.typecheck {
+
+    /** test to see if this object is a boolean */
+    export function isBoolean(value:any) : boolean {
+
+        return (typeof value) === 'boolean'
+    }
+
+    /** test to see if this object is a integer */
+    export function isInteger(value:any) : boolean {
+
+        return (typeof value === "number") && Math.floor(value) === value
+    }
+
+    /** test to see if this object is a number */
+    export function isFloat(value:any) : boolean {
+
+        return (typeof value === "number")
+    }
+
+    /** test to see if this object is an array */
+    export function isArray(value:any) : boolean {
+
+        return Object.prototype.toString.call( value ) === '[object Array]'
+    }
+
+    /** tests to see if this object is a string */
+    export function isString(value:any) : boolean {
+
+        return (typeof value) === 'string'
+    }
+
+    /** tests to see if this object is a object */
+    export function isObject(value:any) : boolean {
+            
+        return (typeof value) === 'object' && !validation.typecheck.isArray(value)
+    }
+
+    /** tests to see if this object is a function */
+    export function isFunction(value:any) : boolean {
+        
+        return (typeof value) === 'function'
+    }
+
+    /** tests to see if the object is a date */
+    export function isDate(value:any) : boolean {
+
+        if (typeof value != 'object') {
+
+            return false
+
+        }
+        if (value.getDate            == null ||
+            
+            value.getDay             == null ||
+            
+            value.getFullYear        == null ||
+            
+            value.getHours           == null ||
+            
+            value.getMilliseconds    == null ||
+            
+            value.getMinutes         == null ||
+            
+            value.getMonth           == null ||
+            
+            value.getSeconds         == null ||
+            
+            value.getTime            == null ||
+            
+            value.getTimezoneOffset  == null ||
+            
+            value.getUTCDate         == null ||
+            
+            value.getUTCDay          == null ||
+            
+            value.getUTCFullYear     == null ||
+            
+            value.getUTCHours        == null ||
+            
+            value.getUTCMilliseconds == null ||
+            
+            value.getUTCMinutes      == null ||
+            
+            value.getUTCMonth        == null ||
+            
+            value.setDate            == null ||
+            
+            value.setFullYear        == null ||
+            
+            value.setHours           == null ||
+            
+            value.setMilliseconds    == null ||
+            
+            value.setMinutes         == null ||
+            
+            value.setMonth           == null ||
+            
+            value.setSeconds         == null ||
+            
+            value.setTime            == null ||
+            
+            value.setUTCDate         == null ||
+            
+            value.setUTCFullYear     == null ||
+            
+            value.setUTCHours        == null ||
+            
+            value.setUTCMilliseconds == null ||
+            
+            value.setUTCMinutes      == null ||
+            
+            value.setUTCMonth        == null ||
+
+            value.setUTCSeconds      == null) {
+
+            return false
+        }
+
+        return true
+    }
+}
