@@ -30,7 +30,7 @@ THE SOFTWARE.
 /// <reference path="../util/Async.ts" />
 /// <reference path="Contracts.ts" />
 
-module providers {
+module provider {
 
     export class Provider {
 
@@ -50,12 +50,12 @@ module providers {
         }
 
         //----------------------------------------------------
-        // GetInvoices:
+        // getInvoices:
         //----------------------------------------------------
         
-        public GetInvoices (request: providers.GetInvoicesRequest, callback: ( response: providers.GetInvoicesResponse) => void) : void {
+        public getInvoices (request: provider.GetInvoicesRequest, callback: ( response: provider.GetInvoicesResponse) => void) : void {
             
-            this.logger.log('provider: GetInvoices(' + JSON.stringify(request) + ')')
+            this.logger.log('provider: get invoices')
 
             this.repository.invoices.list(request.skip, request.take, request.order, (error:any, invoices:  repository.IInvoice[]) => {
             
@@ -73,12 +73,12 @@ module providers {
         }
 
         //----------------------------------------------------
-        // CountInvoices:
+        // countInvoices:
         //----------------------------------------------------
         
-        public CountInvoices(request: providers.CountInvoicesRequest, callback: (response: providers.CountInvoicesResponse) => void): void {
+        public countInvoices(request: provider.CountInvoicesRequest, callback: (response: provider.CountInvoicesResponse) => void): void {
         
-            this.logger.log('provider: CountInvoices(' + JSON.stringify(request) + ')')
+            this.logger.log('provider: count invoices')
 
             this.repository.invoices.count((error, count) => {
             
@@ -96,12 +96,12 @@ module providers {
         }
 
         //----------------------------------------------------
-        // GetInvoice:
+        // getInvoice:
         //----------------------------------------------------
         
-        public GetInvoice(request: providers.GetInvoiceRequest, callback: ( response: providers.GetInvoiceResponse) => void ) : void {
+        public getInvoice(request: provider.GetInvoiceRequest, callback: ( response: provider.GetInvoiceResponse) => void ) : void {
         
-            this.logger.log('provider: GetInvoice(' + JSON.stringify(request) + ')')
+            this.logger.log('provider: get invoice')
 
             this.repository.invoices.get(request.invoiceid, (error:any, invoice:  repository.IInvoice) => {
             
@@ -119,12 +119,12 @@ module providers {
         }
 
         //----------------------------------------------------
-        // UpdateInvoice:
+        // updateInvoice:
         //----------------------------------------------------
         
-        public UpdateInvoice(request: providers.UpdateInvoiceRequest, callback: ( response: providers.UpdateInvoiceResponse) => void ) : void {
+        public createInvoice(request: provider.CreateInvoiceRequest, callback: ( response: provider.CreateInvoiceResponse) => void ) : void {
 
-            this.logger.log('provider: UpdateInvoice(' + JSON.stringify(request) + ')')
+            this.logger.log('provider: create invoice')
 
             this.logger.log('provider: validating invoice')
 
@@ -165,12 +165,58 @@ module providers {
         }
 
         //----------------------------------------------------
-        // DeleteInvoice:
+        // updateInvoice:
         //----------------------------------------------------
         
-        public DeleteInvoice(request: providers.DeleteInvoiceRequest, callback: (response: providers.DeleteInvoiceResponse) => void ) : void {
+        public updateInvoice(request: provider.UpdateInvoiceRequest, callback: ( response: provider.UpdateInvoiceResponse) => void ) : void {
+
+            this.logger.log('provider: update invoice')
+
+            this.logger.log('provider: validating invoice')
+
+            this.repository.companies.get(request.invoice.company, (error, company) => {
             
-            this.logger.log('provider: DeleteInvoice(' + JSON.stringify(request) + ')')
+                if(error) {
+                    
+                    this.logger.log('provider: there was an error finding the company')
+
+                    callback({success: false, errors: [error.toString()]})
+
+                    return
+                }
+
+                if(!company) {
+                    
+                    this.logger.log('provider: company does not exist')
+
+                    callback({success: false, errors: ['company not found']})
+
+                    return
+                }
+
+                this.repository.invoices.update(request.invoice, (error) => {
+
+                    if(error) {
+                        
+                        this.logger.log('provider: there was an error updating the invoice')
+
+                        callback({success: false, errors: [error.toString()]})
+
+                        return
+                    }
+
+                    callback({success: true, errors: null})
+                })
+            })
+        }
+
+        //----------------------------------------------------
+        // deleteInvoice:
+        //----------------------------------------------------
+        
+        public deleteInvoice(request: provider.DeleteInvoiceRequest, callback: (response: provider.DeleteInvoiceResponse) => void ) : void {
+            
+            this.logger.log('provider: delete invoice')
 
             this.repository.invoices.remove(request.invoiceid, (error) => {
             
@@ -186,12 +232,12 @@ module providers {
         }
 
         //----------------------------------------------------
-        // GetCompanies:
+        // getCompanies:
         //----------------------------------------------------
         
-        public GetCompanies(request: providers.GetCompaniesRequest, callback: (response: providers.GetCompaniesResponse) => void) : void {
+        public getCompanies(request: provider.GetCompaniesRequest, callback: (response: provider.GetCompaniesResponse) => void) : void {
 
-            this.logger.log('provider: GetCompanies(' + JSON.stringify(request) + ')')
+            this.logger.log('provider: get companies')
 
             this.repository.companies.list(request.skip, request.take, request.order, (error, companies) => {
             
@@ -209,10 +255,10 @@ module providers {
         }
 
         //--------------------------------------------------------------
-        // Import
+        // importData
         //--------------------------------------------------------------
 
-        public Import(request: providers.ImportRequest, callback: (response: providers.ImportResponse) => void) : void {
+        public importData(request: provider.ImportRequest, callback: (response: provider.ImportResponse) => void) : void {
             
             this.logger.log('provider: importing data')
 
@@ -292,8 +338,6 @@ module providers {
                         failed += 1
                     }
 
-
-
                     this.logger.log('provider: company import result success: ' + success.toString() + ' failed: ' + failed.toString())
 
                     if(failed > 0) {
@@ -309,10 +353,10 @@ module providers {
         }
 
         //--------------------------------------------------------------
-        // Export
+        // exportData
         //--------------------------------------------------------------
 
-        public Export(request: providers.ExportRequest, callback: (response: providers.ExportResponse) => void) : void {
+        public exportData(request: provider.ExportRequest, callback: (response: provider.ExportResponse) => void) : void {
             
             this.logger.log('provider: exporting data')
 

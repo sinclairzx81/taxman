@@ -20,7 +20,7 @@ var logger     = new taxman.loggers.ConsoleLogger()
 
 var repository = new taxman.repository.SqliteRepository('c:/input/database.sql', logger)
 
-var provider   = new taxman.providers.Provider(repository, logger)
+var provider   = new taxman.provider.Provider(repository, logger)
 
 var server     = new taxman.Server(app, provider, logger)
 
@@ -34,9 +34,9 @@ setTimeout(function() {
 
     fs.readFile('c:/input/invoices.json', 'utf8', function(err, json) {
 
-        provider.Import({json: json}, function(results) {
+        provider.importData({json: json}, function(results) {
 
-            provider.Export({}, function(data) {
+            provider.exportData({}, function(data) {
                 
                 fs.writeFile('c:/input/invoices3.json', data.json, function () {
 

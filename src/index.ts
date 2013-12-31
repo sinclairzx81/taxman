@@ -47,10 +47,10 @@ THE SOFTWARE.
 /// <reference path="repository/sqlite/SqliteRepository.ts" />
 
 //-------------------------------------------------------
-// providers
+// provider
 //-------------------------------------------------------
 
-/// <reference path="providers/Provider.ts" />
+/// <reference path="provider/Provider.ts" />
 
 //-------------------------------------------------------
 // servers
@@ -64,6 +64,6 @@ module.exports.loggers    = loggers
 
 module.exports.repository = repository
 
-module.exports.providers  = providers
+module.exports.provider  = provider
 
 module.exports.Server     = Server

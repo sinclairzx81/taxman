@@ -27,7 +27,7 @@ THE SOFTWARE.
 /// <reference path="../repository/ICompany.ts" />
 /// <reference path="../repository/IInvoice.ts" />
 
-module providers {
+module provider {
 
 
     //------------------------------------
@@ -109,6 +109,19 @@ module providers {
         
     }
 
+    //------------------------------------
+    // CreateInvoice
+    //------------------------------------
+
+    export interface CreateInvoiceRequest extends IRequest {
+    
+        invoice : repository.IInvoice
+    }
+
+    export interface CreateInvoiceResponse extends IResponse  {
+    
+        
+    }
     //------------------------------------
     // DeleteInvoice
     //------------------------------------

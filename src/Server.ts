@@ -25,7 +25,7 @@ THE SOFTWARE.
 ---------------------------------------------------------------------------*/
 
 /// <reference path="references.ts" />
-/// <reference path="providers/Provider.ts" />
+/// <reference path="provider/Provider.ts" />
 /// <reference path="loggers/ILogger.ts" />
 /// <reference path="Schema.ts" />
 
@@ -33,7 +33,7 @@ class Server {
 
     private schema: Schema;
 
-    constructor(public app: ExpressApplication, public provider: providers.Provider, public logger: loggers.ILogger ) {
+    constructor(public app: ExpressApplication, public provider: provider.Provider, public logger: loggers.ILogger ) {
         
         this.schema = new Schema()
 
@@ -152,7 +152,7 @@ class Server {
 
         this.app.post('/api/companies', authorize, express.json(), (request, response) => {
         
-            var input: providers.GetCompaniesRequest = {
+            var input: provider.GetCompaniesRequest = {
 
                 skip  : request.body.skip,
 
@@ -160,8 +160,8 @@ class Server {
 
                 order : request.body.order
             }
-
-            this.provider.GetCompanies(input, (output) => {
+            
+            this.provider.getCompanies(input, (output) => {
 
                 response.json(output)    
             })
@@ -189,7 +189,7 @@ class Server {
 
         this.app.post('/api/invoices', authorize, express.json(), (request, response) => {
             
-            var input: providers.GetInvoicesRequest = {
+            var input: provider.GetInvoicesRequest = {
 
                 skip  : request.body.skip,
 
@@ -198,7 +198,7 @@ class Server {
                 order : request.body.order
             }
 
-            this.provider.GetInvoices(input, (output) => {
+            this.provider.getInvoices(input, (output) => {
 
                 response.json(output)    
             })
@@ -206,11 +206,11 @@ class Server {
 
         this.app.get('/api/invoices/count', authorize, (request, response) => {
         
-            var input: providers.CountInvoicesRequest = {
+            var input: provider.CountInvoicesRequest = {
                 
             }
 
-            this.provider.CountInvoices(input, (output) => {
+            this.provider.countInvoices(input, (output) => {
             
                 response.json(output)
             })
@@ -218,26 +218,21 @@ class Server {
 
         this.app.get('/api/invoices/:invoiceid', authorize, (request, response) => {
         
-            var input: providers.GetInvoiceRequest = {
+            var input: provider.GetInvoiceRequest = {
             
                 invoiceid : request.params.invoiceid
             }
-
-            this.provider.GetInvoice(input, (output) => {
+            
+            this.provider.getInvoice(input, (output) => {
                 
                 response.json(output)
             })
         })
 
         this.app.post('/api/invoices:invoiceid', authorize, (request, response) => {
-        
-            
-        })
-
-        this.app.put('/api/invoices/:invoiceid', authorize, express.json(), (request, response) => {
             
             this.schema.validateInvoice(request.body, (errors) => {
-                
+
                 if(errors.length > 0) {
                     
                     response.json({success: false, errors: errors})
@@ -245,7 +240,7 @@ class Server {
                     return
                 }
 
-                var input: providers.UpdateInvoiceRequest = {
+                var input: provider.CreateInvoiceRequest = {
                 
                     invoice : {
                     
@@ -273,7 +268,54 @@ class Server {
                     }
                 }
 
-                this.provider.UpdateInvoice(input, (output) => {
+                this.provider.createInvoice(input, (output) => {
+            
+                    response.json(output)
+                }) 
+            })
+            
+        })
+
+        this.app.put('/api/invoices/:invoiceid', authorize, express.json(), (request, response) => {
+            
+            this.schema.validateInvoice(request.body, (errors) => {
+                
+                if(errors.length > 0) {
+                    
+                    response.json({success: false, errors: errors})
+
+                    return
+                }
+
+                var input: provider.UpdateInvoiceRequest = {
+                
+                    invoice : {
+                    
+                        invoiceid   : request.body.invoiceid,
+
+                        company     : request.body.company,
+
+                        created     : new Date(request.body.created),
+
+                        startdate   : new Date(request.body.startdate),
+
+                        enddate     : new Date(request.body.enddate),
+
+                        hours       : request.body.hours,
+
+                        rate        : request.body.rate,
+
+                        gstrate     : request.body.gstrate,
+
+                        paid        : request.body.paid,
+
+                        sent        : request.body.sent,
+
+                        comment     : request.body.comment                 
+                    }
+                }
+
+                this.provider.updateInvoice(input, (output) => {
             
                     response.json(output)
                 })                
@@ -282,12 +324,12 @@ class Server {
 
         this.app.del('/api/invoices/:invoiceid', authorize, (request, response) => {
         
-            var input: providers.DeleteInvoiceRequest = {
+            var input: provider.DeleteInvoiceRequest = {
             
                 invoiceid : request.params.invoiceid
             }
 
-            this.provider.DeleteInvoice(input, (output) => {
+            this.provider.deleteInvoice(input, (output) => {
             
                 response.json(output)
             })            
