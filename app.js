@@ -16,13 +16,15 @@ console.log('server listening on port ' + (process.env.PORT || 5000))
 
 var taxman     = require('./bin/index.js')
 
+var config     = taxman.config.load('./config.json')
+
 var logger     = new taxman.loggers.ConsoleLogger()
 
-var repository = new taxman.repository.SqliteRepository('c:/input/database.sql', logger)
+var repository = new taxman.repository.SqliteRepository(config.database.filename, logger)
 
 var provider   = new taxman.provider.Provider(repository, logger)
 
-var reporter   = new taxman.reports.PhantomNetReporter("http://phantom.interactive.net.nz")
+var reporter   = new taxman.reports.PhantomNetReporter(config.reporter.endpoint)
 
 var server     = new taxman.Server(app, provider, reporter, logger)
 
@@ -49,6 +51,4 @@ setTimeout(function() {
     })
 
 }, 1500)
-
-console.log('taxman')
 

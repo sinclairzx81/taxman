@@ -34,6 +34,11 @@ THE SOFTWARE.
 /// <reference path="validation/index.ts" />
 
 //-------------------------------------------------------
+// config
+//-------------------------------------------------------
+/// <reference path="config/config.ts" />
+
+//-------------------------------------------------------
 // loggers
 //-------------------------------------------------------
 
@@ -65,6 +70,8 @@ THE SOFTWARE.
 /// <reference path="Server.ts" />
 
 module.exports.util       = util
+
+module.exports.config     = config
 
 module.exports.validation = validation
 
