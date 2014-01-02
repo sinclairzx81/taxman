@@ -19,22 +19,14 @@
 
                 var buffer = []
 
-                //if(invoice.sent == false && invoice.paid == false) {
+                if(!invoice.sent == true || !invoice.paid == true) {
                 
-                //    buffer.push('<tr>')
-                //}
-
-                //if((invoice.sent == true && invoice.paid == false) ||  (invoice.sent == false && invoice.paid == true)) {
+                    buffer.push('<tr class="warning">')
+                }
+                else {
                 
-                //    buffer.push('<tr class="warning">')
-                //}
-
-                //if(invoice.sent == true && invoice.paid == true) {
-                
-                //    buffer.push('<tr class="success">')
-                //}
-
-                buffer.push('<tr>')
+                    buffer.push('<tr>')
+                }
 
                 buffer.push('    <td><a href="/invoices/' + invoice.invoiceid + '">' + invoice.invoiceid + '</a></td>')
 

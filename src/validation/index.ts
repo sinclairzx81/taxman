@@ -24,10 +24,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-module reports {
+/// <reference path="typecheck.ts" />
+/// <reference path="strings.ts" />
+/// <reference path="enforce.ts" />
 
-    export interface IReporter  {
-    
-        report(template_filename: string, context: any, mime: string, callback: (errors: string[], stream: stream.ReadableStream) => void) : void
-    }
-}

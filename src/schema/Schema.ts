@@ -26,7 +26,7 @@ THE SOFTWARE.
 
 /// <reference path="../repository/IClient.ts" />
 /// <reference path="../repository/IInvoice.ts" />
-/// <reference path="../util/Validation.ts" />
+/// <reference path="../validation/index.ts" />
 
 module schema {
 

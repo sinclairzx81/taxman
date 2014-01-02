@@ -26,6 +26,7 @@ THE SOFTWARE.
 
 /// <reference path="references.ts" />
 /// <reference path="loggers/ILogger.ts" />
+/// <reference path="reports/IReporter.ts" />
 /// <reference path="provider/Provider.ts" />
 /// <reference path="schema/Schema.ts" />
 
@@ -33,10 +34,10 @@ class Server {
 
     private schema: schema.Schema;
 
-    constructor(public app: ExpressApplication, public provider: provider.Provider, public logger: loggers.ILogger ) {
+    constructor(public app: ExpressApplication, public provider: provider.Provider, public reporter: reports.IReporter, public logger: loggers.ILogger ) {
         
         this.schema = new schema.Schema()
-
+        
         this.setup()
 
         this.setup_pages()
@@ -211,7 +212,7 @@ class Server {
 
                         address     : request.body.address,
 
-                        comment     : request.body.comment,                    
+                        comment     : request.body.comment                   
                     }
                 }
                 
@@ -385,7 +386,6 @@ class Server {
                     response.json(output)
                 }) 
             })
-            
         })
 
         this.app.put('/api/invoices/:invoiceid', authorize, express.json(), (request, response) => {
@@ -448,7 +448,45 @@ class Server {
         })
 
         //------------------------------------------------
-        // INVOICES
+        // Reporting
+        //------------------------------------------------  
+
+        this.app.get('/reports/invoices/:invoiceid', authorize, (request, response) => {
+
+            var mime = 'application/pdf'
+
+            this.provider.getInvoice({invoiceid : request.params.invoiceid}, (invoice_result) => {
+
+                this.provider.getClient({clientid : invoice_result.invoice.client}, (client_result) => {
+
+                    var context = {
+                    
+                        invoice : invoice_result.invoice,
+
+                        client  : client_result.client
+                    }
+
+                    this.reporter.report('./views/reports/invoice.html', context, mime, (errors, readstream) => {
+                    
+                        if(errors) {
+                        
+                            response.setHeader('Content-Type', 'application/json')
+
+                            response.json(errors)
+                    
+                            return
+                        }
+
+                        response.setHeader('Content-Type', mime)
+
+                        readstream.pipe(response)            
+                    })
+                })
+            })
+        })
+
+        //------------------------------------------------
+        // IO
         //------------------------------------------------        
         
         this.app.get('/api/export', authorize, (request, response) => {
@@ -465,7 +503,7 @@ class Server {
 
                 response.end()
             })
-        })                            
+        })                          
     }
 
 }

@@ -31,7 +31,7 @@ THE SOFTWARE.
 //-------------------------------------------------------
 /// <reference path="util/Numeric.ts" />
 /// <reference path="util/Async.ts" />
-/// <reference path="util/Validation.ts" />
+/// <reference path="validation/index.ts" />
 
 //-------------------------------------------------------
 // loggers
@@ -47,6 +47,12 @@ THE SOFTWARE.
 /// <reference path="repository/sqlite/SqliteRepository.ts" />
 
 //-------------------------------------------------------
+// reports
+//-------------------------------------------------------
+
+/// <reference path="reports/PhantomNetReporter.ts" />
+
+//-------------------------------------------------------
 // provider
 //-------------------------------------------------------
 
@@ -60,11 +66,13 @@ THE SOFTWARE.
 
 module.exports.util       = util
 
-module.exports.validation       = validation
+module.exports.validation = validation
 
 module.exports.loggers    = loggers
 
 module.exports.repository = repository
+
+module.exports.reports    = reports
 
 module.exports.provider   = provider
 

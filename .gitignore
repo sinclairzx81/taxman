@@ -8,6 +8,7 @@
 bin/
 tmp/
 node_modules/
+views/reports/invoice.html
 *.tmp
 *.bak
 *.swp

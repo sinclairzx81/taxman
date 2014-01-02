@@ -22,7 +22,9 @@ var repository = new taxman.repository.SqliteRepository('c:/input/database.sql',
 
 var provider   = new taxman.provider.Provider(repository, logger)
 
-var server     = new taxman.Server(app, provider, logger)
+var reporter   = new taxman.reports.PhantomNetReporter("http://phantom.interactive.net.nz")
+
+var server     = new taxman.Server(app, provider, reporter, logger)
 
 //----------------------------------------
 // bootstrap
@@ -48,5 +50,5 @@ setTimeout(function() {
 
 }, 1500)
 
-
+console.log('taxman')
 
