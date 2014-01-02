@@ -24,37 +24,12 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-/// <reference path="references/node.d.ts" />
-/// <reference path="references/express.d.ts" />
-/// <reference path="references/nodemailer.d.ts" />
+/// <reference path="../references.ts" />
 
-//-----------------------------------------------
-// express setup
-//-----------------------------------------------
+module mailing {
 
-var express     = require('express')
+    export interface IMessage extends nodemailer.IMailOptions {
 
-//-----------------------------------------------
-// magnum setup
-//-----------------------------------------------
-
-var magnum      = require('magnum')
-
-//-----------------------------------------------
-// phantom.net setup
-//-----------------------------------------------
-
-var phantom      = require('phantom.net')
-
-//-----------------------------------------------
-// nodemailer setup
-//-----------------------------------------------
-
-var _nodemailer      = require('nodemailer')
-
-
-//-----------------------------------------------
-// sqlite3 setup
-//-----------------------------------------------
-
-var sqlite3     = require('sqlite3').verbose()
+       
+    }
+}

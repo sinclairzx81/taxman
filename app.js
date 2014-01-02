@@ -24,6 +24,8 @@ var repository = new taxman.repository.SqliteRepository(config.database.filename
 
 var provider   = new taxman.provider.Provider(repository, logger)
 
+var mailer     = new taxman.mailing.SmtpClient()
+
 var reporter   = new taxman.reports.PhantomNetReporter(config.reporter.endpoint)
 
 var server     = new taxman.Server(app, provider, reporter, logger)

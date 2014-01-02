@@ -24,37 +24,37 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-/// <reference path="references/node.d.ts" />
-/// <reference path="references/express.d.ts" />
-/// <reference path="references/nodemailer.d.ts" />
+/// <reference path="../../references.ts" />
+/// <reference path="../../loggers/ILogger.ts" />
+/// <reference path="../IMailClient.ts" />
+/// <reference path="../IMessage.ts" />
+/// <reference path="SmtpOptions.ts" />
 
-//-----------------------------------------------
-// express setup
-//-----------------------------------------------
+module mailing {
 
-var express     = require('express')
+    export class SmtpClient implements mailing.IMailClient {
 
-//-----------------------------------------------
-// magnum setup
-//-----------------------------------------------
+        private client: nodemailer.ITransport
 
-var magnum      = require('magnum')
+        constructor(public options: mailing.SmtpOptions, public logger: loggers.ILogger ) {
 
-//-----------------------------------------------
-// phantom.net setup
-//-----------------------------------------------
+            var _nodemailer: typeof nodemailer = require('nodemailer')
 
-var phantom      = require('phantom.net')
+            this.client = _nodemailer.createTransport("SMTP", options)
+        }
 
-//-----------------------------------------------
-// nodemailer setup
-//-----------------------------------------------
+        public send(options: mailing.IMessage, callback: (error: any) => void) : void {
 
-var _nodemailer      = require('nodemailer')
+            this.client.sendMail(options, (error, result) => {
 
+                callback(error)
+            })
+        }
 
-//-----------------------------------------------
-// sqlite3 setup
-//-----------------------------------------------
+        public close() : void {
 
-var sqlite3     = require('sqlite3').verbose()
+            this.client.close()
+        }
+    }
+}    
+

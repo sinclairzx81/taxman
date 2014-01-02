@@ -46,6 +46,12 @@ THE SOFTWARE.
 /// <reference path="loggers/NullLogger.ts" />
 
 //-------------------------------------------------------
+// mailing
+//-------------------------------------------------------
+
+/// <reference path="mailing/smtp/SmtpClient.ts" />
+
+//-------------------------------------------------------
 // repositories
 //-------------------------------------------------------
 
@@ -69,6 +75,10 @@ THE SOFTWARE.
 
 /// <reference path="Server.ts" />
 
+//-------------------------------------------------------
+// exports
+//-------------------------------------------------------
+
 module.exports.util       = util
 
 module.exports.config     = config
@@ -76,6 +86,8 @@ module.exports.config     = config
 module.exports.validation = validation
 
 module.exports.loggers    = loggers
+
+module.exports.mailing    = mailing
 
 module.exports.repository = repository
 
