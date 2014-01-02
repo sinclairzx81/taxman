@@ -503,7 +503,22 @@ class Server {
 
                 response.end()
             })
-        })                          
+        })
+
+        this.app.post('/api/import', authorize, express.json(), (request, response) => {
+        
+            var input: provider.ImportRequest = {
+                
+                json : JSON.stringify(request.body)
+            }
+
+            this.provider.importData(input, (output) => {
+                
+                response.setHeader('Content-Type', 'application/json')
+                
+                response.json(output)
+            })
+        })                                 
     }
 
 }
