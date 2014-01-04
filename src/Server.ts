@@ -28,26 +28,33 @@ THE SOFTWARE.
 /// <reference path="loggers/ILogger.ts" />
 /// <reference path="reports/IReporter.ts" />
 /// <reference path="provider/Provider.ts" />
+/// <reference path="security/ISecurity.ts" />
 /// <reference path="schema/Schema.ts" />
 
 class Server {
 
     private schema: schema.Schema;
 
-    constructor(public app: ExpressApplication, public provider: provider.Provider, public reporter: reports.IReporter, public logger: loggers.ILogger ) {
+    constructor(public app: ExpressApplication, public security: security.ISecurity, public provider: provider.Provider, public reporter: reports.IReporter, public logger: loggers.ILogger ) {
         
         this.schema = new schema.Schema()
         
-        this.setup()
+        this.setup_middleware()
+
+        this.setup_auth()
 
         this.setup_pages()
 
         this.setup_api()
     }
 
-    private setup() : void {
+ 
+
+    private setup_middleware() : void {
         
         this.app.use('/static', express.static('./static/'))
+
+        this.app.use(express.cookieParser())
 
         this.app.use((request, response, next) => {
 
@@ -66,14 +73,73 @@ class Server {
         })        
     }
 
-    private setup_pages() : void {
+    private setup_auth () : void {
+
+        this.app.post('/auth/login', express.json(), (request, response) => {
+        
+            this.security.authenticate(request.body.username, request.body.password, (success, token) => {
             
+                if(!success) {
+                
+                    response.json({success: false})
+
+                    return
+                }
+
+                response.cookie('token', token)
+
+                response.json({success: true})
+            })
+        })
+
+        this.app.get('/login', (request, response) => {
+
+            response.render('./views/auth/login.html', {})
+        })
+
+        this.app.get('/logout', (request, response) => {
+
+            response.cookie('token', null)
+
+            response.redirect('/login')
+        })
+    }
+
+    private setup_pages () : void {
+
+        //------------------------------------------------
+        // authorize
+        //------------------------------------------------
+
         var authorize = (request, response, next) => {
             
-            next()
+            var token = request.cookies.token
+
+            if(!token) {
+            
+                response.redirect('/login')
+
+                return
+            }
+
+            this.security.authorize(token, (success) => {
+                
+                if(!success) {
+                
+                    response.redirect('/login')
+
+                    return
+                }
+
+                next()
+            })
         }
-        
-        this.app.get('/', (request, response) => {
+
+        //------------------------------------------------
+        // pages
+        //------------------------------------------------
+
+        this.app.get('/', authorize, (request, response) => {
             
             var context = { request: request }
             
@@ -144,15 +210,38 @@ class Server {
         })
     }
 
-    private setup_api ()  : void {
-    
+    private setup_api   ()  : void {
+        
+        //------------------------------------------------
+        // authorize
+        //------------------------------------------------
+
         var authorize = (request, response, next) => {
             
-            next()
+            var token = request.cookies.token
+
+            if(!token) {
+            
+                response.redirect('/login')
+
+                return
+            }
+
+            this.security.authorize(token, (success) => {
+                
+                if(!success) {
+                
+                    response.redirect('/login')
+
+                    return
+                }
+
+                next()
+            })
         }
 
         //------------------------------------------------
-        // CLIENTS
+        // clients
         //------------------------------------------------
 
         this.app.post('/api/clients', authorize, express.json(), (request, response) => {
@@ -278,7 +367,7 @@ class Server {
         })
 
         //------------------------------------------------
-        // INVOICES
+        // invoices
         //------------------------------------------------
 
         this.app.post('/api/invoices', authorize, express.json(), (request, response) => {
@@ -448,7 +537,7 @@ class Server {
         })
 
         //------------------------------------------------
-        // Reporting
+        // reporting
         //------------------------------------------------  
 
         this.app.get('/reports/invoices/:invoiceid', authorize, (request, response) => {
@@ -486,7 +575,7 @@ class Server {
         })
 
         //------------------------------------------------
-        // IO
+        // imput export
         //------------------------------------------------        
         
         this.app.get('/api/export', authorize, (request, response) => {
@@ -520,6 +609,5 @@ class Server {
             })
         })                                 
     }
-
 }
 

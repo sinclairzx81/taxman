@@ -25,44 +25,45 @@ THE SOFTWARE.
 ---------------------------------------------------------------------------*/
 
 /// <reference path="../references.ts" />
-/// <reference path="IReporter.ts" />
 
-module reports {
+module security.password {
 
-    export class PhantomNetReporter implements reports.IReporter  {
-    
-        constructor(public endpoint: string) {
-            
-        }
+    var crypto = require('crypto')
 
-        public report(template_filename: string, context: any, mime: string, callback: (errors: string[], stream: stream.ReadableStream) => void) : void {
+    var algorithm = 'sha1'
+
+    var iterations = 16
+
+    function generateSalt(length:number) : string {
         
-            var content = magnum.render(template_filename, context)
+        return crypto.randomBytes(length).toString('hex').substring(0, length)
+    }
 
-            var client   = new phantom.Client(this.endpoint)
+    function generateHash(salt, password) : string {
+    
+        var hash = password
 
-            var param  = {  content   : content,
-                            mime      : mime, 
-                            timeout   : 0,
-                            paperSize : {
-                                
-                                format     : 'A4',
-                                orientation: 'portrait'
-                                }
-                            }
-
-            client.render(param, (errors, readstream) => {
-                    
-                if(errors) {
-                        
-                    callback(errors, null)
-                    
-                    return errors     
-                    
-                }
-
-                callback(null, readstream)
-            })
+        for(var i = 0; i < iterations; i++) {
+            
+            hash = crypto.createHmac(algorithm, salt).update(hash).digest('hex')
         }
+
+        return hash
+    }
+
+    export function generate(password:string, callback:(hash:string, salt:string) => void) : void {
+
+        var salt = generateSalt(32)
+
+        var hash = generateHash(salt, password)
+
+        callback(hash, salt)
+    }
+
+    export function validate(password:string, hash:string, salt:string, callback:(success:boolean)=>void) : void {
+    
+        var compare = generateHash(salt, password)
+
+        callback(hash == compare)
     }
 }

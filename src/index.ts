@@ -46,6 +46,14 @@ THE SOFTWARE.
 /// <reference path="loggers/NullLogger.ts" />
 
 //-------------------------------------------------------
+// security
+//-------------------------------------------------------
+
+/// <reference path="security/password.ts" />
+/// <reference path="security/secret.ts" />
+/// <reference path="security/SingleUserSecurity.ts" />
+
+//-------------------------------------------------------
 // mailing
 //-------------------------------------------------------
 
@@ -82,6 +90,8 @@ THE SOFTWARE.
 module.exports.util       = util
 
 module.exports.config     = config
+
+module.exports.security   = security
 
 module.exports.validation = validation
 

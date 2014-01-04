@@ -25,44 +25,62 @@ THE SOFTWARE.
 ---------------------------------------------------------------------------*/
 
 /// <reference path="../references.ts" />
-/// <reference path="IReporter.ts" />
 
-module reports {
+module security.secret {
 
-    export class PhantomNetReporter implements reports.IReporter  {
-    
-        constructor(public endpoint: string) {
-            
-        }
+    var crypto = require('crypto')
 
-        public report(template_filename: string, context: any, mime: string, callback: (errors: string[], stream: stream.ReadableStream) => void) : void {
+    var algorithm = 'aes256'
+
+    export function encrypt(input:string, secret:string, callback: (result: string) => void) : void {
         
-            var content = magnum.render(template_filename, context)
+        if(input) {
+            
+            if(secret) {
 
-            var client   = new phantom.Client(this.endpoint)
+                try {
 
-            var param  = {  content   : content,
-                            mime      : mime, 
-                            timeout   : 0,
-                            paperSize : {
-                                
-                                format     : 'A4',
-                                orientation: 'portrait'
-                                }
-                            }
+                    var cipher = crypto.createCipher(algorithm, secret)
+         
+                    var result = cipher.update(input, 'utf8', 'hex') + cipher.final('hex')
 
-            client.render(param, (errors, readstream) => {
-                    
-                if(errors) {
-                        
-                    callback(errors, null)
-                    
-                    return errors     
-                    
+                    callback(result)
+
+                } catch( e) {
+
+                    callback(null)
                 }
 
-                callback(null, readstream)
-            })
+                return
+            }
         }
+
+        callback(null)
+    }
+
+    export function decrypt(input:string, secret:string, callback: (result: string) => void) : void {
+    
+        if(input) {
+
+            if(secret) {
+
+                try {
+
+                    var decipher = crypto.createDecipher(algorithm, secret)
+
+                    var result = decipher.update(input, 'hex', 'utf8') + decipher.final('utf8')
+
+                    callback(result)
+
+                } catch( e) {
+
+                    callback(null)
+                }
+
+                return
+            }
+        }
+
+        callback(null)
     }
 }

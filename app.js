@@ -24,33 +24,28 @@ var repository = new taxman.repository.SqliteRepository(config.database.filename
 
 var provider   = new taxman.provider.Provider(repository, logger)
 
-var mailer     = new taxman.mailing.SmtpClient()
+var mailer     = new taxman.mailing.SmtpClient(config.mailing.options, logger)
 
 var reporter   = new taxman.reports.PhantomNetReporter(config.reporter.endpoint)
 
-var server     = new taxman.Server(app, provider, reporter, logger)
+var security   = new taxman.security.SingleUserSecurity(config.security)
+
+var server     = new taxman.Server(app, security, provider, reporter, logger)
 
 //----------------------------------------
-// bootstrap
+// import - export
 //----------------------------------------
 
-setTimeout(function() {
-
-    var fs = require('fs')
-
-    fs.readFile('c:/input/invoices.json', 'utf8', function(err, json) {
-
-        provider.importData({json: json}, function(results) {
-
-            provider.exportData({}, function(data) {
-                
-                fs.writeFile('c:/input/invoices3.json', data.json, function () {
-
-                    console.log('done')
-                })
-            })            
-        })
-    })
-
-}, 1500)
+//setTimeout(function() {
+//    var fs = require('fs')
+//    fs.readFile('c:/input/invoices.json', 'utf8', function(err, json) {
+//        provider.importData({json: json}, function(results) {
+//            provider.exportData({}, function(data) {
+//                fs.writeFile('c:/input/invoices-export.json', data.json, function () {
+//                    console.log('done')
+//                })
+//            })            
+//        })
+//    })
+//}, 1500)
 
