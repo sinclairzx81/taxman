@@ -179,6 +179,27 @@
             })
         }
 
+        var export_application_data = function() {
+        
+             http.json.get('/api/export', null, function (response) {
+
+                 $('#application-data').val(JSON.stringify(response, null, 4))
+             })
+        }
+
+        var import_application_data = function() {
+
+             if(confirm('import data?')) {
+
+                 var json = $('#application-data').val()
+
+                 http.json.post('/api/import', null, JSON.parse(json), function (response) {
+
+                     console.log(response)
+                 })
+             }
+        }
+
         $(document).ready(function () {
 
             $('.date-picker').datepicker({ dateFormat: "dd-mm-yy" })
@@ -200,7 +221,7 @@
         <h1>tools</h1>
 
     </div>
-
+    
     <div class="col-md-4">
 
         <div class="form-group">
@@ -232,8 +253,6 @@
 
         </div>
 
-
-
         <div class="form-group">
 
             <label for="tax-cents-in-dollar">tax rate (cents in the dollar)</label>
@@ -246,16 +265,29 @@
     
         </div>
 
-
-
         <div class="form-group">
 
             <input type="button" class="btn" value="search range" onclick="search_range()" />
 
         </div>
 
-    </div>
 
+       <div class="form-group">
+
+            <textarea class='form-control' style='height: 200px' id="application-data"></textarea>
+
+        </div>
+
+        <div class="form-group">
+
+            <input type="button" class="btn" value="export data" onclick="export_application_data()" />
+
+            <input type="button" class="btn" value="import data" onclick="import_application_data()" />
+
+        </div>
+
+    </div>
+    
     <div class="col-md-8">
 
         <div class="row">

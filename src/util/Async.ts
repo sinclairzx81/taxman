@@ -52,29 +52,36 @@ module util.async {
     /** runs the supplied function in series with the supplied inputs */
     export function series (func: Function, inputs: any[], callback: (results: any[]) => void) : void {
         
-        var copy     = inputs.slice(0)
+        if(inputs) {
 
-        var results  = []
+            var copy     = inputs.slice(0)
 
-        var process  = () => {
+            var results  = []
+
+            var process  = () => {
             
-           var input = copy.shift()
+               var input = copy.shift()
            
-           func(input, (... args:any[]) => {
+               func(input, (... args:any[]) => {
 
-               results.push(args[0])
+                   results.push(args[0])
 
-               if(copy.length == 0) {
+                   if(copy.length == 0) {
                     
-                   callback(results)
+                       callback(results)
 
-                   return
-               }
+                       return
+                   }
 
-               process()
-           })
+                   process()
+               })
+            }
+
+            process()
+
+            return
         }
 
-        process()
+        callback([])
     }
 }

@@ -32,20 +32,4 @@ var security   = new taxman.security.SingleUserSecurity(config.security)
 
 var server     = new taxman.Server(app, security, provider, reporter, logger)
 
-//----------------------------------------
-// import - export
-//----------------------------------------
-
-//setTimeout(function() {
-//    var fs = require('fs')
-//    fs.readFile('c:/input/invoices.json', 'utf8', function(err, json) {
-//        provider.importData({json: json}, function(results) {
-//            provider.exportData({}, function(data) {
-//                fs.writeFile('c:/input/invoices-export.json', data.json, function () {
-//                    console.log('done')
-//                })
-//            })            
-//        })
-//    })
-//}, 1500)
 

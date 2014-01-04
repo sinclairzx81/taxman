@@ -425,13 +425,16 @@ module provider {
 
             this.logger.log('provider: grooming invoice dates')
 
-            for(var i = 0; i < data.invoices.length; i++) {
+            if(data.invoices) {
+
+                for(var i = 0; i < data.invoices.length; i++) {
             
-                data.invoices[i].created   = new Date(data.invoices[i].created)
+                    data.invoices[i].created   = new Date(data.invoices[i].created)
 
-                data.invoices[i].startdate = new Date(data.invoices[i].startdate)
+                    data.invoices[i].startdate = new Date(data.invoices[i].startdate)
 
-                data.invoices[i].enddate   = new Date(data.invoices[i].enddate)
+                    data.invoices[i].enddate   = new Date(data.invoices[i].enddate)
+                }
             }
 
             this.logger.log('provider: importing clients')

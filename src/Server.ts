@@ -48,8 +48,6 @@ class Server {
         this.setup_api()
     }
 
- 
-
     private setup_middleware() : void {
         
         this.app.use('/static', express.static('./static/'))
