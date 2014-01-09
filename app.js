@@ -26,9 +26,13 @@ var provider   = new taxman.provider.Provider(repository, logger)
 
 var mailer     = new taxman.mailing.SmtpClient(config.mailing.options, logger)
 
-var reporter   = new taxman.reports.PhantomNetReporter(config.reporter.endpoint)
+var reporter   = new taxman.reports.PhantomPDFReporter(config.reporter.endpoint)
+
+//var reporter   = new taxman.reports.HTMLReporter()
 
 var security   = new taxman.security.SingleUserSecurity(config.security)
+
+//var security   = new taxman.security.NullSecurity(config.security)
 
 var server     = new taxman.Server(app, security, provider, reporter, logger)
 

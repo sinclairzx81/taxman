@@ -52,6 +52,7 @@ THE SOFTWARE.
 /// <reference path="security/password.ts" />
 /// <reference path="security/secret.ts" />
 /// <reference path="security/SingleUserSecurity.ts" />
+/// <reference path="security/NullSecurity.ts" />
 
 //-------------------------------------------------------
 // mailing
@@ -69,7 +70,8 @@ THE SOFTWARE.
 // reports
 //-------------------------------------------------------
 
-/// <reference path="reports/PhantomNetReporter.ts" />
+/// <reference path="reports/HTMLReporter.ts" />
+/// <reference path="reports/PhantomPDFReporter.ts" />
 
 //-------------------------------------------------------
 // provider

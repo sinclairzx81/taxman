@@ -24,12 +24,53 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
+/// <reference path="../references.ts" />
+/// <reference path="IReporter.ts" />
+
 module reports {
 
-    export interface IReporter  {
+    export class PhantomPDFReporter implements reports.IReporter  {
         
-        mime: string
+        public mime: string
 
-        report(template_filename: string, context: any, callback: (errors: string[], stream: stream.ReadableStream) => void) : void
+        constructor(public endpoint: string) {
+            
+            this.mime = 'application/pdf'
+
+        }
+
+        public report(template_filename: string, context: any, callback: (errors: string[], stream: stream.ReadableStream) => void) : void {
+            
+            var content = magnum.render(template_filename, context)
+
+            var client   = new phantom.Client(this.endpoint)
+
+            var param  = {  content   : content,
+
+                            mime      : this.mime, 
+
+                            timeout   : 0,
+
+                            paperSize : {
+
+                                    format     : 'A4',
+
+                                    orientation: 'portrait'
+                                }
+                            }
+
+            client.render(param, (errors, readstream) => {
+                    
+                if(errors) {
+                        
+                    callback(errors, null)
+                    
+                    return errors     
+                    
+                }
+
+                callback(null, readstream)
+            })
+        }
     }
 }

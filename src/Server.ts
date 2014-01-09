@@ -553,7 +553,7 @@ class Server {
                         client  : client_result.client
                     }
 
-                    this.reporter.report('./views/reports/invoice.html', context, mime, (errors, readstream) => {
+                    this.reporter.report('./views/reports/invoice.html', context, (errors, readstream) => {
                     
                         if(errors) {
                         
@@ -564,7 +564,7 @@ class Server {
                             return
                         }
 
-                        response.setHeader('Content-Type', mime)
+                        response.setHeader('Content-Type', this.reporter.mime)
 
                         readstream.pipe(response)            
                     })

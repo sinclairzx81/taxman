@@ -24,12 +24,33 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
+/// <reference path="../references.ts" />
+/// <reference path="IReporter.ts" />
+
 module reports {
 
-    export interface IReporter  {
+    export class HTMLReporter implements reports.IReporter  {
         
-        mime: string
+        public mime: string
 
-        report(template_filename: string, context: any, callback: (errors: string[], stream: stream.ReadableStream) => void) : void
+        constructor() {
+            
+            this.mime = 'text/html'
+        }
+
+        public report(template_filename: string, context: any, callback: (errors: string[], stream: stream.ReadableStream) => void) : void {
+        
+            var content = magnum.render(template_filename, context)
+
+            var Readable = require('stream').Readable
+            
+            var readable = new Readable()
+
+            readable.push(content)
+            
+            readable.push(null)
+
+            callback(null, readable)
+        }
     }
 }

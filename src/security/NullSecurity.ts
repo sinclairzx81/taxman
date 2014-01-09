@@ -24,45 +24,26 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-/// <reference path="../references.ts" />
-/// <reference path="IReporter.ts" />
+/// <reference path="password.ts" />
+/// <reference path="secret.ts" />
+/// <reference path="ISecurity.ts" />
 
-module reports {
+module security {
 
-    export class PhantomNetReporter implements reports.IReporter  {
+    export class NullSecurity implements security.ISecurity {
     
-        constructor(public endpoint: string) {
-            
+        constructor() {
+
         }
 
-        public report(template_filename: string, context: any, mime: string, callback: (errors: string[], stream: stream.ReadableStream) => void) : void {
-        
-            var content = magnum.render(template_filename, context)
+        public authenticate (username: string, password: string, callback: (success: boolean, token: string) => void) : void {
 
-            var client   = new phantom.Client(this.endpoint)
+            callback(true, null)
+        }
 
-            var param  = {  content   : content,
-                            mime      : mime, 
-                            timeout   : 0,
-                            paperSize : {
-                                
-                                format     : 'A4',
-                                orientation: 'portrait'
-                                }
-                            }
-
-            client.render(param, (errors, readstream) => {
-                    
-                if(errors) {
-                        
-                    callback(errors, null)
-                    
-                    return errors     
-                    
-                }
-
-                callback(null, readstream)
-            })
+        public authorize(token: string, callback: (success: boolean) => void) : void {
+            
+            callback(true)
         }
     }
 }
