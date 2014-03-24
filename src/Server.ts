@@ -558,7 +558,7 @@ class Server {
                         client  : client_result.client
                     }
 
-                    this.reporter.report('./views/reports/invoice.html', context, (errors, readstream) => {
+                    this.reporter.report(this.options.root + '/views/reports/invoice.html', context, (errors, readstream) => {
                     
                         if(errors) {
                         
