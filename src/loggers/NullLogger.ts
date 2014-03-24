@@ -24,7 +24,7 @@ THE SOFTWARE.
 
 ---------------------------------------------------------------------------*/
 
-/// <reference path="Ilogger.ts" />
+/// <reference path="ILogger.ts" />
 
 module loggers {
 

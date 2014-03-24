@@ -22,9 +22,13 @@ limitations under the License.
 //
 //-------------------------------------------------------------------------
 
-var tsc = require('./tools/compiler.js')
+var tsc = require('./tools/tsc.js')
+
+var npm = require('./tools/npm.js')
 
 var io  = require('./tools/io.js')
+
+
 
 //------------------------------------------------------------------------------------
 // paths
@@ -38,16 +42,19 @@ var bin_directory = './bin'
 // build
 //------------------------------------------------------------------------------------
 
-io.create_directory(bin_directory);
+npm.install(['./'], function() {
 
-tsc.build([src_directory + '/index.ts'], ['--removeComments'], bin_directory + '/index.js' , function() {
+    io.create_directory(bin_directory);
 
-    io.license('./license.txt', bin_directory + '/index.js')
+    tsc.build([src_directory + '/index.ts'], ['--removeComments'], bin_directory + '/index.js' , function() {
 
-    io.copy('./readme.md',     bin_directory + '/readme.md')
+        io.license('./license.txt', bin_directory + '/index.js')
 
-    io.copy('./package.json',  bin_directory + '/package.json', function() {
+        io.copy('./readme.md',     bin_directory + '/readme.md')
 
-        require('./app.js')
+        io.copy('./package.json',  bin_directory + '/package.json', function() {
+
+            require('./app.js')
+        })
     })
 })

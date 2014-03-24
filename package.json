@@ -8,7 +8,7 @@
   },
   "dependencies": {
     "express"     : "~3.4.7",
-    "sqlite3"     : "~2.1.19",
+    "sqlite3"     : "~2.2.0",
     "magnum"      : "~0.1.8",
 	"phantom.net" : "~0.5.1",
 	"nodemailer"  : "~0.6.0"
