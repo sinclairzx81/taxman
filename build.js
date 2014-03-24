@@ -34,25 +34,25 @@ var io  = require('./tools/io.js')
 // paths
 //------------------------------------------------------------------------------------
 
-var src_directory = './src'
+var src_directory = __dirname + '/src'
 
-var bin_directory = './bin'
+var bin_directory = __dirname + '/bin'
 
 //------------------------------------------------------------------------------------
 // build
 //------------------------------------------------------------------------------------
 
-npm.install(['./'], function() {
+npm.install([__dirname], function() {
 
     io.create_directory(bin_directory);
 
     tsc.build([src_directory + '/index.ts'], ['--removeComments'], bin_directory + '/index.js' , function() {
 
-        io.license('./license.txt', bin_directory + '/index.js')
+        io.license(__dirname + '/license.txt', bin_directory + '/index.js')
 
-        io.copy('./readme.md',     bin_directory + '/readme.md')
+        io.copy(__dirname + '/readme.md',     bin_directory + '/readme.md')
 
-        io.copy('./package.json',  bin_directory + '/package.json', function() {
+        io.copy(__dirname + '/package.json',  bin_directory + '/package.json', function() {
 
             require('./app.js')
         })

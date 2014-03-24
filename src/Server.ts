@@ -31,11 +31,16 @@ THE SOFTWARE.
 /// <reference path="security/ISecurity.ts" />
 /// <reference path="schema/Schema.ts" />
 
+interface ServerOptions {
+
+    root   : string
+}
+
 class Server {
 
     private schema: schema.Schema;
 
-    constructor(public app: ExpressApplication, public security: security.ISecurity, public provider: provider.Provider, public reporter: reports.IReporter, public logger: loggers.ILogger ) {
+    constructor(public options: ServerOptions, public app: ExpressApplication, public security: security.ISecurity, public provider: provider.Provider, public reporter: reports.IReporter, public logger: loggers.ILogger ) {
         
         this.schema = new schema.Schema()
         
@@ -50,7 +55,7 @@ class Server {
 
     private setup_middleware() : void {
         
-        this.app.use('/static', express.static('./static/'))
+        this.app.use('/static', express.static(this.options.root + '/static/'))
 
         this.app.use(express.cookieParser())
 
@@ -92,7 +97,7 @@ class Server {
 
         this.app.get('/login', (request, response) => {
 
-            response.render('./views/auth/login.html', {})
+            response.render(this.options.root + '/views/auth/login.html', {})
         })
 
         this.app.get('/logout', (request, response) => {
@@ -141,70 +146,70 @@ class Server {
             
             var context = { request: request }
             
-            response.render('./views/dashboard/index.html', context)
+            response.render(this.options.root + '/views/dashboard/index.html', context)
         })
 
         this.app.get('/dashboard', authorize, (request, response) => {
                
             var context = { request: request }
             
-            response.render('./views/dashboard/index.html', context)
+            response.render(this.options.root + '/views/dashboard/index.html', context)
         })
 
         this.app.get('/invoices', authorize, (request, response) => {
 
             var context = {request: request}
 
-            response.render('./views/invoices/index.html', context)                   
+            response.render(this.options.root + '/views/invoices/index.html', context)                   
         })
 
         this.app.get('/invoices/create', authorize, (request, response) => {
             
             var context = {request: request}
 
-            response.render('./views/invoices/create.html', context)
+            response.render(this.options.root + '/views/invoices/create.html', context)
         })
 
         this.app.get('/invoices/:invoiceid', authorize, (request, response) => {
 
             var context = {request: request, invoiceid : request.params.invoiceid}
 
-            response.render('./views/invoices/update.html', context)
+            response.render(this.options.root + '/views/invoices/update.html', context)
         })
 
         this.app.get('/clients', authorize, (request, response) => {
             
             var context = {request: request}
 
-            response.render('./views/clients/index.html', context)
+            response.render(this.options.root + '/views/clients/index.html', context)
         })
 
         this.app.get('/clients/create', authorize, (request, response) => {
             
             var context = { request: request }
                         
-            response.render('./views/clients/create.html', context)
+            response.render(this.options.root + '/views/clients/create.html', context)
         })
 
         this.app.get('/clients/:clientid', authorize, (request, response) => {
             
             var context = { request: request, clientid: request.params.clientid }
 
-            response.render('./views/clients/update.html', context)
+            response.render(this.options.root + '/views/clients/update.html', context)
         })
         
         this.app.get('/settings', authorize, (request, response) => {
             
             var context = {  request: request }
                
-            response.render('./views/settings/index.html', context)
+            response.render(this.options.root + '/views/settings/index.html', context)
         })
 
         this.app.get('/tools', authorize, (request, response) => {
             
             var context = {  request: request }
                
-            response.render('./views/tools/index.html', context)
+            response.render(this.options.root + '/views/tools/index.html', context)
         })
     }
 

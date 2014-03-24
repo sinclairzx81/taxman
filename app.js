@@ -20,7 +20,7 @@ console.log('server listening on port ' + (process.env.PORT || config.server.opt
 
 var logger     = new taxman.loggers.ConsoleLogger()
 
-var repository = new taxman.repository.SqliteRepository(config.database.filename, logger)
+var repository = new taxman.repository.SqliteRepository(__dirname + '/' + config.database.filename, logger)
 
 var provider   = new taxman.provider.Provider(repository, logger)
 
@@ -34,6 +34,6 @@ var security   = new taxman.security.SingleUserSecurity(config.security)
 
 //var security   = new taxman.security.NullSecurity(config.security)
 
-var server     = new taxman.Server(app, security, provider, reporter, logger)
+var server     = new taxman.Server({root: __dirname}, app, security, provider, reporter, logger)
 
 
