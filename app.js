@@ -2,21 +2,21 @@
 // configure express
 //----------------------------------------
 
+var taxman     = require('./bin/index.js')
+
+var config     = taxman.config.load('./config.json')
+
 var express = require('express')
 
 var app     = express()
 
-app.listen(process.env.PORT || 5000)
+app.listen(process.env.PORT || config.server.options.port)
 
-console.log('server listening on port ' + (process.env.PORT || 5000))
+console.log('server listening on port ' + (process.env.PORT || config.server.options.port))
 
 //----------------------------------------
 // configure taxman
 //----------------------------------------
-
-var taxman     = require('./bin/index.js')
-
-var config     = taxman.config.load('./config.json')
 
 var logger     = new taxman.loggers.ConsoleLogger()
 
