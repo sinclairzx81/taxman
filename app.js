@@ -4,7 +4,7 @@
 
 var taxman     = require('./bin/index.js')
 
-var config     = taxman.config.load('./config.json')
+var config     = taxman.config.load(__dirname + '/config.json')
 
 var express = require('express')
 
